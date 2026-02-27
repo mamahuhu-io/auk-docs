@@ -1,0 +1,144 @@
+---
+title: Workspaces
+description: Organize your API projects with independent workspaces
+---
+
+## What is a Workspace?
+
+A workspace in Auk is an isolated environment for organizing your API collections, environments, and settings. Each workspace operates independently with its own local storage and optional Git repository.
+
+## Key Features
+
+<CardGroup cols={2}>
+  <Card title="Data Isolation" icon="shield">
+    Each workspace has completely separate data - collections, environments, and history never mix between workspaces
+  </Card>
+
+  <Card title="Independent Git" icon="code-branch">
+    Configure different Git repositories for each workspace, enabling separate version control strategies
+  </Card>
+
+  <Card title="Custom Settings" icon="gear">
+    Each workspace can have its own proxy settings, interceptor configuration, and preferences
+  </Card>
+
+  <Card title="Quick Switching" icon="arrows-rotate">
+    Instantly switch between workspaces without losing context or closing the application
+  </Card>
+</CardGroup>
+
+## Use Cases
+
+### Separate Work and Personal Projects
+
+```
+~/auk-workspaces/
+├── work/
+│   ├── collections/
+│   ├── environments/
+│   └── .git/              # Synced to company Git server
+└── personal/
+    ├── collections/
+    ├── environments/
+    └── .git/              # Synced to personal GitHub
+```
+
+### Multi-Client Management
+
+```
+~/auk-workspaces/
+├── client-acme/
+│   └── .git/              # Client A's private repo
+├── client-globex/
+│   └── .git/              # Client B's private repo
+└── internal/
+    └── .git/              # Company internal repo
+```
+
+### Project-Based Organization
+
+```
+~/auk-workspaces/
+├── project-alpha/
+├── project-beta/
+└── project-gamma/
+```
+
+## Workspace Structure
+
+Each workspace contains:
+
+```
+workspace-name/
+├── collections/           # API collections
+│   ├── collection-1.json
+│   └── collection-2.json
+├── environments/          # Environment variables
+│   ├── dev.json
+│   ├── staging.json
+│   └── production.json
+├── history/              # Request history
+│   └── history.json
+├── settings.json         # Workspace settings
+└── .git/                # Optional Git repository
+```
+
+## Workspace Settings
+
+Each workspace can be configured with:
+
+- **Name and Description** - Identify the workspace purpose
+- **Storage Location** - Local file system path
+- **Git Repository** - Remote repository URL (optional)
+- **Sync Settings** - Auto-sync interval and conflict resolution strategy
+- **Default Environment** - Environment to load on startup
+- **Proxy Configuration** - HTTP/HTTPS proxy settings
+- **Interceptor Mode** - System proxy/Agent or none
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Use Descriptive Names">
+    Name workspaces clearly to reflect their purpose:
+    - ✅ `acme-corp-apis`
+    - ✅ `personal-projects`
+    - ❌ `workspace-1`
+    - ❌ `test`
+  </Accordion>
+
+  <Accordion title="Organize by Context">
+    Group related APIs together:
+    - By client/customer
+    - By project
+    - By environment (dev/staging/prod)
+    - By team
+  </Accordion>
+
+  <Accordion title="Enable Git Sync for Teams">
+    For collaborative work, always configure Git sync to ensure team members stay in sync
+  </Accordion>
+
+  <Accordion title="Keep Personal Data Separate">
+    Use separate workspaces for work and personal projects to maintain clear boundaries
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Create a Workspace" href="/documentation/workspace/creating" icon="plus">
+    Learn how to create and configure your first workspace
+  </Card>
+
+  <Card title="Switch Workspaces" href="/documentation/workspace/switching" icon="arrows-rotate">
+    Master workspace switching and management
+  </Card>
+
+  <Card title="Git Sync Setup" href="/documentation/git-sync/setup" icon="code-branch">
+    Configure Git synchronization for team collaboration
+  </Card>
+
+  <Card title="Workspace Settings" href="/documentation/workspace/settings" icon="gear">
+    Explore all available workspace configuration options
+  </Card>
+</CardGroup>

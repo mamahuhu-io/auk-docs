@@ -1,0 +1,594 @@
+---
+title: Git Sync Troubleshooting
+description: Common Git synchronization issues and solutions
+---
+
+## Common Issues
+
+Quick reference for common Git sync problems:
+
+<AccordionGroup>
+  <Accordion title="Authentication Failed">
+    **Symptoms:**
+    - "Permission denied (publickey)"
+    - "Authentication failed"
+    - "Could not read from remote repository"
+
+    **Solutions:**
+
+    ### For SSH:
+    ```bash
+    # Check SSH key is loaded
+    ssh-add -l
+
+    # Add SSH key if not loaded
+    ssh-add ~/.ssh/id_ed25519
+
+    # Test SSH connection
+    ssh -T git@github.com
+    ```
+
+    ### For HTTPS:
+    ```bash
+    # Clear credential cache
+    git credential-cache exit
+
+    # Re-enter credentials on next sync
+    ```
+
+    ### Verify Authentication:
+    - Check SSH key is added to Git service
+    - Verify token has correct permissions
+    - Ensure token hasn't expired
+  </Accordion>
+
+  <Accordion title="Push Rejected">
+    **Symptoms:**
+    - "Updates were rejected"
+    - "Failed to push some refs"
+    - "Non-fast-forward"
+
+    **Cause:** Remote has changes you don't have locally
+
+    **Solution:**
+    ```bash
+    # Pull latest changes first
+    # Auk will do this automatically, but if manual:
+    cd ~/Library/Application\ Support/Auk/workspaces/my-workspace
+    git pull --rebase origin main
+    git push origin main
+    ```
+
+    In Auk:
+    1. Click "Sync Now" to pull changes
+    2. Resolve any conflicts
+    3. Sync again to push
+  </Accordion>
+
+  <Accordion title="Merge Conflicts">
+    **Symptoms:**
+    - "Automatic merge failed"
+    - "CONFLICT (content)"
+    - Sync paused with conflict warning
+
+    **Solution:**
+    See [Conflict Resolution](/documentation/git-sync/conflict-resolution) guide
+
+    Quick steps:
+    1. Open conflict resolution UI
+    2. Choose resolution strategy
+    3. Resolve conflicts
+    4. Complete sync
+  </Accordion>
+
+  <Accordion title="Repository Not Found">
+    **Symptoms:**
+    - "Repository not found"
+    - "Could not resolve host"
+    - 404 error
+
+    **Solutions:**
+    - Verify repository URL is correct
+    - Check you have access to repository
+    - Ensure repository exists
+    - Try cloning manually to test:
+    ```bash
+    git clone git@github.com:username/repo.git /tmp/test
+    ```
+  </Accordion>
+
+  <Accordion title="Network Timeout">
+    **Symptoms:**
+    - "Connection timed out"
+    - "Failed to connect"
+    - Sync hangs indefinitely
+
+    **Solutions:**
+    - Check internet connection
+    - Verify firewall isn't blocking Git
+    - Try different network
+    - Increase timeout in settings:
+    ```json
+    {
+      "git": {
+        "syncTimeout": 300
+      }
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Detached HEAD State">
+    **Symptoms:**
+    - "You are in 'detached HEAD' state"
+    - Commits not appearing on branch
+
+    **Solution:**
+    ```bash
+    cd ~/Library/Application\ Support/Auk/workspaces/my-workspace
+
+    # Create branch from current state
+    git checkout -b recovery-branch
+
+    # Switch back to main
+    git checkout main
+
+    # Merge recovery branch if needed
+    git merge recovery-branch
+    ```
+  </Accordion>
+
+  <Accordion title="Large File Issues">
+    **Symptoms:**
+    - "File too large"
+    - Push fails with size error
+    - Slow sync performance
+
+    **Solutions:**
+    - Remove large files from Git:
+    ```bash
+    git rm --cached large-file.json
+    echo "large-file.json" >> .gitignore
+    git commit -m "Remove large file"
+    ```
+
+    - Use Git LFS for large files:
+    ```bash
+    git lfs install
+    git lfs track "*.large"
+    ```
+
+    - Split large collections into smaller files
+  </Accordion>
+
+  <Accordion title="Sync Stuck">
+    **Symptoms:**
+    - Sync shows "In progress" indefinitely
+    - Cannot cancel sync
+    - Auk becomes unresponsive
+
+    **Solutions:**
+    1. Wait 5 minutes for timeout
+    2. Force quit Auk if needed
+    3. Restart Auk
+    4. Check workspace Git status:
+    ```bash
+    cd ~/Library/Application\ Support/Auk/workspaces/my-workspace
+    git status
+    ```
+    5. Reset if needed:
+    ```bash
+    git reset --hard origin/main
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Diagnostic Commands
+
+### Check Git Status
+
+```bash
+# Navigate to workspace
+cd ~/Library/Application\ Support/Auk/workspaces/my-workspace
+
+# Check status
+git status
+
+# View recent commits
+git log --oneline -10
+
+# Check remote
+git remote -v
+
+# View branches
+git branch -a
+```
+
+### Test Connectivity
+
+```bash
+# Test SSH (GitHub)
+ssh -T git@github.com
+
+# Test SSH (GitLab)
+ssh -T git@gitlab.com
+
+# Test SSH (Gitee)
+ssh -T git@gitee.com
+
+# Test HTTPS
+curl -I https://github.com
+```
+
+### View Sync Logs
+
+<Tabs>
+  <Tab title="macOS">
+    ```bash
+    # View Auk logs
+    tail -f ~/Library/Logs/Auk/git-sync.log
+
+    # View all logs
+    cat ~/Library/Logs/Auk/git-sync.log
+
+    # Search for errors
+    grep ERROR ~/Library/Logs/Auk/git-sync.log
+    ```
+  </Tab>
+
+  <Tab title="Windows">
+    ```bash
+    # View logs
+    type %APPDATA%\Auk\Logs\git-sync.log
+
+    # Search for errors
+    findstr ERROR %APPDATA%\Auk\Logs\git-sync.log
+    ```
+  </Tab>
+
+  <Tab title="Linux">
+    ```bash
+    # View logs
+    tail -f ~/.config/Auk/logs/git-sync.log
+
+    # Search for errors
+    grep ERROR ~/.config/Auk/logs/git-sync.log
+    ```
+  </Tab>
+</Tabs>
+
+## Recovery Procedures
+
+### Reset to Remote State
+
+If local state is corrupted, reset to remote:
+
+<Warning>
+  This will discard all local changes. Backup first if needed.
+</Warning>
+
+```bash
+cd ~/Library/Application\ Support/Auk/workspaces/my-workspace
+
+# Backup current state
+cp -r . ../my-workspace-backup
+
+# Reset to remote
+git fetch origin
+git reset --hard origin/main
+
+# Restart Auk
+```
+
+### Recover Lost Commits
+
+If commits are lost:
+
+```bash
+# View reflog (history of HEAD)
+git reflog
+
+# Find lost commit
+# Example output:
+# abc1234 HEAD@{0}: reset: moving to origin/main
+# def5678 HEAD@{1}: commit: My lost changes
+
+# Recover lost commit
+git checkout def5678
+
+# Create branch to save it
+git checkout -b recovered-changes
+
+# Merge back to main if needed
+git checkout main
+git merge recovered-changes
+```
+
+### Fix Corrupted Repository
+
+If Git repository is corrupted:
+
+```bash
+cd ~/Library/Application\ Support/Auk/workspaces/my-workspace
+
+# Try to repair
+git fsck --full
+
+# If repair fails, re-clone
+cd ..
+mv my-workspace my-workspace-broken
+git clone git@github.com:username/repo.git my-workspace
+
+# Copy any uncommitted changes from broken workspace
+cp my-workspace-broken/collections/*.json my-workspace/collections/
+```
+
+## Performance Issues
+
+### Slow Sync
+
+If sync is slow:
+
+<Steps>
+  <Step title="Check Network Speed">
+    ```bash
+    # Test download speed
+    curl -o /dev/null https://github.com/git/git/archive/refs/heads/master.zip
+    ```
+  </Step>
+
+  <Step title="Enable Compression">
+    ```json
+    {
+      "git": {
+        "compressTransfer": true
+      }
+    }
+    ```
+  </Step>
+
+  <Step title="Use Shallow Clone">
+    For large repositories:
+    ```bash
+    git clone --depth 1 git@github.com:username/repo.git
+    ```
+  </Step>
+
+  <Step title="Reduce Sync Frequency">
+    ```json
+    {
+      "git": {
+        "syncInterval": 3600
+      }
+    }
+    ```
+  </Step>
+</Steps>
+
+### High CPU Usage
+
+If Git sync uses too much CPU:
+
+```json
+{
+  "git": {
+    "parallelSync": false,
+    "syncInterval": 1800,
+    "pauseOnBattery": true
+  }
+}
+```
+
+## Platform-Specific Issues
+
+### macOS
+
+<AccordionGroup>
+  <Accordion title="Keychain Access Denied">
+    **Symptoms:** Repeated password prompts
+
+    **Solution:**
+    ```bash
+    # Update keychain helper
+    git config --global credential.helper osxkeychain
+
+    # Reset keychain if needed
+    git credential-osxkeychain erase
+    host=github.com
+    protocol=https
+    ```
+  </Accordion>
+
+  <Accordion title="Xcode Command Line Tools">
+    **Symptoms:** Git not found or outdated
+
+    **Solution:**
+    ```bash
+    # Install Xcode Command Line Tools
+    xcode-select --install
+
+    # Verify Git version
+    git --version
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Windows
+
+<AccordionGroup>
+  <Accordion title="Line Ending Issues">
+    **Symptoms:** Files show as modified but no changes
+
+    **Solution:**
+    ```bash
+    # Configure line endings
+    git config --global core.autocrlf true
+
+    # Refresh repository
+    git rm --cached -r .
+    git reset --hard
+    ```
+  </Accordion>
+
+  <Accordion title="Path Too Long">
+    **Symptoms:** "Filename too long" error
+
+    **Solution:**
+    ```bash
+    # Enable long paths
+    git config --global core.longpaths true
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### Linux
+
+<AccordionGroup>
+  <Accordion title="Permission Denied">
+    **Symptoms:** Cannot write to workspace directory
+
+    **Solution:**
+    ```bash
+    # Fix permissions
+    chmod 700 ~/.config/Auk/workspaces/my-workspace
+    chown -R $USER ~/.config/Auk/workspaces/my-workspace
+    ```
+  </Accordion>
+
+  <Accordion title="SSH Agent Not Running">
+    **Symptoms:** SSH key not found
+
+    **Solution:**
+    ```bash
+    # Start SSH agent
+    eval "$(ssh-agent -s)"
+    ssh-add ~/.ssh/id_ed25519
+
+    # Add to shell profile
+    echo 'eval "$(ssh-agent -s)"' >> ~/.bashrc
+    echo 'ssh-add ~/.ssh/id_ed25519' >> ~/.bashrc
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Error Messages
+
+### Common Error Messages and Solutions
+
+| Error Message | Cause | Solution |
+|--------------|-------|----------|
+| `fatal: not a git repository` | Git not initialized | Initialize Git in workspace settings |
+| `error: failed to push some refs` | Remote has newer commits | Pull before pushing |
+| `fatal: refusing to merge unrelated histories` | Repositories have different histories | Use `--allow-unrelated-histories` flag |
+| `error: Your local changes would be overwritten` | Uncommitted changes conflict | Commit or stash changes first |
+| `fatal: unable to access` | Network or auth issue | Check network and credentials |
+| `error: RPC failed; HTTP 413` | Push too large | Split into smaller commits |
+
+## Getting Help
+
+### Enable Debug Logging
+
+```json
+{
+  "git": {
+    "enableLogging": true,
+    "logLevel": "debug"
+  }
+}
+```
+
+### Collect Diagnostic Information
+
+When reporting issues, include:
+
+1. **Auk Version**
+   - Help → About Auk
+
+2. **Git Version**
+   ```bash
+   git --version
+   ```
+
+3. **Operating System**
+   - macOS: System Preferences → About
+   - Windows: Settings → System → About
+   - Linux: `uname -a`
+
+4. **Error Logs**
+   - Copy from Auk logs directory
+
+5. **Git Status**
+   ```bash
+   cd workspace-directory
+   git status
+   git log --oneline -5
+   git remote -v
+   ```
+
+### Contact Support
+
+- **GitHub Issues**: [github.com/mamahuhu-io/auk/issues](https://github.com/mamahuhu-io/auk/issues)
+- **Documentation**: [auk.mamahuhu.dev](https://auk.mamahuhu.dev)
+- **Community**: Join our Discord/Slack
+
+## Prevention Tips
+
+<AccordionGroup>
+  <Accordion title="Regular Backups">
+    Backup workspaces regularly:
+    ```bash
+    # Automated backup script
+    tar -czf ~/Backups/auk-$(date +%Y%m%d).tar.gz \
+      ~/Library/Application\ Support/Auk/workspaces/
+    ```
+  </Accordion>
+
+  <Accordion title="Test Before Production">
+    Test Git sync with a test workspace first:
+    1. Create test workspace
+    2. Configure Git sync
+    3. Test sync operations
+    4. Verify everything works
+    5. Apply to production workspaces
+  </Accordion>
+
+  <Accordion title="Monitor Sync Status">
+    Regularly check sync status:
+    - Review sync history
+    - Check for errors in logs
+    - Verify remote repository is updated
+  </Accordion>
+
+  <Accordion title="Keep Git Updated">
+    Use latest Git version:
+    ```bash
+    # Check version
+    git --version
+
+    # Update (macOS with Homebrew)
+    brew upgrade git
+
+    # Update (Linux)
+    sudo apt update && sudo apt upgrade git
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Git Sync Setup" href="/documentation/git-sync/setup" icon="rocket">
+    Set up Git synchronization
+  </Card>
+
+  <Card title="Conflict Resolution" href="/documentation/git-sync/conflict-resolution" icon="code-merge">
+    Learn conflict resolution
+  </Card>
+
+  <Card title="Best Practices" href="/guides/git-collaboration" icon="users">
+    Git collaboration best practices
+  </Card>
+
+  <Card title="Support" href="/support/getting-started/contact" icon="life-ring">
+    Get additional help
+  </Card>
+</CardGroup>

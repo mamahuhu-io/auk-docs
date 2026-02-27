@@ -1,0 +1,480 @@
+---
+title: Conflict Resolution
+description: Handle and resolve Git merge conflicts effectively
+---
+
+## Understanding Conflicts
+
+Conflicts occur when multiple team members modify the same part of a collection or environment simultaneously.
+
+## When Conflicts Happen
+
+<CardGroup cols={2}>
+  <Card title="Same File Modified" icon="file-pen">
+    Two people edit the same collection file
+  </Card>
+
+  <Card title="Same Request Changed" icon="code">
+    Different changes to the same API request
+  </Card>
+
+  <Card title="Concurrent Deletions" icon="trash">
+    One person deletes while another modifies
+  </Card>
+
+  <Card title="Environment Variables" icon="key">
+    Conflicting environment variable changes
+  </Card>
+</CardGroup>
+
+## Conflict Detection
+
+Auk detects conflicts during sync:
+
+```
+Sync Process:
+1. Commit local changes ✓
+2. Pull remote changes ✓
+3. Merge changes... ⚠️  Conflict detected!
+
+   Conflicts in:
+   - collections/user-api.json
+   - environments/development.json
+```
+
+### Conflict Notification
+
+When conflicts are detected:
+
+1. **Sync Pauses** - Auto-sync stops
+2. **Notification** - Desktop notification appears
+3. **Status Indicator** - Shows conflict warning
+4. **Conflict Panel** - Opens automatically
+
+## Conflict Resolution UI
+
+Auk provides a visual interface for resolving conflicts:
+
+```
+┌─────────────────────────────────────────────────────────┐
+│ Conflict Resolution                                     │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│ File: collections/user-api.json                         │
+│ Request: POST /users                                    │
+│                                                         │
+│ ┌─────────────────────┐  ┌─────────────────────┐      │
+│ │   Your Changes      │  │  Remote Changes     │      │
+│ ├─────────────────────┤  ├─────────────────────┤      │
+│ │ {                   │  │ {                   │      │
+│ │   "method": "POST", │  │   "method": "POST", │      │
+│ │   "endpoint": "/u", │  │   "endpoint": "/u", │      │
+│ │   "body": {         │  │   "body": {         │      │
+│ │     "name": "req"   │  │     "username": ""  │      │
+│ │   }                 │  │   }                 │      │
+│ │ }                   │  │ }                   │      │
+│ └─────────────────────┘  └─────────────────────┘      │
+│                                                         │
+│ Resolution:                                             │
+│ ○ Keep Your Changes                                     │
+│ ○ Use Remote Changes                                    │
+│ ● Smart Merge (Recommended)                             │
+│ ○ Manual Edit                                           │
+│                                                         │
+│ [Cancel]  [Resolve Conflict]                            │
+└─────────────────────────────────────────────────────────┘
+```
+
+## Resolution Strategies
+
+### 1. Smart Merge (Recommended)
+
+Automatically combines non-conflicting changes:
+
+<Steps>
+  <Step title="Analyze Changes">
+    Auk analyzes both versions to identify conflicts
+  </Step>
+
+  <Step title="Auto-Merge Safe Changes">
+    Non-conflicting changes are merged automatically:
+    - New requests added by both sides
+    - Different properties modified
+    - Independent changes
+  </Step>
+
+  <Step title="Highlight Conflicts">
+    Only true conflicts require manual resolution:
+    - Same property changed differently
+    - Conflicting deletions
+  </Step>
+
+  <Step title="Apply Merge">
+    Merged result is saved and committed
+  </Step>
+</Steps>
+
+**Example:**
+
+```json
+// Your changes: Added "email" field
+{
+  "name": "required",
+  "email": "required"
+}
+
+// Remote changes: Added "phone" field
+{
+  "name": "required",
+  "phone": "optional"
+}
+
+// Smart merge result: Both fields included
+{
+  "name": "required",
+  "email": "required",
+  "phone": "optional"
+}
+```
+
+### 2. Keep Your Changes
+
+Use your local version, discarding remote changes:
+
+<Warning>
+  This will overwrite team members' changes. Use only when you're certain your version is correct.
+</Warning>
+
+**When to use:**
+- You know remote changes are incorrect
+- You've discussed with team and agreed
+- Remote changes were accidental
+
+### 3. Use Remote Changes
+
+Accept remote version, discarding your local changes:
+
+<Warning>
+  This will discard your local changes. Ensure you don't need them before proceeding.
+</Warning>
+
+**When to use:**
+- Remote changes are more up-to-date
+- You want to start fresh with team's version
+- Your local changes were experimental
+
+### 4. Manual Edit
+
+Manually edit the conflicting file:
+
+<Steps>
+  <Step title="Open in Editor">
+    Click "Edit Manually" to open the file
+  </Step>
+
+  <Step title="Review Conflict Markers">
+    Git adds conflict markers to the file:
+    ```json
+    {
+      "endpoint": "/users",
+    <<<<<<< HEAD (Your changes)
+      "body": {
+        "name": "required"
+      }
+    =======
+      "body": {
+        "username": "required"
+      }
+    >>>>>>> remote (Remote changes)
+    }
+    ```
+  </Step>
+
+  <Step title="Resolve Conflicts">
+    Edit the file to resolve conflicts:
+    ```json
+    {
+      "endpoint": "/users",
+      "body": {
+        "username": "required",
+        "name": "required"
+      }
+    }
+    ```
+  </Step>
+
+  <Step title="Mark as Resolved">
+    Save the file and mark conflict as resolved
+  </Step>
+</Steps>
+
+## Conflict Types
+
+### Collection Conflicts
+
+**Scenario:** Two people modify the same collection
+
+<Tabs>
+  <Tab title="Request Modified">
+    **Conflict:**
+    - Person A: Changed request method to PUT
+    - Person B: Changed request endpoint
+
+    **Resolution:**
+    - Smart merge: Apply both changes
+    - Result: PUT request with new endpoint
+  </Tab>
+
+  <Tab title="Request Added">
+    **Conflict:**
+    - Person A: Added POST /users
+    - Person B: Added POST /users (different body)
+
+    **Resolution:**
+    - Keep both requests
+    - Rename one to avoid duplication
+    - Or merge request bodies if compatible
+  </Tab>
+
+  <Tab title="Request Deleted">
+    **Conflict:**
+    - Person A: Deleted GET /users
+    - Person B: Modified GET /users
+
+    **Resolution:**
+    - Prompt user: Keep deletion or keep modification?
+    - If kept: Use modified version
+    - If deleted: Remove request
+  </Tab>
+</Tabs>
+
+### Environment Conflicts
+
+**Scenario:** Environment variables changed differently
+
+<Tabs>
+  <Tab title="Variable Modified">
+    **Conflict:**
+    - Person A: `baseUrl = "http://localhost:3000"`
+    - Person B: `baseUrl = "http://localhost:8080"`
+
+    **Resolution:**
+    - Prompt user to choose correct value
+    - Or keep both in different environments
+  </Tab>
+
+  <Tab title="Variable Added">
+    **Conflict:**
+    - Person A: Added `apiKey = "key1"`
+    - Person B: Added `apiKey = "key2"`
+
+    **Resolution:**
+    - Choose which key to use
+    - Or rename one variable
+  </Tab>
+
+  <Tab title="Secret Variables">
+    **Conflict:**
+    - Person A: Changed secret value
+    - Person B: Changed same secret
+
+    **Resolution:**
+    - Secrets should not be in Git
+    - Use local-only environment files
+    - Add to `.gitignore`
+  </Tab>
+</Tabs>
+
+## Preventing Conflicts
+
+### Best Practices
+
+<AccordionGroup>
+  <Accordion title="Sync Frequently">
+    Reduce conflict likelihood by syncing often:
+    ```json
+    {
+      "git": {
+        "autoSync": true,
+        "syncInterval": 300  // 5 minutes
+      }
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Communicate Changes">
+    Coordinate with team before major changes:
+    - Announce in team chat before editing
+    - Use feature branches for large changes
+    - Assign ownership of collections
+  </Accordion>
+
+  <Accordion title="Divide Responsibilities">
+    Organize collections by ownership:
+    ```
+    collections/
+    ├── auth/           # Alice owns
+    ├── users/          # Bob owns
+    └── payments/       # Carol owns
+    ```
+  </Accordion>
+
+  <Accordion title="Use Feature Branches">
+    Create branches for major changes:
+    ```bash
+    # Create feature branch
+    git checkout -b feature/new-endpoints
+
+    # Work on changes
+    # Merge back when ready
+    ```
+  </Accordion>
+
+  <Accordion title="Pull Before Push">
+    Always pull latest changes before starting work:
+    - Sync at start of day
+    - Sync before making changes
+    - Sync before switching tasks
+  </Accordion>
+</AccordionGroup>
+
+### Workspace Organization
+
+Structure workspaces to minimize conflicts:
+
+```
+Option 1: By Feature
+├── workspace-auth/
+├── workspace-payments/
+└── workspace-users/
+
+Option 2: By Environment
+├── workspace-dev/
+├── workspace-staging/
+└── workspace-prod/
+
+Option 3: By Team Member
+├── workspace-alice/
+├── workspace-bob/
+└── workspace-shared/
+```
+
+## Conflict Resolution Workflow
+
+Complete workflow for handling conflicts:
+
+<Steps>
+  <Step title="Conflict Detected">
+    Auk detects conflict during sync and pauses
+  </Step>
+
+  <Step title="Review Changes">
+    Open conflict resolution UI and review both versions
+  </Step>
+
+  <Step title="Choose Strategy">
+    Select resolution strategy:
+    - Smart merge (recommended)
+    - Keep local
+    - Use remote
+    - Manual edit
+  </Step>
+
+  <Step title="Resolve Conflict">
+    Apply chosen strategy and verify result
+  </Step>
+
+  <Step title="Test Changes">
+    Test the merged result to ensure it works
+  </Step>
+
+  <Step title="Complete Sync">
+    Mark conflict as resolved and complete sync
+  </Step>
+
+  <Step title="Notify Team">
+    Inform team about resolution if needed
+  </Step>
+</Steps>
+
+## Advanced Scenarios
+
+### Multiple Conflicts
+
+When multiple files have conflicts:
+
+1. **Resolve One by One** - Auk presents conflicts sequentially
+2. **Batch Resolution** - Apply same strategy to all (if appropriate)
+3. **Skip and Return** - Skip difficult conflicts, resolve easy ones first
+
+### Recurring Conflicts
+
+If same conflicts keep appearing:
+
+1. **Identify Root Cause** - Why are same files conflicting?
+2. **Reorganize** - Split collections or use branches
+3. **Coordinate** - Establish team conventions
+4. **Automate** - Use conflict resolution rules
+
+### Complex Merges
+
+For complex conflicts:
+
+1. **Export Both Versions** - Save local and remote versions
+2. **Manual Merge** - Use external diff tool
+3. **Import Result** - Import merged version back
+4. **Verify** - Test thoroughly before committing
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Cannot resolve conflict">
+    **Symptoms:** Resolution fails or creates errors
+
+    **Solutions:**
+    - Export both versions for manual review
+    - Check JSON syntax is valid
+    - Restore from backup if needed
+    - Contact team to coordinate resolution
+  </Accordion>
+
+  <Accordion title="Conflict resolution UI not showing">
+    **Symptoms:** Conflict detected but no UI appears
+
+    **Solutions:**
+    - Check notification settings
+    - Manually open conflict panel
+    - Review sync logs for details
+    - Restart Auk if needed
+  </Accordion>
+
+  <Accordion title="Resolved conflict reappears">
+    **Symptoms:** Same conflict appears after resolution
+
+    **Solutions:**
+    - Ensure resolution was committed
+    - Check sync completed successfully
+    - Verify remote has your changes
+    - May need to force push (with caution)
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Auto Sync" href="/documentation/git-sync/auto-sync" icon="arrows-rotate">
+    Configure automatic synchronization
+  </Card>
+
+  <Card title="Troubleshooting" href="/documentation/git-sync/troubleshooting" icon="wrench">
+    Solve common Git sync issues
+  </Card>
+
+  <Card title="Best Practices" href="/guides/git-collaboration" icon="users">
+    Learn Git collaboration best practices
+  </Card>
+
+  <Card title="Workspace Organization" href="/guides/workspace-organization" icon="folder-tree">
+    Organize workspaces to prevent conflicts
+  </Card>
+</CardGroup>

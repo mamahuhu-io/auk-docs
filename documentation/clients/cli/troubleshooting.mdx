@@ -1,0 +1,47 @@
+---
+sidebarTitle: Troubleshooting
+title: Auk CLI Troubleshooting
+description:  Troubleshoot the CLI errors by understanding their meanings and possible causes.
+---
+
+Below is a set of error codes and the corresponding messages that will be displayed in the CLI under various scenarios. Understanding the reasons behind these errors will help you troubleshoot them on your end.
+
+## `TOKEN_EXPIRED`
+
+> **The specified access token is expired. Please provide a valid token.**
+
+**Reason:** The supplied access token via the `--token` flag has expired.
+
+```bash
+auk test [-e <environment-id>] <collection-id> [--token <access_token>]
+```
+
+## `TOKEN_INVALID`
+
+> **The specified access token is invalid. Please provide a valid token.**
+
+**Reason:** The specified access token via the `--token` flag is invalid or might have been deleted.
+
+```bash
+auk test [-e <environment-id>] <collection-id> [--token <access_token>]
+```
+
+## `INVALID_ID`
+
+> **The specified collection/environment (ID or file path) is invalid or inaccessible. Please ensure the supplied ID or file path is correct.**
+
+### Case I
+
+**Reason:** An invalid ID is supplied or the resource is inaccessible.
+
+```bash
+auk test [-e <invalid-env-id>] <invalid-collection-id> [--token <access_token>]
+```
+
+### Case II
+
+**Reason:** Supplied file path of the collection or environment doesn't exist.
+
+```bash
+auk test [-e <non-existent-env-file-path>] <non-existent-collection-file-path>
+```

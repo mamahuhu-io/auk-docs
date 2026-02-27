@@ -1,0 +1,511 @@
+---
+title: Git Sync Setup
+description: Configure Git synchronization for team collaboration
+---
+
+## Prerequisites
+
+Before setting up Git sync, ensure you have:
+
+<Steps>
+  <Step title="Git Installed">
+    Verify Git is installed on your system:
+    ```bash
+    git --version
+    ```
+    If not installed, download from [git-scm.com](https://git-scm.com)
+  </Step>
+
+  <Step title="Git Repository">
+    Create a repository on your preferred Git service:
+    - GitHub
+    - GitLab
+    - Gitee
+    - Self-hosted Git server
+  </Step>
+
+  <Step title="Authentication">
+    Set up SSH keys or access tokens for authentication
+  </Step>
+</Steps>
+
+## Quick Setup
+
+### For New Workspaces
+
+<Steps>
+  <Step title="Create Workspace">
+    Create a new workspace in Auk
+  </Step>
+
+  <Step title="Enable Git Sync">
+    In workspace settings, enable "Git Synchronization"
+  </Step>
+
+  <Step title="Enter Repository URL">
+    ```
+    git@github.com:username/api-collections.git
+    ```
+  </Step>
+
+  <Step title="Initial Push">
+    Auk will push your current workspace data to the repository
+  </Step>
+</Steps>
+
+### For Existing Workspaces
+
+<Steps>
+  <Step title="Open Workspace Settings">
+    Navigate to Settings → Git Sync
+  </Step>
+
+  <Step title="Initialize Git">
+    Click "Initialize Git Repository"
+  </Step>
+
+  <Step title="Add Remote">
+    Enter your remote repository URL
+  </Step>
+
+  <Step title="Push Existing Data">
+    Auk commits and pushes your existing collections
+  </Step>
+</Steps>
+
+## Repository Setup
+
+### GitHub
+
+<Tabs>
+  <Tab title="Create Repository">
+    1. Go to [github.com/new](https://github.com/new)
+    2. Enter repository name: `api-collections`
+    3. Choose **Private** (recommended for API data)
+    4. Do NOT initialize with README
+    5. Click "Create repository"
+  </Tab>
+
+  <Tab title="SSH Setup">
+    ```bash
+    # Generate SSH key
+    ssh-keygen -t ed25519 -C "your_email@example.com"
+
+    # Copy public key
+    cat ~/.ssh/id_ed25519.pub
+
+    # Add to GitHub:
+    # Settings → SSH and GPG keys → New SSH key
+    ```
+  </Tab>
+
+  <Tab title="HTTPS with Token">
+    ```bash
+    # Create Personal Access Token:
+    # Settings → Developer settings → Personal access tokens
+    # → Tokens (classic) → Generate new token
+
+    # Required scopes:
+    # - repo (full control of private repositories)
+
+    # Use token in Auk:
+    # https://TOKEN@github.com/username/api-collections.git
+    ```
+  </Tab>
+</Tabs>
+
+### GitLab
+
+<Tabs>
+  <Tab title="Create Project">
+    1. Go to GitLab → New Project
+    2. Choose "Create blank project"
+    3. Enter project name: `api-collections`
+    4. Set visibility to **Private**
+    5. Uncheck "Initialize repository with a README"
+    6. Click "Create project"
+  </Tab>
+
+  <Tab title="SSH Setup">
+    ```bash
+    # Generate SSH key (if not already done)
+    ssh-keygen -t ed25519 -C "your_email@example.com"
+
+    # Copy public key
+    cat ~/.ssh/id_ed25519.pub
+
+    # Add to GitLab:
+    # Preferences → SSH Keys → Add new key
+    ```
+  </Tab>
+
+  <Tab title="Deploy Token">
+    ```bash
+    # Create Deploy Token:
+    # Project → Settings → Repository → Deploy tokens
+
+    # Scopes:
+    # - read_repository
+    # - write_repository
+
+    # Use in Auk:
+    # https://USERNAME:TOKEN@gitlab.com/username/api-collections.git
+    ```
+  </Tab>
+</Tabs>
+
+### Gitee (码云)
+
+<Tabs>
+  <Tab title="创建仓库">
+    1. 访问 [gitee.com](https://gitee.com)
+    2. 点击 "+" → "新建仓库"
+    3. 输入仓库名称：`api-collections`
+    4. 选择 **私有**
+    5. 不要初始化 README
+    6. 点击 "创建"
+  </Tab>
+
+  <Tab title="SSH 配置">
+    ```bash
+    # 生成 SSH 密钥
+    ssh-keygen -t ed25519 -C "your_email@example.com"
+
+    # 复制公钥
+    cat ~/.ssh/id_ed25519.pub
+
+    # 添加到 Gitee：
+    # 设置 → SSH 公钥 → 添加公钥
+    ```
+  </Tab>
+</Tabs>
+
+## Authentication Methods
+
+### SSH Keys (Recommended)
+
+Most secure and convenient method:
+
+<Steps>
+  <Step title="Generate SSH Key">
+    ```bash
+    ssh-keygen -t ed25519 -C "your_email@example.com"
+    ```
+    Press Enter to accept default location
+  </Step>
+
+  <Step title="Start SSH Agent">
+    ```bash
+    eval "$(ssh-agent -s)"
+    ssh-add ~/.ssh/id_ed25519
+    ```
+  </Step>
+
+  <Step title="Copy Public Key">
+    ```bash
+    # macOS
+    pbcopy < ~/.ssh/id_ed25519.pub
+
+    # Linux
+    xclip -sel clip < ~/.ssh/id_ed25519.pub
+
+    # Windows (Git Bash)
+    cat ~/.ssh/id_ed25519.pub | clip
+    ```
+  </Step>
+
+  <Step title="Add to Git Service">
+    Add the public key to your Git service (GitHub/GitLab/etc.)
+  </Step>
+
+  <Step title="Test Connection">
+    ```bash
+    # GitHub
+    ssh -T git@github.com
+
+    # GitLab
+    ssh -T git@gitlab.com
+
+    # Gitee
+    ssh -T git@gitee.com
+    ```
+  </Step>
+</Steps>
+
+### HTTPS with Personal Access Token
+
+Alternative method using HTTPS:
+
+<Steps>
+  <Step title="Generate Token">
+    Create a personal access token in your Git service settings
+  </Step>
+
+  <Step title="Required Permissions">
+    - **GitHub**: `repo` scope
+    - **GitLab**: `read_repository`, `write_repository`
+    - **Gitee**: `projects` scope
+  </Step>
+
+  <Step title="Use in Auk">
+    Enter repository URL with token:
+    ```
+    https://TOKEN@github.com/username/api-collections.git
+    ```
+  </Step>
+</Steps>
+
+<Warning>
+  Store tokens securely. Never commit tokens to Git or share them publicly.
+</Warning>
+
+## Initial Configuration
+
+### Configure Git User
+
+Set your Git identity:
+
+```bash
+git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"
+```
+
+### Configure Auk Git Settings
+
+In Auk workspace settings:
+
+```json
+{
+  "git": {
+    "enabled": true,
+    "remoteUrl": "git@github.com:username/api-collections.git",
+    "branch": "main",
+    "autoSync": true,
+    "syncInterval": 900,
+    "autoCommit": true,
+    "conflictResolution": "prompt"
+  }
+}
+```
+
+## Sync Strategies
+
+### Automatic Sync
+
+Enable automatic synchronization:
+
+<ParamField path="autoSync" type="boolean" default="false">
+  Automatically sync at regular intervals
+</ParamField>
+
+<ParamField path="syncInterval" type="number" default="900">
+  Sync interval in seconds
+
+  **Recommended values:**
+  - `300` (5 min) - Active team collaboration
+  - `900` (15 min) - Balanced (default)
+  - `3600` (1 hour) - Less frequent updates
+</ParamField>
+
+### Manual Sync
+
+Trigger sync manually when needed:
+
+- Click sync button in workspace toolbar
+- Use keyboard shortcut: `Cmd/Ctrl + Shift + S`
+- Before switching workspaces
+- After completing a feature
+
+## Branch Strategy
+
+### Single Branch (Simple)
+
+Use one branch for all work:
+
+```
+main
+  ↓
+All team members work here
+```
+
+**Best for:**
+- Small teams
+- Simple workflows
+- Quick collaboration
+
+### Feature Branches
+
+Create branches for features:
+
+```
+main
+  ├── feature/auth-endpoints
+  ├── feature/payment-api
+  └── feature/user-management
+```
+
+**Best for:**
+- Larger teams
+- Complex changes
+- Code review workflows
+
+### Environment Branches
+
+Separate branches per environment:
+
+```
+production
+  ↓
+staging
+  ↓
+development
+```
+
+**Best for:**
+- Multiple environments
+- Staged deployments
+- Testing workflows
+
+## First Sync
+
+### Push Existing Data
+
+If you have existing collections:
+
+<Steps>
+  <Step title="Auk Creates Initial Commit">
+    ```
+    Initial commit: Add existing collections
+
+    - 5 collections
+    - 3 environments
+    - Workspace settings
+    ```
+  </Step>
+
+  <Step title="Push to Remote">
+    Auk pushes the commit to your remote repository
+  </Step>
+
+  <Step title="Verify">
+    Check your Git service to confirm data is uploaded
+  </Step>
+</Steps>
+
+### Clone Existing Repository
+
+If joining an existing team:
+
+<Steps>
+  <Step title="Create Workspace">
+    Choose "Clone from Git" when creating workspace
+  </Step>
+
+  <Step title="Enter Repository URL">
+    ```
+    git@github.com:team/api-collections.git
+    ```
+  </Step>
+
+  <Step title="Clone and Open">
+    Auk clones the repository and opens the workspace
+  </Step>
+</Steps>
+
+## Verification
+
+### Check Git Status
+
+Verify Git is working correctly:
+
+```bash
+# Navigate to workspace directory
+cd ~/Library/Application\ Support/Auk/workspaces/my-workspace
+
+# Check Git status
+git status
+
+# View commit history
+git log --oneline
+
+# Check remote
+git remote -v
+```
+
+### Test Sync
+
+Make a small change and verify sync:
+
+1. Create a new collection or request
+2. Wait for auto-sync or trigger manual sync
+3. Check Git service for new commit
+4. Verify changes appear for team members
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Authentication failed">
+    **Symptoms:** Cannot push/pull, authentication errors
+
+    **Solutions:**
+    - Verify SSH key is added to Git service
+    - Test SSH connection: `ssh -T git@github.com`
+    - Check token has correct permissions
+    - Regenerate SSH key or token if needed
+  </Accordion>
+
+  <Accordion title="Permission denied">
+    **Symptoms:** "Permission denied (publickey)" error
+
+    **Solutions:**
+    ```bash
+    # Check SSH agent is running
+    eval "$(ssh-agent -s)"
+
+    # Add SSH key
+    ssh-add ~/.ssh/id_ed25519
+
+    # Verify key is loaded
+    ssh-add -l
+    ```
+  </Accordion>
+
+  <Accordion title="Repository not found">
+    **Symptoms:** "Repository not found" or 404 error
+
+    **Solutions:**
+    - Verify repository URL is correct
+    - Check you have access to the repository
+    - Ensure repository exists on Git service
+    - Try cloning manually to test access
+  </Accordion>
+
+  <Accordion title="Sync fails with conflicts">
+    **Symptoms:** Sync stops with merge conflict
+
+    **Solutions:**
+    - See [Conflict Resolution](/documentation/git-sync/conflict-resolution)
+    - Pull latest changes first
+    - Resolve conflicts manually if needed
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Auto Sync" href="/documentation/git-sync/auto-sync" icon="arrows-rotate">
+    Configure automatic synchronization
+  </Card>
+
+  <Card title="Conflict Resolution" href="/documentation/git-sync/conflict-resolution" icon="code-merge">
+    Learn how to handle merge conflicts
+  </Card>
+
+  <Card title="Authentication" href="/documentation/git-sync/authentication" icon="key">
+    Advanced authentication options
+  </Card>
+
+  <Card title="Troubleshooting" href="/documentation/git-sync/troubleshooting" icon="wrench">
+    Common issues and solutions
+  </Card>
+</CardGroup>

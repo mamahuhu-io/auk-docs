@@ -1,0 +1,265 @@
+---
+sidebarTitle: Quick Start
+title: Quick Start Guide
+description: Get up and running with Auk in 5 minutes
+---
+
+## Overview
+
+This guide will help you get started with Auk quickly. You'll learn how to:
+
+1. Install Auk
+2. Create your first workspace
+3. Send your first API request
+4. Save requests to collections
+5. Use environment variables
+
+**Time Required:** 5-10 minutes
+
+## Step 1: Install Auk
+
+Download and install Auk for your operating system:
+
+<CardGroup cols={3}>
+  <Card title="macOS" icon="apple" href="/documentation/getting-started/installation#macos">
+    Download for Mac
+  </Card>
+  <Card title="Windows" icon="windows" href="/documentation/getting-started/installation#windows">
+    Download for Windows
+  </Card>
+  <Card title="Linux" icon="linux" href="/documentation/getting-started/installation#linux">
+    Download for Linux
+  </Card>
+</CardGroup>
+
+[View detailed installation instructions](/documentation/getting-started/installation)
+
+## Step 2: Create Your First Workspace
+
+When you first launch Auk, you'll see the workspace creation wizard.
+
+<Steps>
+  <Step title="Enter Workspace Name">
+    Give your workspace a name, like "My APIs" or "Personal Projects"
+  </Step>
+
+  <Step title="Choose Storage Location">
+    Select where to store your data. Default: `~/Documents/Auk/my-workspace`
+  </Step>
+
+  <Step title="Skip Git Setup (For Now)">
+    Click "Skip" - you can configure Git sync later
+  </Step>
+
+  <Step title="Complete">
+    Click "Create Workspace" to finish
+  </Step>
+</Steps>
+
+Your workspace is now ready!
+
+## Step 3: Send Your First Request
+
+Let's send a simple API request:
+
+<Steps>
+  <Step title="Enter URL">
+    In the URL bar, enter: `https://jsonplaceholder.typicode.com/users/1`
+  </Step>
+
+  <Step title="Select Method">
+    Make sure "GET" is selected (it's the default)
+  </Step>
+
+  <Step title="Click Send">
+    Click the "Send" button or press `Cmd/Ctrl + Enter`
+  </Step>
+
+  <Step title="View Response">
+    You'll see the response in the panel below:
+    ```json
+    {
+      "id": 1,
+      "name": "Leanne Graham",
+      "username": "Bret",
+      "email": "Sincere@april.biz",
+      ...
+    }
+    ```
+  </Step>
+</Steps>
+
+Congratulations! You've sent your first API request with Auk.
+
+## Step 4: Save to Collection
+
+Now let's save this request for later use:
+
+<Steps>
+  <Step title="Click Save">
+    Click the "Save" button in the top right
+  </Step>
+
+  <Step title="Name Your Request">
+    Enter a name: "Get User"
+  </Step>
+
+  <Step title="Create Collection">
+    Click "New Collection" and name it "JSONPlaceholder API"
+  </Step>
+
+  <Step title="Save">
+    Click "Save" to complete
+  </Step>
+</Steps>
+
+Your request is now saved in the "JSONPlaceholder API" collection.
+
+## Step 5: Use Environment Variables
+
+Let's make the request more flexible with variables:
+
+<Steps>
+  <Step title="Create Environment">
+    1. Click "Environments" in the sidebar
+    2. Click "Add new"
+    3. Name it "Development"
+    4. Click "Create"
+  </Step>
+
+  <Step title="Add Variables">
+    Add these variables:
+    - `baseUrl` = `https://jsonplaceholder.typicode.com`
+    - `userId` = `1`
+  </Step>
+
+  <Step title="Update Request">
+    Change the URL to: `<<baseUrl>>/users/<<userId>>`
+  </Step>
+
+  <Step title="Send Request">
+    Click "Send" - it works the same way!
+  </Step>
+</Steps>
+
+Now you can easily change the base URL or user ID by updating the environment variables.
+
+## What's Next?
+
+You've learned the basics! Here are some next steps:
+
+<CardGroup cols={2}>
+  <Card title="Explore Features" icon="compass" href="/documentation/features/collections">
+    Learn about collections, environments, and more
+  </Card>
+
+  <Card title="Setup Git Sync" icon="code-branch" href="/documentation/getting-started/git-setup">
+    Configure Git for team collaboration
+  </Card>
+
+  <Card title="Import Data" icon="file-import" href="/documentation/features/importer">
+    Import from Postman, Insomnia, or OpenAPI
+  </Card>
+
+  <Card title="Best Practices" icon="lightbulb" href="/guides/local-first-workflow">
+    Learn local-first workflow best practices
+  </Card>
+</CardGroup>
+
+## Common Tasks
+
+### Send a POST Request
+
+1. Change method to "POST"
+2. Enter URL: `<<baseUrl>>/users`
+3. Click "Body" tab
+4. Select "JSON"
+5. Enter body:
+   ```json
+   {
+     "name": "John Doe",
+     "email": "john@example.com"
+   }
+   ```
+6. Click "Send"
+
+### Add Headers
+
+1. Click "Headers" tab
+2. Click "Add new"
+3. Enter key: `Authorization`
+4. Enter value: `Bearer <<token>>`
+5. Click "Send"
+
+### Add Query Parameters
+
+1. Click "Params" tab
+2. Click "Add new"
+3. Enter key: `page`
+4. Enter value: `1`
+5. URL automatically updates: `?page=1`
+6. Click "Send"
+
+## Keyboard Shortcuts
+
+Speed up your workflow with these shortcuts:
+
+| Action | macOS | Windows/Linux |
+|--------|-------|---------------|
+| Send request | `Cmd + Enter` | `Ctrl + Enter` |
+| Save request | `Cmd + S` | `Ctrl + S` |
+| New request | `Cmd + N` | `Ctrl + N` |
+| Focus URL | `Cmd + L` | `Ctrl + L` |
+| Switch workspace | `Cmd + Shift + W` | `Ctrl + Shift + W` |
+
+[View all keyboard shortcuts](/documentation/features/shortcuts)
+
+## Getting Help
+
+Need more help?
+
+<CardGroup cols={2}>
+  <Card title="Documentation" icon="book" href="/documentation/getting-started/introduction">
+    Browse complete documentation
+  </Card>
+
+  <Card title="Troubleshooting" icon="wrench" href="/documentation/getting-started/troubleshooting">
+    Common issues and solutions
+  </Card>
+
+  <Card title="GitHub Issues" icon="github" href="https://github.com/mamahuhu-io/auk/issues">
+    Report bugs or request features
+  </Card>
+
+  <Card title="Community" icon="users" href="https://github.com/mamahuhu-io/auk/discussions">
+    Join discussions
+  </Card>
+</CardGroup>
+
+## What Makes Auk Different?
+
+As you use Auk, you'll notice some key differences from cloud-based tools:
+
+**Local-First:**
+- All data stored on your device
+- Works completely offline
+- Instant response times
+- No network latency
+
+**Git-Based Collaboration:**
+- Use Git for team sync
+- Standard Git workflows
+- Version control built-in
+- No cloud dependency
+
+**Privacy & Control:**
+- You own your data
+- No cloud service required
+- Choose where data lives
+- Complete control
+
+[Learn more about local-first architecture](/documentation/concepts/local-first)
+
+---
+
+**Ready to dive deeper?** Check out the [complete documentation](/documentation/getting-started/introduction) or start [migrating from another tool](/guides/migration/from-postman).

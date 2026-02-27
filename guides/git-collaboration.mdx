@@ -1,0 +1,397 @@
+---
+title: Git Collaboration
+description: Best practices for team collaboration using Git
+---
+
+## Team Collaboration with Git
+
+Auk uses Git for team collaboration, providing version control, conflict resolution, and distributed workflows.
+
+<CardGroup cols={2}>
+  <Card title="Version Control" icon="clock-rotate-left">
+    Complete history of all changes
+  </Card>
+
+  <Card title="Distributed" icon="network-wired">
+    Each team member has full copy
+  </Card>
+
+  <Card title="Conflict Resolution" icon="code-merge">
+    Built-in conflict handling
+  </Card>
+
+  <Card title="Standard Workflows" icon="diagram-project">
+    Use familiar Git workflows
+  </Card>
+</CardGroup>
+
+## Team Setup
+
+### Initial Setup
+
+<Steps>
+  <Step title="Create Shared Repository">
+    One team member creates a Git repository:
+    ```bash
+    # On GitHub/GitLab
+    # Create new repository: team-api-collections
+    ```
+  </Step>
+
+  <Step title="Push Initial Data">
+    Push existing collections to repository:
+    ```bash
+    # In Auk workspace settings
+    # Enable Git Sync
+    # Enter repository URL
+    # Initial push happens automatically
+    ```
+  </Step>
+
+  <Step title="Team Members Clone">
+    Other team members clone the repository:
+    ```bash
+    # In Auk
+    # Create New Workspace → Clone from Git
+    # Enter repository URL
+    ```
+  </Step>
+
+  <Step title="Configure Sync">
+    Each team member configures auto-sync:
+    ```json
+    {
+      "git": {
+        "autoSync": true,
+        "syncInterval": 900
+      }
+    }
+    ```
+  </Step>
+</Steps>
+
+## Collaboration Patterns
+
+### Small Team (2-5 people)
+
+**Strategy:** Single branch, frequent syncing
+
+```json
+{
+  "git": {
+    "autoSync": true,
+    "syncInterval": 300,
+    "conflictResolution": "smartMerge"
+  }
+}
+```
+
+**Best practices:**
+- Sync every 5-15 minutes
+- Communicate before major changes
+- Use smart merge for conflicts
+- Keep collections organized
+
+### Large Team (5+ people)
+
+**Strategy:** Feature branches, code review
+
+```bash
+# Create feature branch
+git checkout -b feature/payment-api
+
+# Work on changes
+# ...
+
+# Push feature branch
+git push origin feature/payment-api
+
+# Create pull request for review
+```
+
+**Best practices:**
+- Use feature branches
+- Require pull request reviews
+- Assign collection ownership
+- Document changes
+
+## Avoiding Conflicts
+
+### Communication
+
+<AccordionGroup>
+  <Accordion title="Announce Major Changes">
+    Before making significant changes:
+    - Notify team in chat
+    - Create feature branch
+    - Coordinate timing
+  </Accordion>
+
+  <Accordion title="Assign Ownership">
+    Divide collections by ownership:
+    ```
+    collections/
+    ├── auth/           # Alice owns
+    ├── users/          # Bob owns
+    └── payments/       # Carol owns
+    ```
+  </Accordion>
+
+  <Accordion title="Sync Frequently">
+    Reduce conflicts by syncing often:
+    - Pull before starting work
+    - Push after completing features
+    - Sync before meetings
+  </Accordion>
+</AccordionGroup>
+
+### Division of Work
+
+<Tabs>
+  <Tab title="By Feature">
+    ```
+    collections/
+    ├── authentication/
+    ├── user-management/
+    └── payment-processing/
+    ```
+    Each team member owns a feature area
+  </Tab>
+
+  <Tab title="By Service">
+    ```
+    collections/
+    ├── backend-api/
+    ├── frontend-api/
+    └── mobile-api/
+    ```
+    Each team member owns a service
+  </Tab>
+
+  <Tab title="By Environment">
+    ```
+    workspaces/
+    ├── development/
+    ├── staging/
+    └── production/
+    ```
+    Different team members manage different environments
+  </Tab>
+</Tabs>
+
+## Workflow Examples
+
+### Feature Development
+
+<Steps>
+  <Step title="Create Branch">
+    ```bash
+    git checkout -b feature/new-endpoints
+    ```
+  </Step>
+
+  <Step title="Develop Feature">
+    Add new endpoints and test them in Auk
+  </Step>
+
+  <Step title="Commit Changes">
+    Changes auto-committed by Auk
+  </Step>
+
+  <Step title="Push and Review">
+    ```bash
+    git push origin feature/new-endpoints
+    # Create pull request on GitHub/GitLab
+    ```
+  </Step>
+
+  <Step title="Merge">
+    After review, merge to main branch
+  </Step>
+</Steps>
+
+### Hotfix Workflow
+
+For urgent fixes:
+
+<Steps>
+  <Step title="Create Hotfix Branch">
+    ```bash
+    git checkout -b hotfix/critical-bug
+    ```
+  </Step>
+
+  <Step title="Fix Issue">
+    Make necessary changes in Auk
+  </Step>
+
+  <Step title="Test">
+    Verify fix works correctly
+  </Step>
+
+  <Step title="Fast-Track Merge">
+    ```bash
+    git push origin hotfix/critical-bug
+    # Quick review and merge
+    ```
+  </Step>
+</Steps>
+
+## Code Review Process
+
+### Pull Request Checklist
+
+Before creating PR:
+
+- [ ] All tests pass
+- [ ] Collections are organized
+- [ ] Environment variables documented
+- [ ] No sensitive data committed
+- [ ] Descriptive commit messages
+
+### Review Guidelines
+
+When reviewing:
+
+- Check request organization
+- Verify environment variables
+- Test endpoints if possible
+- Look for sensitive data
+- Provide constructive feedback
+
+## Team Communication
+
+### Daily Standup
+
+Share during standup:
+- What collections you're working on
+- Any conflicts encountered
+- Planned major changes
+- Sync status
+
+### Documentation
+
+Maintain team documentation:
+
+```markdown
+# Team API Collections
+
+## Current Work
+- Alice: Authentication endpoints
+- Bob: User management
+- Carol: Payment processing
+
+## Conventions
+- Use `{{baseUrl}}` for all endpoints
+- Mark secrets as secret variables
+- Sync before end of day
+
+## Contacts
+- Questions: #api-testing channel
+- Issues: GitHub Issues
+```
+
+## Handling Conflicts
+
+### Prevention
+
+- Sync frequently (every 5-15 min)
+- Communicate before major changes
+- Use feature branches
+- Assign clear ownership
+
+### Resolution
+
+When conflicts occur:
+
+1. **Don't Panic** - Conflicts are normal
+2. **Review Changes** - Understand both versions
+3. **Choose Strategy** - Smart merge, keep local, or use remote
+4. **Test Result** - Verify merged version works
+5. **Communicate** - Inform team of resolution
+
+See [Conflict Resolution](/documentation/git-sync/conflict-resolution) for details.
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Sync Before Meetings">
+    Always sync before team meetings:
+    - Ensures everyone has latest changes
+    - Reduces meeting time spent on sync issues
+    - Shows current state of work
+  </Accordion>
+
+  <Accordion title="Use Descriptive Commits">
+    Auk generates commit messages, but you can customize:
+    ```json
+    {
+      "git": {
+        "commitMessageTemplate": "[{{collection}}] {{description}}"
+      }
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Regular Cleanup">
+    Keep repository clean:
+    - Delete merged branches
+    - Archive old collections
+    - Remove unused environments
+  </Accordion>
+
+  <Accordion title="Backup Strategy">
+    Multiple backups:
+    - Git remote (primary)
+    - Local backups (secondary)
+    - External drive (tertiary)
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Frequent conflicts">
+    **Solutions:**
+    - Reduce sync interval
+    - Better communication
+    - Split collections by ownership
+    - Use feature branches
+  </Accordion>
+
+  <Accordion title="Sync takes too long">
+    **Solutions:**
+    - Split large collections
+    - Increase sync interval
+    - Use shallow clone
+    - Check network speed
+  </Accordion>
+
+  <Accordion title="Team member can't sync">
+    **Solutions:**
+    - Verify Git credentials
+    - Check repository access
+    - Test SSH/HTTPS connection
+    - Review sync logs
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Conflict Resolution" href="/documentation/git-sync/conflict-resolution" icon="code-merge">
+    Handle merge conflicts
+  </Card>
+
+  <Card title="Git Sync Setup" href="/documentation/git-sync/setup" icon="rocket">
+    Configure Git synchronization
+  </Card>
+
+  <Card title="Workspace Organization" href="/guides/workspace-organization" icon="folder-tree">
+    Organize team workspaces
+  </Card>
+
+  <Card title="Local-First Workflow" href="/guides/local-first-workflow" icon="house">
+    Local-first best practices
+  </Card>
+</CardGroup>

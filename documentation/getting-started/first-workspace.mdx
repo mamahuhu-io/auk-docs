@@ -1,0 +1,353 @@
+---
+sidebarTitle: First Workspace
+title: Create Your First Workspace
+description: Quickly create and configure your first workspace
+---
+
+## What is a Workspace?
+
+A workspace is an independent space in Auk for organizing API collections and environments. Each workspace:
+
+- Has its own local storage directory
+- Can configure its own Git repository
+- Data is completely isolated
+- Can be quickly switched
+
+## First Launch
+
+When you first launch Auk, the workspace creation wizard will appear automatically.
+
+<Steps>
+  <Step title="Welcome Screen">
+    Read the welcome message and click "Get Started"
+  </Step>
+
+  <Step title="Create Workspace">
+    Enter workspace name and storage location
+  </Step>
+
+  <Step title="Configure Git (Optional)">
+    Can skip and configure later
+  </Step>
+
+  <Step title="Complete">
+    Start using Auk
+  </Step>
+</Steps>
+
+## Workspace Creation Steps
+
+### 1. Enter Workspace Name
+
+Choose a meaningful name for your workspace:
+
+<CodeGroup>
+```text Personal Projects
+Personal APIs
+```
+
+```text Work Projects
+Company APIs
+```
+
+```text Client Projects
+Client-X APIs
+```
+</CodeGroup>
+
+<Tip>
+  Use descriptive names for easy identification and management.
+</Tip>
+
+### 2. Choose Storage Location
+
+Choose where to store workspace data:
+
+**Recommended Locations:**
+
+<Tabs>
+  <Tab title="macOS">
+    ```bash
+    ~/Documents/Auk/personal
+    ~/Documents/Auk/work
+    ~/Documents/Auk/client-x
+    ```
+  </Tab>
+
+  <Tab title="Windows">
+    ```bash
+    C:\Users\YourName\Documents\Auk\personal
+    C:\Users\YourName\Documents\Auk\work
+    C:\Users\YourName\Documents\Auk\client-x
+    ```
+  </Tab>
+
+  <Tab title="Linux">
+    ```bash
+    ~/Documents/Auk/personal
+    ~/Documents/Auk/work
+    ~/Documents/Auk/client-x
+    ```
+  </Tab>
+</Tabs>
+
+<Note>
+  Storage location can be any local directory. Choose a location that's easy to access and backup.
+</Note>
+
+### 3. Configure Git (Optional)
+
+If you need team collaboration or backup, configure Git sync:
+
+<AccordionGroup>
+  <Accordion title="Configure Now">
+    1. Select "Enable Git Sync"
+    2. Enter Git repository URL
+    3. Choose authentication method (SSH/HTTPS)
+    4. Test connection
+
+    For detailed steps, see [Git Setup Guide](/documentation/getting-started/git-setup)
+  </Accordion>
+
+  <Accordion title="Configure Later">
+    Click "Skip" and configure Git anytime in workspace settings.
+  </Accordion>
+</AccordionGroup>
+
+### 4. Complete Creation
+
+Click "Create Workspace", Auk will:
+
+1. Create storage directory
+2. Initialize workspace configuration
+3. (If enabled) Initialize Git repository
+4. Open workspace
+
+## Workspace Structure
+
+After creation, the workspace directory structure is:
+
+```
+workspace-name/
+├── .git/                    # Git repository (if enabled)
+├── collections/             # API collections
+│   └── rest/               # REST API collections
+│       └── default.json    # Default collection
+├── environments/            # Environment variables
+│   ├── development.json    # Development
+│   ├── staging.json        # Staging
+│   └── production.json     # Production
+├── history/                 # Request history
+│   └── rest.json
+├── settings.json            # Workspace settings
+└── .gitignore              # Git ignore file (if Git enabled)
+```
+
+## Workspace Settings
+
+After creating a workspace, you can adjust settings:
+
+### Basic Settings
+
+- **Name** - Workspace display name
+- **Description** - Workspace description (optional)
+- **Storage Location** - Data storage path (cannot change)
+
+### Git Settings
+
+- **Enable Git** - Enable/disable Git sync
+- **Remote Repository** - Git repository URL
+- **Branch** - Default branch (usually main)
+- **Auto Sync** - Auto sync interval
+- **Authentication** - SSH/HTTPS/OAuth
+
+### Advanced Settings
+
+- **Default Environment** - Environment to load on startup
+- **Auto Save** - Auto save interval
+- **History Limit** - Number of history entries to keep
+
+## Switch Workspace
+
+After creating multiple workspaces, you can quickly switch:
+
+1. Click the workspace selector at the top
+
+2. Select a workspace from the list
+
+3. Auk will load that workspace's data
+
+<Tip>
+  Keyboard shortcut: `Cmd/Ctrl + Shift + W` to open workspace switcher
+</Tip>
+
+## Create More Workspaces
+
+You can create new workspaces anytime:
+
+1. Click workspace selector
+
+2. Select "New Workspace"
+
+3. Follow the wizard to complete creation
+
+### Common Workspace Organization
+
+<Tabs>
+  <Tab title="By Project">
+    ```
+    - Project A
+    - Project B
+    - Project C
+    ```
+    One workspace per project
+  </Tab>
+
+  <Tab title="By Environment">
+    ```
+    - Development
+    - Staging
+    - Production
+    ```
+    One workspace per environment
+  </Tab>
+
+  <Tab title="By Client">
+    ```
+    - Client X
+    - Client Y
+    - Internal
+    ```
+    One workspace per client
+  </Tab>
+
+  <Tab title="By Team">
+    ```
+    - Frontend Team
+    - Backend Team
+    - Mobile Team
+    ```
+    One workspace per team
+  </Tab>
+</Tabs>
+
+## Import Existing Data
+
+If you have data from other tools, you can import it:
+
+<CardGroup cols={2}>
+  <Card title="From Postman" icon="file-import">
+    Import Postman collections and environments
+
+    [View Guide](/guides/migration/from-postman)
+  </Card>
+
+  <Card title="From Insomnia" icon="file-import">
+    Import Insomnia data
+
+    [View Guide](/guides/migration/from-insomnia)
+  </Card>
+
+  <Card title="From Auk" icon="file-import">
+    Import legacy Auk cloud exports
+
+    [View Guide](/guides/migration/from-auk)
+  </Card>
+
+  <Card title="From OpenAPI" icon="file-code">
+    Import OpenAPI/Swagger specs
+
+    [View Guide](/documentation/features/importer)
+  </Card>
+</CardGroup>
+
+## Backup Workspace
+
+Workspace data is stored locally, regular backups are recommended:
+
+### Method 1: Use Git (Recommended)
+
+After configuring Git sync, data is automatically backed up to remote repository.
+
+### Method 2: Manual Backup
+
+```bash
+# Copy entire workspace directory
+cp -r ~/Documents/Auk/my-workspace ~/Backups/
+
+# Or create archive
+tar -czf my-workspace-backup.tar.gz ~/Documents/Auk/my-workspace
+```
+
+### Method 3: Use Cloud Storage
+
+Place workspace directory in cloud storage sync folder:
+
+- iCloud Drive
+- Dropbox
+- Google Drive
+- OneDrive
+
+<Warning>
+  If using cloud storage, disable Git sync to avoid conflicts.
+</Warning>
+
+## Delete Workspace
+
+If you no longer need a workspace:
+
+1. Open workspace settings
+
+2. Scroll to bottom and click "Delete Workspace"
+
+3. Confirm deletion
+
+<Warning>
+  Deleting a workspace removes all local data. If Git sync is enabled, remote data is not deleted.
+</Warning>
+
+## Troubleshooting
+
+### Cannot Create Workspace
+
+**Problem:** "Cannot create directory" error
+
+**Solution:**
+
+1. Check directory permissions
+
+2. Choose different storage location
+
+3. Ensure sufficient disk space
+
+### Workspace Data Lost
+
+**Problem:** Data disappears after switching workspace
+
+**Solution:**
+
+1. Check if workspace path is correct
+
+2. Check if data directory exists
+
+3. If Git is enabled, try restoring from remote
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Setup Git" icon="code-branch" href="/documentation/getting-started/git-setup">
+    Setup Git sync for team collaboration
+  </Card>
+
+  <Card title="Create Collection" icon="folder" href="/documentation/features/collections">
+    Create your first API collection
+  </Card>
+
+  <Card title="Configure Environments" icon="server" href="/documentation/features/environments">
+    Configure dev, staging, prod environments
+  </Card>
+
+  <Card title="Quick Start" icon="rocket" href="/documentation/getting-started/quick-start">
+    View complete quick start guide
+  </Card>
+</CardGroup>

@@ -1,0 +1,553 @@
+---
+sidebarTitle: Git Sync Introduction
+title: Git Sync Overview
+description: Version control and collaboration with Git
+---
+
+## What is Git Sync?
+
+Git Sync is Auk's approach to team collaboration and data backup. Instead of using cloud services, Auk leverages Git - the industry-standard version control system - to sync your API collections and environments.
+
+## Why Git Instead of Cloud?
+
+### Full Control
+
+**You Choose Where Data Lives:**
+- GitHub (public or private)
+- GitLab (self-hosted or cloud)
+- Bitbucket
+- Gitee (Chinese service)
+- Your own Git server
+- Company internal Git
+
+### Standard Workflows
+
+**Use Familiar Git Tools:**
+- Branches for feature development
+- Pull requests for code review
+- Merge strategies for conflict resolution
+- Tags for versioning
+- Git history for auditing
+
+### No Vendor Lock-in
+
+**Freedom to Move:**
+- Not tied to specific cloud provider
+- Easy migration between Git services
+- Standard Git format
+- Open source tools
+
+### Privacy & Security
+
+**Data Under Your Control:**
+- Choose public or private repositories
+- Self-host for complete privacy
+- Encryption at rest and in transit
+- Access control via Git permissions
+
+## How It Works
+
+### Architecture
+
+```
+┌─────────────────┐
+│  Local Auk App  │
+│                 │
+│  ┌───────────┐  │
+│  │Workspace  │  │
+│  │  Data     │  │
+│  └─────┬─────┘  │
+│        │        │
+│   ┌────▼────┐   │
+│   │Local Git│   │
+│   │  Repo   │   │
+│   └────┬────┘   │
+└────────┼────────┘
+         │
+    ┌────▼────┐
+    │ Network │
+    └────┬────┘
+         │
+┌────────▼────────┐
+│  Remote Git     │
+│  Repository     │
+│  (GitHub, etc.) │
+└────────┬────────┘
+         │
+    ┌────▼────┐
+    │ Network │
+    └────┬────┘
+         │
+┌────────▼────────┐
+│  Team Member's  │
+│  Auk App        │
+└─────────────────┘
+```
+
+### Sync Process
+
+<Steps>
+  <Step title="Local Changes">
+    You make changes to collections or environments in Auk
+  </Step>
+
+  <Step title="Auto Commit">
+    Auk automatically commits changes to local Git repository
+  </Step>
+
+  <Step title="Pull Remote">
+    Before pushing, Auk pulls latest changes from remote
+  </Step>
+
+  <Step title="Merge">
+    If there are remote changes, Auk merges them with local changes
+  </Step>
+
+  <Step title="Push">
+    Auk pushes merged changes to remote repository
+  </Step>
+
+  <Step title="Team Sync">
+    Team members pull changes and see your updates
+  </Step>
+</Steps>
+
+## Key Features
+
+### Automatic Synchronization
+
+**Set It and Forget It:**
+- Configure sync interval (5min to 60min)
+- Automatic commit of local changes
+- Automatic pull and push
+- Background operation
+
+**Manual Control:**
+- Disable auto-sync if preferred
+- Manual "Sync Now" button
+- Review changes before pushing
+- Selective syncing
+
+### Conflict Detection
+
+**Smart Conflict Handling:**
+- Detects when same file modified by multiple people
+- Shows clear conflict indicators
+- Provides resolution options
+- Preserves both versions for review
+
+**Resolution Strategies:**
+- Keep local changes
+- Use remote changes
+- Manual merge
+- Smart merge (auto-resolve when possible)
+
+### Branch Support
+
+**Git Branching:**
+- Create feature branches
+- Switch between branches
+- Merge branches
+- Delete branches
+
+**Use Cases:**
+- Experimental changes
+- Large refactoring
+- Team feature development
+- Environment-specific branches
+
+### History & Rollback
+
+**Version Control:**
+- Complete change history
+- View diffs between versions
+- Rollback to previous state
+- Blame/annotate changes
+
+**Audit Trail:**
+- Who made changes
+- When changes were made
+- What was changed
+- Why (commit messages)
+
+## Supported Git Services
+
+### GitHub
+
+**Features:**
+- Public and private repositories
+- Organization support
+- OAuth authentication
+- Pull requests
+- Actions for CI/CD
+
+**Setup:**
+```bash
+# SSH
+git@github.com:username/repo.git
+
+# HTTPS
+https://github.com/username/repo.git
+```
+
+### GitLab
+
+**Features:**
+- Self-hosted or GitLab.com
+- Built-in CI/CD
+- Container registry
+- Issue tracking
+
+**Setup:**
+```bash
+# SSH
+git@gitlab.com:username/repo.git
+
+# HTTPS
+https://gitlab.com/username/repo.git
+```
+
+### Bitbucket
+
+**Features:**
+- Atlassian integration
+- Jira integration
+- Pipelines for CI/CD
+- Code review
+
+**Setup:**
+```bash
+# SSH
+git@bitbucket.org:username/repo.git
+
+# HTTPS
+https://bitbucket.org/username/repo.git
+```
+
+### Self-Hosted Git
+
+**Options:**
+- GitLab CE (Community Edition)
+- Gitea (lightweight)
+- Gogs (simple)
+- Gitolite (minimal)
+
+**Setup:**
+```bash
+# SSH
+git@your-server.com:repo.git
+
+# HTTPS
+https://your-server.com/repo.git
+```
+
+## Authentication Methods
+
+### SSH Keys (Recommended)
+
+**Advantages:**
+- No password needed
+- More secure
+- Works with all Git services
+- Easy to manage
+
+**Setup:**
+```bash
+# Generate key
+ssh-keygen -t ed25519 -C "your_email@example.com"
+
+# Add to SSH agent
+ssh-add ~/.ssh/id_ed25519
+
+# Copy public key
+cat ~/.ssh/id_ed25519.pub
+```
+
+### HTTPS with Token
+
+**Advantages:**
+- Works through firewalls
+- No SSH setup needed
+- Easy to revoke
+
+**Setup:**
+1. Generate personal access token
+2. Use token as password
+3. Save in credential manager
+
+### OAuth (Coming Soon)
+
+**Advantages:**
+- No manual token management
+- Automatic refresh
+- Revocable access
+
+**Supported:**
+- GitHub OAuth
+- GitLab OAuth
+
+## Data Synced
+
+### Collections
+
+All API collections are synced:
+
+```
+collections/
+├── rest/
+│   ├── users-api.json
+│   ├── products-api.json
+│   └── orders-api.json
+├── graphql/
+│   └── main-api.json
+└── realtime/
+    └── websocket-api.json
+```
+
+### Environments
+
+Environment variables (except secrets):
+
+```
+environments/
+├── development.json
+├── staging.json
+└── production.json
+```
+
+<Warning>
+  Secret variables are NOT synced to Git for security. Each team member must set their own secrets.
+</Warning>
+
+### Settings
+
+Workspace settings:
+
+```
+settings.json
+```
+
+### Not Synced
+
+The following are NOT synced:
+
+- **History** - Request history stays local
+- **Secrets** - Secret environment variables
+- **Local State** - UI state, window position, etc.
+- **Cache** - Temporary data
+
+## Sync Modes
+
+### Auto Sync
+
+**Continuous Synchronization:**
+- Runs at configured interval
+- Automatic commit and push
+- Background operation
+- Minimal user interaction
+
+**Configuration:**
+```json
+{
+  "autoSync": true,
+  "syncInterval": 300,  // 5 minutes
+  "syncOnChange": true
+}
+```
+
+### Manual Sync
+
+**User-Controlled:**
+- Click "Sync Now" button
+- Keyboard shortcut: `Cmd/Ctrl + Shift + S`
+- Review changes before pushing
+- More control over timing
+
+**Use Cases:**
+- Sensitive changes
+- Large refactoring
+- Experimental work
+- Offline work
+
+### Hybrid Mode
+
+**Best of Both:**
+- Auto-commit locally
+- Manual push to remote
+- Review before sharing
+- Automatic pull from remote
+
+## Conflict Resolution
+
+### When Conflicts Occur
+
+Conflicts happen when:
+- Same file modified by multiple people
+- Changes made offline by different team members
+- Concurrent edits to same collection
+
+### Resolution Process
+
+<Steps>
+  <Step title="Conflict Detection">
+    Auk detects conflicts during sync
+  </Step>
+
+  <Step title="Notification">
+    Shows conflict notification with affected files
+  </Step>
+
+  <Step title="Review">
+    View differences between local and remote versions
+  </Step>
+
+  <Step title="Choose Strategy">
+    Select resolution method:
+    - Keep local
+    - Use remote
+    - Manual merge
+    - Smart merge
+  </Step>
+
+  <Step title="Resolve">
+    Apply chosen resolution
+  </Step>
+
+  <Step title="Verify">
+    Test resolved collections
+  </Step>
+
+  <Step title="Commit">
+    Commit resolution and push
+  </Step>
+</Steps>
+
+### Resolution Strategies
+
+**Keep Local:**
+- Use your changes
+- Discard remote changes
+- Fast and simple
+- Risk: lose team changes
+
+**Use Remote:**
+- Use team changes
+- Discard your changes
+- Fast and simple
+- Risk: lose your work
+
+**Smart Merge:**
+- Automatic merge when possible
+- Combines both changes
+- Works for non-overlapping changes
+- May still need manual review
+
+**Manual Merge:**
+- Review both versions
+- Choose what to keep
+- Edit directly if needed
+- Most control, most time
+
+## Best Practices
+
+### Commit Messages
+
+Auk auto-generates descriptive messages:
+
+```
+✅ Good (auto-generated):
+"Update users-api: Added new endpoint GET /users/:id"
+"Update development environment: Changed API_URL"
+"Add new collection: Products API"
+
+❌ Bad:
+"Update"
+"Changes"
+"WIP"
+```
+
+### Sync Frequency
+
+**Choose Based on Team Size:**
+
+| Team Size | Recommended Interval |
+|-----------|---------------------|
+| Solo | 30-60 minutes |
+| 2-5 people | 15-30 minutes |
+| 6-10 people | 5-15 minutes |
+| 10+ people | 5 minutes |
+
+### Branch Strategy
+
+**Main Branch:**
+- Stable, tested collections
+- Production-ready
+- Protected from direct pushes
+
+**Feature Branches:**
+- New API endpoints
+- Experimental changes
+- Large refactoring
+
+**Environment Branches:**
+- `dev` - Development
+- `staging` - Staging
+- `prod` - Production
+
+### Communication
+
+**Before Major Changes:**
+- Notify team
+- Create feature branch
+- Document changes
+- Request review
+
+**After Changes:**
+- Sync immediately
+- Notify team
+- Update documentation
+- Test thoroughly
+
+## Troubleshooting
+
+### Common Issues
+
+**Authentication Failed:**
+- Check SSH keys or token
+- Verify permissions
+- Test Git connection
+
+**Push Rejected:**
+- Pull latest changes first
+- Resolve conflicts
+- Try again
+
+**Slow Sync:**
+- Check network connection
+- Reduce sync frequency
+- Use shallow clone
+
+**Large Repository:**
+- Archive old collections
+- Split into multiple workspaces
+- Use Git LFS for large files
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Setup Git" icon="code-branch" href="/documentation/getting-started/git-setup">
+    Configure Git sync for your workspace
+  </Card>
+
+  <Card title="Authentication" icon="key" href="/documentation/git-sync/authentication">
+    Setup SSH keys or access tokens
+  </Card>
+
+  <Card title="Conflict Resolution" icon="code-merge" href="/documentation/git-sync/conflict-resolution">
+    Learn how to resolve conflicts
+  </Card>
+
+  <Card title="Best Practices" icon="lightbulb" href="/guides/git-collaboration">
+    Team collaboration best practices
+  </Card>
+</CardGroup>

@@ -1,0 +1,606 @@
+---
+sidebarTitle: Environments
+title: Environments
+description: Manage environment variables for different contexts and configurations
+---
+
+Environments allow you to group variables that can be referenced throughout Auk when sending requests or using scripts. They're essential for managing different configurations like development, staging, and production.
+
+## What are Environments?
+
+An environment is a set of key-value pairs that can be used across your workspace. Instead of hardcoding values in requests, you reference variables that change based on the active environment.
+
+**Example:**
+
+```
+Development Environment:
+- API_URL = http://localhost:3000
+- API_KEY = dev_key_123
+
+Production Environment:
+- API_URL = https://api.example.com
+- API_KEY = prod_key_xyz
+```
+
+**Request URL:**
+```
+<<API_URL>>/users
+```
+
+When you switch environments, the same request automatically uses different values.
+
+## Types of Environments
+
+### Global Environment
+
+Variables accessible from any workspace:
+
+- **Scope:** All workspaces
+- **Use Case:** Common values used everywhere
+- **Examples:** Default timeouts, common headers
+- **Storage:** Stored in app settings, not workspace
+
+**When to Use:**
+- Values that never change across projects
+- Personal preferences
+- System-wide defaults
+
+### Workspace Environments
+
+Variables specific to a workspace:
+
+- **Scope:** Current workspace only
+- **Use Case:** Project-specific configurations
+- **Examples:** API URLs, authentication tokens
+- **Storage:** Stored in workspace directory
+- **Git Sync:** Synced to Git repository (except secrets)
+
+**When to Use:**
+- Project-specific values
+- Environment-specific configurations
+- Team-shared variables
+
+## Types of Variables
+
+### Regular Variables
+
+Standard variables visible to everyone:
+
+- **Visibility:** Visible in UI
+- **Git Sync:** Synced to repository
+- **Use Case:** Non-sensitive configuration
+- **Examples:** URLs, timeouts, feature flags
+
+**Example:**
+```json
+{
+  "API_URL": "https://api.example.com",
+  "API_VERSION": "v1",
+  "TIMEOUT": "30000"
+}
+```
+
+### Secret Variables
+
+Sensitive variables that are never synced:
+
+- **Visibility:** Masked with asterisks (***)
+- **Git Sync:** Never synced to repository
+- **Use Case:** Sensitive data
+- **Examples:** API keys, passwords, tokens
+
+**Example:**
+```json
+{
+  "API_KEY": "***",
+  "DB_PASSWORD": "***",
+  "AUTH_TOKEN": "***"
+}
+```
+
+<Warning>
+  Secret variables are stored locally only. Each team member must set their own secret values. They are never committed to Git.
+</Warning>
+
+## Variable Values
+
+Each variable can have two types of values:
+
+### Initial Value
+
+- The default value when environment is created
+- Used when environment is first loaded
+- Synced to Git (for regular variables)
+- Shared with team
+
+### Current Value
+
+- The active value during your session
+- Can be modified at runtime
+- Not synced to Git
+- Temporary changes
+
+**Use Case:**
+- Initial: `API_URL = https://api.example.com`
+- Current: `API_URL = http://localhost:3000` (for local testing)
+
+## Creating Environments
+
+### Create New Environment
+
+1. Click "**Environments**" icon in sidebar
+2. Click "**Add new**" button
+3. Enter environment name (e.g., "Development")
+4. Optionally add description
+5. Click "**Create**"
+
+### Add Variables
+
+1. Open the environment
+2. Click "**Add variable**"
+3. Enter key and value
+4. Choose variable type (Regular or Secret)
+5. Click "**Save**"
+
+**Example Environment:**
+
+```
+Name: Development
+Description: Local development environment
+
+Variables:
+- API_URL = http://localhost:3000 (Regular)
+- API_VERSION = v1 (Regular)
+- API_KEY = dev_key_123 (Secret)
+- DEBUG = true (Regular)
+```
+
+## Using Variables
+
+### In Requests
+
+Reference variables using double angle brackets:
+
+**URL:**
+```
+<<API_URL>>/<<API_VERSION>>/users
+```
+
+**Headers:**
+```
+Authorization: Bearer <<AUTH_TOKEN>>
+X-API-Key: <<API_KEY>>
+```
+
+**Body:**
+```json
+{
+  "apiUrl": "<<API_URL>>",
+  "version": "<<API_VERSION>>"
+}
+```
+
+**Query Parameters:**
+```
+?api_key=<<API_KEY>>&debug=<<DEBUG>>
+```
+
+### In Scripts
+
+Access variables in pre-request and test scripts:
+
+**Get Variable:**
+```javascript
+const apiUrl = pw.env.get("API_URL");
+const apiKey = pw.env.get("API_KEY");
+```
+
+**Set Variable:**
+```javascript
+pw.env.set("AUTH_TOKEN", "new_token_123");
+pw.env.set("USER_ID", "12345");
+```
+
+**Delete Variable:**
+```javascript
+pw.env.unset("TEMP_VAR");
+```
+
+**Check if Variable Exists:**
+```javascript
+if (pw.env.has("API_KEY")) {
+  // Use API key
+}
+```
+
+## Switching Environments
+
+### Active Environment
+
+Only one environment can be active at a time:
+
+1. Click environment selector in top bar
+2. Select environment from dropdown
+3. All requests now use that environment's variables
+
+**Keyboard Shortcut:**
+- `Cmd/Ctrl + E` - Open environment selector
+
+### Quick Switch
+
+Switch between frequently used environments:
+
+- Development ↔ Staging ↔ Production
+- Use keyboard shortcuts for faster switching
+- Environment indicator shows active environment
+
+## Managing Environments
+
+### Edit Environment
+
+1. Right-click on environment
+2. Select "**Edit**"
+3. Update name, description, or variables
+4. Click "**Save**"
+
+### Duplicate Environment
+
+Create a copy of an environment:
+
+1. Right-click on environment
+2. Select "**Duplicate**"
+3. A copy is created with "- Copy" suffix
+4. Rename and modify as needed
+
+<Note>
+  Secret variable values are not copied when duplicating. You must re-enter secret values in the duplicated environment.
+</Note>
+
+### Delete Environment
+
+1. Right-click on environment
+2. Select "**Delete**"
+3. Confirm deletion
+
+<Warning>
+  Deleted environments cannot be recovered unless you have Git history or backups.
+</Warning>
+
+## Environment Organization
+
+### Common Environments
+
+**By Deployment Stage:**
+```
+- Development
+- Staging
+- Production
+```
+
+**By Feature:**
+```
+- Feature-A
+- Feature-B
+- Main
+```
+
+**By Region:**
+```
+- US-East
+- US-West
+- EU-Central
+- Asia-Pacific
+```
+
+**By Client:**
+```
+- Client-A
+- Client-B
+- Internal
+```
+
+### Naming Conventions
+
+Use clear, descriptive names:
+
+```
+✅ Good:
+- "Development"
+- "Production - US"
+- "Staging - EU"
+
+❌ Bad:
+- "Env 1"
+- "Test"
+- "New Environment"
+```
+
+## Git Sync Integration
+
+### What Gets Synced
+
+**Synced to Git:**
+- Environment names and descriptions
+- Regular variable keys and values
+- Initial values
+- Environment structure
+
+**Not Synced:**
+- Secret variable values
+- Current values (temporary changes)
+- Active environment selection
+
+### Team Collaboration
+
+When working with a team:
+
+1. **Regular Variables:** Shared via Git
+   - Everyone sees same values
+   - Changes synced automatically
+   - Version controlled
+
+2. **Secret Variables:** Set individually
+   - Each team member sets their own
+   - Not shared via Git
+   - Documented in README
+
+**Example README:**
+```markdown
+## Environment Setup
+
+### Required Secret Variables
+
+Development:
+- API_KEY: Get from team lead
+- DB_PASSWORD: Use your local database password
+
+Production:
+- API_KEY: Get from AWS Secrets Manager
+- DB_PASSWORD: Get from 1Password vault
+```
+
+### Conflict Resolution
+
+If multiple team members edit the same environment:
+
+1. Auk detects conflicts during sync
+2. Shows conflict resolution dialog
+3. Choose resolution strategy
+4. Merge changes
+
+[Learn more about conflict resolution](/documentation/git-sync/conflict-resolution)
+
+## Advanced Features
+
+### Dynamic Variables
+
+Set variables dynamically in scripts:
+
+**Generate Timestamp:**
+```javascript
+const timestamp = Date.now();
+pw.env.set("TIMESTAMP", timestamp);
+```
+
+**Generate UUID:**
+```javascript
+const uuid = crypto.randomUUID();
+pw.env.set("REQUEST_ID", uuid);
+```
+
+**Extract from Response:**
+```javascript
+// In test script
+const token = pw.response.body.token;
+pw.env.set("AUTH_TOKEN", token);
+```
+
+### Variable Precedence
+
+When multiple variables have the same name:
+
+1. **Current Value** (highest priority)
+2. **Initial Value**
+3. **Collection Variable**
+4. **Global Variable** (lowest priority)
+
+**Example:**
+```
+Global: API_URL = https://api.example.com
+Environment: API_URL = http://localhost:3000
+Collection: API_URL = http://staging.example.com
+
+Active: http://localhost:3000 (Environment wins)
+```
+
+### Conditional Variables
+
+Use different values based on conditions:
+
+```javascript
+// Pre-request script
+const env = pw.env.get("ENVIRONMENT");
+
+if (env === "production") {
+  pw.env.set("API_URL", "https://api.example.com");
+} else {
+  pw.env.set("API_URL", "http://localhost:3000");
+}
+```
+
+### Variable Templates
+
+Create template environments:
+
+1. Create "Template" environment
+2. Add all required variables with placeholder values
+3. Duplicate for new environments
+4. Fill in actual values
+
+**Template Example:**
+```
+Name: Environment Template
+
+Variables:
+- API_URL = <REPLACE_WITH_URL>
+- API_KEY = <REPLACE_WITH_KEY>
+- TIMEOUT = 30000
+- DEBUG = false
+```
+
+## Import and Export
+
+### Export Environment
+
+1. Right-click on environment
+2. Select "**Export**"
+3. Choose format (JSON)
+4. Save file
+
+**Use Cases:**
+- Backup
+- Share with team (without Git)
+- Migrate to another workspace
+
+### Import Environment
+
+1. Click "**Import**" in environments section
+2. Select environment file
+3. Choose import options:
+   - Replace existing
+   - Merge with existing
+   - Create new
+4. Click "**Import**"
+
+<Warning>
+  Exported environments do not include secret variable values for security reasons.
+</Warning>
+
+## Best Practices
+
+### Security
+
+**Protect Secrets:**
+- Always use secret variables for sensitive data
+- Never commit secrets to Git
+- Document required secrets in README
+- Use password managers for team secrets
+
+**Example .gitignore:**
+```gitignore
+# Never commit these
+*.secret.json
+secrets/
+.env
+```
+
+### Organization
+
+**Consistent Structure:**
+- Use same variable names across environments
+- Document variable purposes
+- Keep environments up to date
+- Remove unused variables
+
+**Variable Naming:**
+```
+✅ Good:
+- API_URL
+- AUTH_TOKEN
+- DB_HOST
+
+❌ Bad:
+- url
+- token
+- host
+```
+
+### Documentation
+
+Document your environments:
+
+```markdown
+## Environments
+
+### Development
+- API_URL: Local development server
+- API_KEY: Development API key (get from team lead)
+- DEBUG: Enable debug logging
+
+### Production
+- API_URL: Production API server
+- API_KEY: Production API key (get from AWS Secrets Manager)
+- DEBUG: Disable debug logging
+```
+
+### Testing
+
+Test with different environments:
+
+1. Create test environment
+2. Use test data
+3. Verify requests work
+4. Switch to production when ready
+
+## Troubleshooting
+
+### Variable Not Resolving
+
+**Problem:** `<<VARIABLE>>` appears in request instead of value
+
+**Solutions:**
+1. Check variable name spelling
+2. Verify environment is active
+3. Check variable exists in active environment
+4. Ensure no typos in angle brackets
+
+### Secret Variable Empty
+
+**Problem:** Secret variable has no value
+
+**Solutions:**
+1. Secret values are not synced - set manually
+2. Check if you're in correct environment
+3. Re-enter secret value
+4. Verify variable type is "Secret"
+
+### Environment Not Syncing
+
+**Problem:** Environment changes not appearing for team
+
+**Solutions:**
+1. Check Git sync is enabled
+2. Verify changes are committed
+3. Push changes to remote
+4. Team members need to pull changes
+5. Remember: secrets don't sync
+
+### Conflicts After Sync
+
+**Problem:** Environment conflicts after Git sync
+
+**Solutions:**
+1. Review conflict resolution dialog
+2. Choose appropriate resolution strategy
+3. Manually merge if needed
+4. Test after resolution
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Variables" icon="dollar-sign" href="/documentation/features/variables">
+    Learn more about variables
+  </Card>
+
+  <Card title="Scripts" icon="code" href="/documentation/features/scripts">
+    Use variables in scripts
+  </Card>
+
+  <Card title="Collections" icon="folder" href="/documentation/features/collections">
+    Organize requests in collections
+  </Card>
+
+  <Card title="Git Sync" icon="code-branch" href="/documentation/git-sync/introduction">
+    Sync environments with Git
+  </Card>
+</CardGroup>

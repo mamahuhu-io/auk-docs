@@ -1,0 +1,346 @@
+---
+title: Data Storage
+description: Understanding how Auk stores your data locally
+---
+
+## Local-First Architecture
+
+Auk stores all data on your local file system, giving you complete control and ownership of your API collections, environments, and history.
+
+<CardGroup cols={2}>
+  <Card title="File System Storage" icon="hard-drive">
+    All data stored as JSON files on your local disk
+  </Card>
+
+  <Card title="No Cloud Dependency" icon="cloud-slash">
+    Works completely offline, no internet required
+  </Card>
+
+  <Card title="Full Control" icon="user-shield">
+    You own and control all your data
+  </Card>
+
+  <Card title="Git-Friendly" icon="code-branch">
+    Plain text JSON files work perfectly with Git
+  </Card>
+</CardGroup>
+
+## Storage Location
+
+### Default Locations
+
+<Tabs>
+  <Tab title="macOS">
+    ```bash
+    ~/Library/Application Support/Auk/workspaces/
+    ```
+
+    Or custom location:
+    ```bash
+    ~/Documents/Auk/
+    ~/Projects/api-collections/
+    ```
+  </Tab>
+
+  <Tab title="Windows">
+    ```bash
+    C:\Users\YourName\AppData\Roaming\Auk\workspaces\
+    ```
+
+    Or custom location:
+    ```bash
+    C:\Users\YourName\Documents\Auk\
+    D:\Projects\api-collections\
+    ```
+  </Tab>
+
+  <Tab title="Linux">
+    ```bash
+    ~/.config/Auk/workspaces/
+    ```
+
+    Or custom location:
+    ```bash
+    ~/Documents/Auk/
+    ~/projects/api-collections/
+    ```
+  </Tab>
+</Tabs>
+
+## Data Structure
+
+### Workspace Directory
+
+```
+workspace-name/
+├── collections/              # API collections
+│   ├── my-api.json
+│   └── another-api.json
+├── environments/             # Environment variables
+│   ├── development.json
+│   ├── staging.json
+│   └── production.json
+├── history/                  # Request history
+│   └── 2024-02.json
+├── settings.json            # Workspace settings
+├── .git/                    # Git repository (optional)
+└── .gitignore              # Git ignore rules
+```
+
+### Collection File Format
+
+Collections are stored as JSON files:
+
+```json
+{
+  "v": 1,
+  "name": "My API Collection",
+  "folders": [
+    {
+      "name": "Authentication",
+      "requests": [
+        {
+          "name": "Login",
+          "method": "POST",
+          "endpoint": "{{baseUrl}}/auth/login",
+          "headers": [],
+          "body": {
+            "contentType": "application/json",
+            "body": "{\"email\":\"user@example.com\"}"
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Environment File Format
+
+Environments are stored as JSON files:
+
+```json
+{
+  "name": "Development",
+  "variables": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "secret": false
+    },
+    {
+      "key": "apiKey",
+      "value": "dev-key-123",
+      "secret": true
+    }
+  ]
+}
+```
+
+## Data Persistence
+
+### Automatic Saving
+
+Auk automatically saves changes:
+
+- **Immediate** - Changes saved instantly to disk
+- **Atomic** - File writes are atomic to prevent corruption
+- **Locked** - File locking prevents concurrent write conflicts
+
+### File Watching
+
+Auk monitors file changes:
+
+- Detects external modifications
+- Reloads data automatically
+- Prompts for conflict resolution if needed
+
+## Data Security
+
+### Local Security
+
+<AccordionGroup>
+  <Accordion title="File Permissions">
+    Workspace files use restrictive permissions:
+
+    ```bash
+    # macOS/Linux
+    chmod 700 ~/Library/Application Support/Auk/
+    chmod 600 ~/Library/Application Support/Auk/workspaces/*/settings.json
+    ```
+  </Accordion>
+
+  <Accordion title="Secret Variables">
+    Environment variables marked as "secret":
+
+    - Not displayed in UI by default
+    - Can be encrypted at rest (coming soon)
+    - Excluded from Git commits (if configured)
+  </Accordion>
+
+  <Accordion title="Disk Encryption">
+    Use OS-level encryption:
+
+    - **macOS**: FileVault
+    - **Windows**: BitLocker
+    - **Linux**: LUKS
+  </Accordion>
+</AccordionGroup>
+
+### Git Security
+
+When using Git sync:
+
+```gitignore
+# .gitignore template
+*.secret.json
+.env
+.env.local
+secrets/
+*.key
+*.pem
+```
+
+## Data Migration
+
+### Export Data
+
+Export workspace data:
+
+```bash
+# Entire workspace
+cp -r ~/Library/Application Support/Auk/workspaces/my-workspace ~/backup/
+
+# Specific collection
+cp ~/Library/Application Support/Auk/workspaces/my-workspace/collections/api.json ~/backup/
+```
+
+### Import Data
+
+Import from other tools:
+
+- **Postman** - Import Postman collections (v2.1)
+- **Insomnia** - Import Insomnia exports
+- **OpenAPI** - Import OpenAPI/Swagger specs
+- **Auk** - Import Auk collections
+
+## Backup Strategies
+
+### Local Backup
+
+<Tabs>
+  <Tab title="Manual Backup">
+    ```bash
+    # Create backup
+    tar -czf auk-backup-$(date +%Y%m%d).tar.gz \
+      ~/Library/Application Support/Auk/workspaces/
+
+    # Restore backup
+    tar -xzf auk-backup-20240220.tar.gz -C ~/
+    ```
+  </Tab>
+
+  <Tab title="Time Machine (macOS)">
+    ```bash
+    # Time Machine automatically backs up:
+    ~/Library/Application Support/Auk/
+
+    # Restore from Time Machine:
+    # 1. Open Time Machine
+    # 2. Navigate to Auk folder
+    # 3. Select date and restore
+    ```
+  </Tab>
+
+  <Tab title="Automated Script">
+    ```bash
+    #!/bin/bash
+    # backup-auk.sh
+
+    BACKUP_DIR=~/Backups/Auk
+    DATE=$(date +%Y%m%d-%H%M%S)
+
+    mkdir -p $BACKUP_DIR
+    tar -czf $BACKUP_DIR/auk-$DATE.tar.gz \
+      ~/Library/Application Support/Auk/workspaces/
+
+    # Keep only last 30 days
+    find $BACKUP_DIR -name "auk-*.tar.gz" -mtime +30 -delete
+    ```
+  </Tab>
+</Tabs>
+
+### Git Backup
+
+Using Git provides automatic backup:
+
+```bash
+# Every sync creates a backup on remote
+git push origin main
+
+# View history
+git log --oneline
+
+# Restore from any point
+git checkout <commit-hash>
+```
+
+## Performance Considerations
+
+### Large Collections
+
+For workspaces with many collections:
+
+- **Lazy Loading** - Collections loaded on demand
+- **Indexing** - Fast search across collections
+- **Pagination** - History paginated by month
+
+### File System Limits
+
+Be aware of file system limitations:
+
+| OS | Max Files per Directory | Max File Size |
+|----|------------------------|---------------|
+| **macOS (APFS)** | Unlimited | 8 EB |
+| **Windows (NTFS)** | 4,294,967,295 | 16 EB |
+| **Linux (ext4)** | Unlimited | 16 TB |
+
+## Data Integrity
+
+### Corruption Prevention
+
+Auk prevents data corruption:
+
+- **Atomic Writes** - Files written atomically
+- **Validation** - JSON schema validation
+- **Checksums** - File integrity checks
+- **Backups** - Automatic backup before writes
+
+### Recovery
+
+If data corruption occurs:
+
+1. **Auto-Recovery** - Auk attempts automatic recovery
+2. **Backup Restore** - Restore from local backup
+3. **Git Restore** - Restore from Git history
+4. **Manual Edit** - Edit JSON files directly
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="File System Storage" href="/documentation/storage/file-system" icon="folder">
+    Deep dive into file system storage
+  </Card>
+
+  <Card title="Data Location" href="/documentation/storage/data-location" icon="map-pin">
+    Find and manage your data files
+  </Card>
+
+  <Card title="Backup & Restore" href="/documentation/storage/backup-restore" icon="clock-rotate-left">
+    Learn backup and recovery strategies
+  </Card>
+
+  <Card title="Git Sync" href="/documentation/git-sync/introduction" icon="code-branch">
+    Use Git for backup and collaboration
+  </Card>
+</CardGroup>

@@ -1,0 +1,246 @@
+---
+title: Offline Usage
+description: Master working with Auk completely offline
+---
+
+## Offline Capabilities
+
+Auk is designed to work perfectly offline. All core features are available without internet connection.
+
+<CardGroup cols={2}>
+  <Card title="Full Functionality" icon="check">
+    All features work offline
+  </Card>
+
+  <Card title="Local Storage" icon="hard-drive">
+    Data stored on your device
+  </Card>
+
+  <Card title="No Sync Required" icon="wifi-slash">
+    Work without syncing
+  </Card>
+
+  <Card title="Sync When Ready" icon="arrows-rotate">
+    Sync when internet returns
+  </Card>
+</CardGroup>
+
+## What Works Offline
+
+### Fully Available
+
+Everything works without internet:
+
+- ✅ Create/edit collections
+- ✅ Add/modify requests
+- ✅ Manage environments
+- ✅ View request history
+- ✅ Run pre-request scripts
+- ✅ Execute tests
+- ✅ Import/export data
+- ✅ Keyboard shortcuts
+- ✅ All UI features
+
+### Requires Internet
+
+Only these features need internet:
+
+- ❌ Git sync (push/pull)
+- ❌ Testing remote APIs
+- ❌ OAuth authentication
+- ❌ Downloading updates
+
+## Offline Workflow
+
+### Working Offline
+
+<Steps>
+  <Step title="Continue Normally">
+    Use Auk as usual - all features available
+  </Step>
+
+  <Step title="Changes Saved Locally">
+    All changes saved to local disk immediately
+  </Step>
+
+  <Step title="Git Commits Locally">
+    If auto-commit enabled, changes committed to local Git
+  </Step>
+
+  <Step title="Sync When Online">
+    When internet returns, sync automatically resumes
+  </Step>
+</Steps>
+
+### Testing APIs Offline
+
+Test local APIs without internet:
+
+```json
+{
+  "name": "Local Development",
+  "variables": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000"
+    }
+  ]
+}
+```
+
+**Local endpoints:**
+- `http://localhost:3000`
+- `http://127.0.0.1:8080`
+- `http://192.168.1.100:3000`
+
+## Offline Scenarios
+
+### Airplane Mode
+
+Working on a flight:
+
+1. **Before Flight:**
+   - Sync latest changes
+   - Ensure all data is local
+   - Test offline access
+
+2. **During Flight:**
+   - Work normally
+   - All changes saved locally
+   - No sync attempts
+
+3. **After Landing:**
+   - Connect to internet
+   - Sync automatically resumes
+   - Changes pushed to remote
+
+### Remote Location
+
+Working with limited connectivity:
+
+```json
+{
+  "git": {
+    "autoSync": false,
+    "syncInterval": 0
+  }
+}
+```
+
+- Disable auto-sync
+- Work offline
+- Manual sync when connection available
+
+### Commute
+
+Working on train/bus:
+
+- Use mobile hotspot when needed
+- Work offline when no signal
+- Sync during stops with WiFi
+
+## Git Offline Behavior
+
+### Local Commits
+
+Git commits work offline:
+
+```bash
+# Changes committed locally
+git log --oneline
+# Shows all local commits
+
+# Push when online
+git push origin main
+```
+
+### Sync Queue
+
+When offline, syncs are queued:
+
+1. **Offline:** Sync attempts fail gracefully
+2. **Changes Queued:** Local commits accumulate
+3. **Online:** All queued changes sync automatically
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Sync Before Going Offline">
+    Always sync before disconnecting:
+    - Pull latest changes
+    - Push your changes
+    - Verify sync status
+  </Accordion>
+
+  <Accordion title="Use Local APIs">
+    Test with local servers:
+    - Docker containers
+    - Local development servers
+    - Mock APIs
+  </Accordion>
+
+  <Accordion title="Disable Auto-Sync">
+    For extended offline work:
+    ```json
+    {
+      "git": {
+        "autoSync": false
+      }
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Manual Sync When Online">
+    Sync manually when connection available:
+    - Click sync button
+    - Or `Cmd/Ctrl + Shift + S`
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Sync fails when back online">
+    **Solution:**
+    - Check internet connection
+    - Verify Git credentials
+    - Try manual sync
+    - Check sync logs
+  </Accordion>
+
+  <Accordion title="Conflicts after offline work">
+    **Solution:**
+    - Review conflicts carefully
+    - Use smart merge
+    - Communicate with team
+    - See [Conflict Resolution](/documentation/git-sync/conflict-resolution)
+  </Accordion>
+
+  <Accordion title="Cannot test remote APIs">
+    **Solution:**
+    - Use local mock servers
+    - Test with local APIs
+    - Wait for internet connection
+    - Use cached responses
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Local-First Workflow" href="/guides/local-first-workflow" icon="house">
+    Local-first best practices
+  </Card>
+
+  <Card title="Git Sync" href="/documentation/git-sync/introduction" icon="code-branch">
+    Understand Git synchronization
+  </Card>
+
+  <Card title="Data Storage" href="/documentation/concepts/data-storage" icon="database">
+    Learn about local storage
+  </Card>
+
+  <Card title="Workspace Settings" href="/documentation/workspace/settings" icon="gear">
+    Configure sync settings
+  </Card>
+</CardGroup>

@@ -1,0 +1,200 @@
+---
+title: Workspace Organization
+description: Strategies for organizing your Auk workspaces effectively
+---
+
+## Organization Strategies
+
+Choose an organization strategy that fits your workflow:
+
+<CardGroup cols={2}>
+  <Card title="By Project" icon="folder">
+    Separate workspace per project
+  </Card>
+
+  <Card title="By Client" icon="building">
+    One workspace per client
+  </Card>
+
+  <Card title="By Environment" icon="layer-group">
+    Dev, staging, production workspaces
+  </Card>
+
+  <Card title="By Team" icon="users">
+    One workspace per team
+  </Card>
+</CardGroup>
+
+## By Project
+
+Organize workspaces by project:
+
+```
+~/Auk/
+├── project-alpha/
+│   ├── collections/
+│   │   ├── backend-api.json
+│   │   └── frontend-api.json
+│   └── environments/
+│       ├── dev.json
+│       └── prod.json
+├── project-beta/
+└── project-gamma/
+```
+
+**Best for:**
+- Multiple independent projects
+- Different tech stacks
+- Separate teams per project
+
+## By Client
+
+Organize by client or customer:
+
+```
+~/Auk/
+├── client-acme/
+├── client-globex/
+├── client-initech/
+└── internal/
+```
+
+**Best for:**
+- Consulting/agency work
+- Multiple clients
+- Client-specific configurations
+
+## By Environment
+
+Separate workspaces by environment:
+
+```
+~/Auk/
+├── development/
+├── staging/
+└── production/
+```
+
+**Best for:**
+- Testing environment-specific configurations
+- Preventing accidental production changes
+- Clear environment separation
+
+## Collection Organization
+
+### Folder Structure
+
+Organize requests into logical folders:
+
+```
+User Management API
+├── Authentication
+│   ├── Login
+│   ├── Logout
+│   └── Refresh Token
+├── Users
+│   ├── List Users
+│   ├── Create User
+│   ├── Get User
+│   ├── Update User
+│   └── Delete User
+└── Roles
+    ├── List Roles
+    └── Assign Role
+```
+
+### Naming Conventions
+
+Use consistent naming:
+
+**Collections:**
+- `User Management API`
+- `Payment Processing API`
+- `Notification Service API`
+
+**Requests:**
+- `GET /users - List Users`
+- `POST /users - Create User`
+- `PUT /users/:id - Update User`
+
+## Environment Management
+
+### Environment Strategy
+
+<Tabs>
+  <Tab title="Separate Files">
+    One file per environment:
+    ```
+    environments/
+    ├── development.json
+    ├── staging.json
+    └── production.json
+    ```
+  </Tab>
+
+  <Tab title="Shared + Override">
+    Base environment + overrides:
+    ```
+    environments/
+    ├── base.json
+    ├── dev-override.json
+    └── prod-override.json
+    ```
+  </Tab>
+</Tabs>
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Use Descriptive Names">
+    Clear, descriptive names for everything:
+    - Workspaces
+    - Collections
+    - Requests
+    - Environments
+  </Accordion>
+
+  <Accordion title="Keep It Simple">
+    Don't over-organize:
+    - Start simple
+    - Add structure as needed
+    - Avoid deep nesting
+  </Accordion>
+
+  <Accordion title="Document Your Structure">
+    Add README.md to workspaces:
+    ```markdown
+    # Team API Collections
+
+    ## Structure
+    - `auth/` - Authentication endpoints
+    - `users/` - User management
+    - `payments/` - Payment processing
+
+    ## Environments
+    - `dev` - Local development
+    - `staging` - Staging server
+    - `prod` - Production (use carefully!)
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Creating Workspaces" href="/documentation/workspace/creating" icon="plus">
+    Create and configure workspaces
+  </Card>
+
+  <Card title="Git Collaboration" href="/guides/git-collaboration" icon="users">
+    Team collaboration strategies
+  </Card>
+
+  <Card title="Local-First Workflow" href="/guides/local-first-workflow" icon="house">
+    Local-first best practices
+  </Card>
+
+  <Card title="Collections" href="/documentation/features/collections" icon="folder">
+    Manage API collections
+  </Card>
+</CardGroup>

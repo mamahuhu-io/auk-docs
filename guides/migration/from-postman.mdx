@@ -1,0 +1,527 @@
+---
+sidebarTitle: From Postman
+title: Migrate from Postman
+description: Step-by-step guide to migrate from Postman to Auk
+---
+
+## Why Migrate to Auk?
+
+If you're using Postman and considering Auk, here are the key benefits:
+
+| Feature | Postman | Auk |
+|---------|---------|-----|
+| **Storage** | Cloud-based | Local-first |
+| **Privacy** | Data on Postman servers | Data on your device |
+| **Offline** | Limited functionality | Full functionality |
+| **Cost** | $12-49/user/month | Free |
+| **Collaboration** | Cloud sync | Git-based |
+| **Speed** | Network dependent | Instant |
+| **Data Control** | Postman controls | You control |
+
+## Migration Overview
+
+The migration process involves:
+
+1. Export collections from Postman
+2. Export environments from Postman
+3. Import into Auk workspace
+4. Configure Git sync (optional)
+5. Verify and test
+
+**Estimated Time:** 15-30 minutes per workspace
+
+## Step 1: Export from Postman
+
+### Export Collections
+
+<Steps>
+  <Step title="Open Postman">
+    Launch Postman desktop app or web version
+  </Step>
+
+  <Step title="Select Collection">
+    In the sidebar, find the collection you want to export
+  </Step>
+
+  <Step title="Export Collection">
+    1. Click the three dots (...) next to collection name
+    2. Select "Export"
+    3. Choose "Collection v2.1" (recommended)
+    4. Click "Export"
+    5. Save the JSON file
+  </Step>
+
+  <Step title="Repeat for All Collections">
+    Repeat for each collection you want to migrate
+  </Step>
+</Steps>
+
+<Tip>
+  Export all collections at once using Postman's bulk export feature: Settings → Data → Export Data
+</Tip>
+
+### Export Environments
+
+<Steps>
+  <Step title="Open Environments">
+    Click "Environments" in Postman sidebar
+  </Step>
+
+  <Step title="Select Environment">
+    Click on the environment you want to export
+  </Step>
+
+  <Step title="Export Environment">
+    1. Click the three dots (...) next to environment name
+    2. Select "Export"
+    3. Save the JSON file
+  </Step>
+
+  <Step title="Repeat for All Environments">
+    Export each environment separately
+  </Step>
+</Steps>
+
+<Note>
+  Postman environment exports include both initial and current values. Secret values may be masked.
+</Note>
+
+## Step 2: Prepare Auk Workspace
+
+### Create Workspace
+
+1. Launch Auk
+2. Create a new workspace or use existing one
+3. Choose appropriate storage location
+4. Optionally configure Git sync
+
+[Learn more about creating workspaces](/documentation/getting-started/first-workspace)
+
+### Organize Structure
+
+Plan your workspace structure:
+
+```
+Auk Workspace
+├── Collections/
+│   ├── API-v1/
+│   ├── API-v2/
+│   └── Internal-APIs/
+└── Environments/
+    ├── Development
+    ├── Staging
+    └── Production
+```
+
+## Step 3: Import Collections
+
+### Import Single Collection
+
+<Steps>
+  <Step title="Open Import Dialog">
+    1. Click "Collections" in Auk sidebar
+    2. Click "Import" button
+    3. Select "Postman" as import type
+  </Step>
+
+  <Step title="Select File">
+    1. Click "Choose File"
+    2. Select the exported Postman collection JSON
+    3. Click "Open"
+  </Step>
+
+  <Step title="Configure Import">
+    **Import Options:**
+    - **Destination:** Choose target folder
+    - **Conflict Resolution:**
+      - Replace existing
+      - Keep both
+      - Skip duplicates
+    - **Import Settings:**
+      - Import scripts
+      - Import tests
+      - Import documentation
+  </Step>
+
+  <Step title="Review and Import">
+    1. Review the collection structure preview
+    2. Click "Import"
+    3. Wait for import to complete
+  </Step>
+
+  <Step title="Verify Import">
+    1. Open the imported collection
+    2. Check requests are present
+    3. Verify request details (URL, headers, body)
+    4. Test a few requests
+  </Step>
+</Steps>
+
+### Import Multiple Collections
+
+For bulk import:
+
+1. Click "Import" → "Postman"
+2. Select multiple JSON files
+3. Or drag and drop multiple files
+4. Configure import options
+5. Click "Import All"
+
+<Tip>
+  Use Postman's bulk export feature to get all collections in one file, then import that single file into Auk.
+</Tip>
+
+## Step 4: Import Environments
+
+### Import Environment
+
+<Steps>
+  <Step title="Open Import Dialog">
+    1. Click "Environments" in Auk sidebar
+    2. Click "Import" button
+    3. Select "Postman" as import type
+  </Step>
+
+  <Step title="Select File">
+    Choose the exported Postman environment JSON file
+  </Step>
+
+  <Step title="Configure Import">
+    **Import Options:**
+    - **Variable Mapping:**
+      - Regular variables → Regular variables
+      - Secret variables → Secret variables
+    - **Value Selection:**
+      - Use initial values
+      - Use current values
+      - Import both
+  </Step>
+
+  <Step title="Import">
+    Click "Import" to complete
+  </Step>
+
+  <Step title="Set Secret Values">
+    1. Open the imported environment
+    2. Find secret variables (marked with ***)
+    3. Enter the actual secret values
+    4. Save environment
+  </Step>
+</Steps>
+
+<Warning>
+  Secret variable values are not exported by Postman for security. You'll need to re-enter them in Auk.
+</Warning>
+
+## Step 5: Verify Migration
+
+### Check Collections
+
+**Verify Structure:**
+- [ ] All collections imported
+- [ ] Folder hierarchy preserved
+- [ ] Request names correct
+- [ ] Request order maintained
+
+**Verify Requests:**
+- [ ] URLs correct
+- [ ] HTTP methods correct
+- [ ] Headers present
+- [ ] Request bodies intact
+- [ ] Query parameters correct
+
+**Verify Scripts:**
+- [ ] Pre-request scripts imported
+- [ ] Test scripts imported
+- [ ] Scripts syntax correct
+
+### Check Environments
+
+**Verify Variables:**
+- [ ] All variables imported
+- [ ] Variable names correct
+- [ ] Initial values correct
+- [ ] Secret variables identified
+
+**Test Variables:**
+- [ ] Variables resolve in requests
+- [ ] Environment switching works
+- [ ] Variable precedence correct
+
+### Test Requests
+
+Send test requests to verify:
+
+1. Select appropriate environment
+2. Send a few representative requests
+3. Verify responses are as expected
+4. Check authentication works
+5. Test variable substitution
+
+## Step 6: Configure Git Sync (Optional)
+
+If you want team collaboration:
+
+1. Create Git repository
+2. Configure Git sync in workspace settings
+3. Initial push of all collections
+4. Share repository with team
+
+[Learn more about Git sync](/documentation/getting-started/git-setup)
+
+## Feature Mapping
+
+### Postman Features → Auk Equivalents
+
+| Postman Feature | Auk Equivalent | Notes |
+|----------------|----------------|-------|
+| **Collections** | Collections | Direct mapping |
+| **Environments** | Environments | Direct mapping |
+| **Workspaces** | Workspaces | Local instead of cloud |
+| **Team Sync** | Git Sync | Git-based collaboration |
+| **Variables** | Variables | Same syntax `{{var}}` → `<<var>>` |
+| **Pre-request Scripts** | Pre-request Scripts | Same functionality |
+| **Tests** | Test Scripts | Same functionality |
+| **Collection Runner** | Collection Runner | Same functionality |
+| **Mock Servers** | Not available | Use local mock server |
+| **Monitors** | Not available | Use external monitoring |
+| **API Documentation** | Export to Markdown | Generate documentation |
+| **Version Control** | Git | Built-in Git integration |
+
+### Variable Syntax Change
+
+Postman uses `{{variable}}`, Auk uses `<<variable>>`:
+
+**Postman:**
+```
+{{baseUrl}}/{{apiVersion}}/users
+```
+
+**Auk:**
+```
+<<baseUrl>>/<<apiVersion>>/users
+```
+
+<Note>
+  Auk automatically converts `{{variable}}` to `<<variable>>` during import.
+</Note>
+
+### Script API Differences
+
+Most Postman scripts work in Auk with minimal changes:
+
+**Postman:**
+```javascript
+pm.environment.set("token", "value");
+pm.test("Status is 200", () => {
+  pm.response.to.have.status(200);
+});
+```
+
+**Auk:**
+```javascript
+pw.env.set("token", "value");
+pw.test("Status is 200", () => {
+  pw.expect(pw.response.status).toBe(200);
+});
+```
+
+[View complete script API reference](/documentation/features/scripts)
+
+## Common Issues and Solutions
+
+### Issue: Collections Not Importing
+
+**Problem:** Import fails with error
+
+**Solutions:**
+1. Verify JSON file is valid
+2. Check file is Postman v2.1 format
+3. Try exporting again from Postman
+4. Check file size (very large collections may timeout)
+
+### Issue: Variables Not Working
+
+**Problem:** Variables show as `<<variable>>` instead of values
+
+**Solutions:**
+1. Check environment is active
+2. Verify variable names match exactly
+3. Check variable is defined in active environment
+4. Remember: `{{var}}` → `<<var>>`
+
+### Issue: Scripts Not Working
+
+**Problem:** Pre-request or test scripts fail
+
+**Solutions:**
+1. Check script syntax
+2. Update `pm.` to `pw.`
+3. Check API differences
+4. Review error messages in console
+
+### Issue: Authentication Not Working
+
+**Problem:** Requests fail with auth errors
+
+**Solutions:**
+1. Check auth type is supported
+2. Verify credentials are correct
+3. Check auth is configured at collection level
+4. Test with simple request first
+
+### Issue: Missing Secret Values
+
+**Problem:** Secret variables are empty
+
+**Solutions:**
+1. Secret values are not exported by Postman
+2. Manually enter secret values in Auk
+3. Document secrets in README
+4. Use password manager for team secrets
+
+## Migration Checklist
+
+Use this checklist to ensure complete migration:
+
+### Pre-Migration
+
+- [ ] List all Postman workspaces to migrate
+- [ ] Identify all collections
+- [ ] Identify all environments
+- [ ] Document secret variables
+- [ ] Plan Auk workspace structure
+- [ ] Create backup of Postman data
+
+### Export Phase
+
+- [ ] Export all collections
+- [ ] Export all environments
+- [ ] Export global variables (if any)
+- [ ] Save all export files
+- [ ] Verify exports are complete
+
+### Import Phase
+
+- [ ] Create Auk workspace
+- [ ] Import all collections
+- [ ] Import all environments
+- [ ] Set secret variable values
+- [ ] Verify collection structure
+- [ ] Test sample requests
+
+### Verification Phase
+
+- [ ] All collections present
+- [ ] All requests working
+- [ ] All environments configured
+- [ ] Variables resolving correctly
+- [ ] Scripts executing properly
+- [ ] Authentication working
+
+### Post-Migration
+
+- [ ] Configure Git sync (if needed)
+- [ ] Share with team
+- [ ] Update documentation
+- [ ] Train team members
+- [ ] Archive Postman data
+
+## Team Migration Strategy
+
+### Phased Approach
+
+**Phase 1: Pilot (Week 1)**
+- Migrate one small project
+- Test with 1-2 team members
+- Identify issues
+- Refine process
+
+**Phase 2: Expansion (Week 2-3)**
+- Migrate more projects
+- Onboard more team members
+- Setup Git repositories
+- Document workflows
+
+**Phase 3: Full Migration (Week 4+)**
+- Migrate all projects
+- All team members on Auk
+- Decommission Postman
+- Monitor and support
+
+### Team Communication
+
+**Before Migration:**
+- Announce migration plan
+- Explain benefits
+- Provide training
+- Set timeline
+
+**During Migration:**
+- Daily standups
+- Slack/Teams channel for questions
+- Document issues and solutions
+- Celebrate milestones
+
+**After Migration:**
+- Gather feedback
+- Address concerns
+- Continuous improvement
+- Share success stories
+
+## Cost Savings Calculator
+
+Calculate your savings by switching from Postman to Auk:
+
+**Postman Costs:**
+```
+Team Size: 10 users
+Plan: Professional ($29/user/month)
+Annual Cost: 10 × $29 × 12 = $3,480/year
+```
+
+**Auk Costs:**
+```
+Team Size: 10 users
+Plan: Free (local-first)
+Annual Cost: $0/year
+
+Optional Git Hosting:
+- GitHub Team: $4/user/month = $480/year
+- GitLab Free: $0/year
+- Self-hosted: One-time setup cost
+
+Total Annual Cost: $0-480/year
+```
+
+**Savings: $3,000-3,480/year**
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Setup Git Sync" icon="code-branch" href="/documentation/getting-started/git-setup">
+    Configure Git for team collaboration
+  </Card>
+
+  <Card title="Best Practices" icon="lightbulb" href="/guides/local-first-workflow">
+    Learn local-first workflow
+  </Card>
+
+  <Card title="Script Migration" icon="code" href="/documentation/features/scripts">
+    Update scripts for Auk
+  </Card>
+
+  <Card title="Team Collaboration" icon="users" href="/guides/git-collaboration">
+    Git collaboration guide
+  </Card>
+</CardGroup>
+
+## Support
+
+Need help with migration?
+
+- **Documentation:** [auk.mamahuhu.dev](https://auk.mamahuhu.dev)
+- **GitHub Issues:** [github.com/mamahuhu-io/auk/issues](https://github.com/mamahuhu-io/auk/issues)
+- **Community:** Join our discussions
+
+We're here to help make your migration smooth and successful!

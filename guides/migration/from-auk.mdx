@@ -1,0 +1,596 @@
+---
+sidebarTitle: From Auk
+title: Migrate from Auk Cloud
+description: Step-by-step guide to migrate from Auk Cloud to Auk
+---
+
+## Why Migrate to Auk?
+
+Auk is based on Auk but focuses on local-first architecture:
+
+| Feature | Auk Cloud | Auk |
+|---------|------------------|-----|
+| **Storage** | Cloud database | Local files |
+| **Backend** | Required | Not required |
+| **Authentication** | OAuth login | No login needed |
+| **Collaboration** | Cloud workspaces | Git repositories |
+| **Offline** | Limited | Full support |
+| **Cost** | Free tier + paid | Free |
+| **Data Control** | Cloud service | You control |
+| **Self-host** | Complex setup | Desktop app only |
+
+## Migration Overview
+
+The migration process involves:
+
+1. Export collections from Auk
+2. Export environments from Auk
+3. Import into Auk workspace
+4. Configure Git sync for collaboration
+5. Verify and test
+
+**Estimated Time:** 10-15 minutes per workspace
+
+## Step 1: Export from Auk Cloud
+
+### Export Collections
+
+<Steps>
+  <Step title="Login to legacy Auk cloud (if applicable)">
+    Open your previous cloud instance (e.g., your team's hosted Auk cloud) and log in.
+  </Step>
+
+  <Step title="Select Workspace">
+    Switch to the workspace you want to export
+  </Step>
+
+  <Step title="Export Collections">
+    1. Click on "Collections" in sidebar
+    2. Click the three dots (...) menu
+    3. Select "Export"
+    4. Choose "Auk Collection (JSON)"
+    5. Save the file
+  </Step>
+
+  <Step title="Repeat for Each Workspace">
+    If you have multiple workspaces, export each separately
+  </Step>
+</Steps>
+
+### Export Environments
+
+<Steps>
+  <Step title="Open Environments">
+    Click "Environments" in Auk sidebar
+  </Step>
+
+  <Step title="Export Each Environment">
+    1. Click on environment name
+    2. Click the three dots (...) menu
+    3. Select "Export"
+    4. Save the JSON file
+  </Step>
+
+  <Step title="Export Global Environment">
+    Don't forget to export the global environment if you use it
+  </Step>
+</Steps>
+
+<Note>
+  Auk Cloud may have both personal and team workspaces. Export each separately.
+</Note>
+
+## Step 2: Create Auk Workspace
+
+### Setup Workspace
+
+1. Launch Auk
+2. Create a new workspace
+3. Choose storage location
+4. Name it after your Auk workspace
+
+[Learn more about creating workspaces](/documentation/getting-started/first-workspace)
+
+### Workspace Mapping
+
+Map Auk workspaces to Auk workspaces:
+
+**Auk:**
+```
+- Personal Workspace
+- Team A Workspace
+- Team B Workspace
+```
+
+**Auk:**
+```
+- Personal (local workspace)
+- Team-A (Git-synced workspace)
+- Team-B (Git-synced workspace)
+```
+
+## Step 3: Import Collections
+
+### Import Process
+
+<Steps>
+  <Step title="Open Import Dialog">
+    1. Click "Collections" in Auk sidebar
+    2. Click "Import" button
+    3. Select "Auk" as import type
+  </Step>
+
+  <Step title="Select Export File">
+    Choose the Auk collection JSON file
+  </Step>
+
+  <Step title="Configure Import">
+    **Import Options:**
+    - **Destination:** Choose target folder
+    - **Conflict Resolution:**
+      - Replace existing
+      - Keep both
+      - Skip duplicates
+    - **Import Components:**
+      - ✓ Collections
+      - ✓ Requests
+      - ✓ Folders
+      - ✓ Request metadata
+  </Step>
+
+  <Step title="Import">
+    Click "Import" and wait for completion
+  </Step>
+
+  <Step title="Verify">
+    Review imported collections and test requests
+  </Step>
+</Steps>
+
+### What Gets Imported
+
+**Imported:**
+- ✅ Collections and folders
+- ✅ REST requests
+- ✅ GraphQL queries
+- ✅ WebSocket connections
+- ✅ Request headers
+- ✅ Request bodies
+- ✅ Query parameters
+- ✅ Authentication settings
+- ✅ Pre-request scripts
+- ✅ Test scripts
+
+**Not Imported:**
+- ❌ Team workspace settings (use Git)
+- ❌ User preferences (configure in Auk)
+- ❌ History (starts fresh in Auk)
+- ❌ Cloud sync settings (use Git sync)
+
+## Step 4: Import Environments
+
+### Import Environment
+
+<Steps>
+  <Step title="Open Import Dialog">
+    1. Click "Environments" in Auk sidebar
+    2. Click "Import" button
+    3. Select "Auk" as import type
+  </Step>
+
+  <Step title="Select File">
+    Choose the Auk environment JSON file
+  </Step>
+
+  <Step title="Import">
+    Click "Import" to complete
+  </Step>
+
+  <Step title="Set Secret Values">
+    1. Open imported environment
+    2. Find secret variables
+    3. Enter actual secret values
+    4. Mark as "Secret" in Auk
+    5. Save environment
+  </Step>
+</Steps>
+
+### Environment Types
+
+Auk environments map to Auk as follows:
+
+| Auk | Auk |
+|------------|-----|
+| Global Environment | Global Environment |
+| Personal Environment | Workspace Environment |
+| Team Environment | Workspace Environment (Git-synced) |
+
+## Step 5: Configure Git Sync
+
+For team collaboration, set up Git sync:
+
+### Create Git Repository
+
+1. Create repository on GitHub/GitLab
+2. Initialize with README
+3. Keep it private for team data
+
+### Configure in Auk
+
+1. Open workspace settings
+2. Enable Git sync
+3. Enter repository URL
+4. Configure authentication
+5. Initial push
+
+[Detailed Git setup guide](/documentation/getting-started/git-setup)
+
+### Share with Team
+
+1. Share repository URL with team
+2. Team members create Auk workspace
+3. Configure same Git repository
+4. Pull to get collections
+5. Set their own secret values
+
+## Step 6: Verify Migration
+
+### Check Collections
+
+**Verify Structure:**
+- [ ] All collections imported
+- [ ] Folder hierarchy preserved
+- [ ] Request names correct
+- [ ] Request types correct (REST/GraphQL/WebSocket)
+
+**Verify Requests:**
+- [ ] URLs correct
+- [ ] HTTP methods correct
+- [ ] Headers present
+- [ ] Bodies intact
+- [ ] Authentication configured
+- [ ] Scripts working
+
+### Check Environments
+
+**Verify Variables:**
+- [ ] All variables imported
+- [ ] Variable names correct
+- [ ] Values correct
+- [ ] Secret variables marked
+
+**Test Variables:**
+- [ ] Variables resolve in requests
+- [ ] Environment switching works
+- [ ] Variable precedence correct
+
+### Test Functionality
+
+1. Send REST requests
+2. Test GraphQL queries
+3. Test WebSocket connections
+4. Verify authentication
+5. Test scripts
+6. Check variable substitution
+
+## Feature Mapping
+
+### Auk → Auk Features
+
+| Auk Feature | Auk Equivalent | Notes |
+|-------------------|----------------|-------|
+| **Personal Workspace** | Workspace | Local storage |
+| **Team Workspace** | Workspace + Git | Git-based collaboration |
+| **Collections** | Collections | Same functionality |
+| **Environments** | Environments | Same functionality |
+| **Variables** | Variables | Same syntax `<<var>>` |
+| **Pre-request Scripts** | Pre-request Scripts | Same API |
+| **Tests** | Test Scripts | Same API |
+| **History** | History | Local only |
+| **Cloud Sync** | Git Sync | Git-based |
+| **Team Members** | Git Collaborators | Via Git repository |
+| **Roles** | Git Permissions | Via Git repository |
+
+### Variable Syntax
+
+Both use the same syntax:
+
+```
+<<baseUrl>>/<<apiVersion>>/users
+```
+
+No conversion needed!
+
+### Script API
+
+Auk and Auk use the same script API:
+
+```javascript
+// Both work the same
+pw.env.set("token", "value");
+pw.test("Status is 200", () => {
+  pw.expect(pw.response.status).toBe(200);
+});
+```
+
+## Differences to Note
+
+### Team Collaboration
+
+**Auk Cloud:**
+- Real-time sync
+- User roles (Owner, Editor, Viewer)
+- Invite by email
+- Cloud-based
+
+**Auk:**
+- Git-based sync (periodic)
+- Git permissions (Read, Write, Admin)
+- Share repository URL
+- Local-first
+
+### Authentication
+
+**Auk Cloud:**
+- Requires login (Google, GitHub, Email)
+- User accounts
+- Team management
+
+**Auk:**
+- No login required
+- No user accounts
+- Git-based team management
+
+### Data Storage
+
+**Auk Cloud:**
+- Stored in Firebase/PostgreSQL
+- Accessible from any device
+- Requires internet
+
+**Auk:**
+- Stored locally
+- Accessible offline
+- Sync via Git when needed
+
+## Common Issues and Solutions
+
+### Issue: Collections Not Importing
+
+**Problem:** Import fails with error
+
+**Solutions:**
+1. Verify JSON file is valid
+2. Check file is Auk format
+3. Try exporting again
+4. Check file size
+5. Import collections individually
+
+### Issue: Team Workspace Data
+
+**Problem:** Cannot export team workspace
+
+**Solutions:**
+1. Ensure you have Owner/Editor role
+2. Export from team workspace view
+3. Contact workspace owner
+4. Export individual collections
+
+### Issue: History Not Imported
+
+**Problem:** Request history missing
+
+**Solutions:**
+- History is not exported by Auk
+- History stays local in Auk
+- Start fresh history in Auk
+- Old history remains in Auk
+
+### Issue: Real-time Sync
+
+**Problem:** Changes not appearing immediately for team
+
+**Solutions:**
+- Auk uses Git sync (periodic, not real-time)
+- Configure shorter sync interval
+- Manually trigger sync
+- Communicate major changes to team
+
+### Issue: User Roles
+
+**Problem:** Cannot set user roles like in Auk
+
+**Solutions:**
+- Use Git repository permissions
+- GitHub/GitLab have role systems
+- Read, Write, Admin permissions
+- Configure in Git service
+
+## Migration Checklist
+
+### Pre-Migration
+
+- [ ] List all Auk workspaces
+- [ ] Identify personal vs team workspaces
+- [ ] Document team members
+- [ ] Document secret variables
+- [ ] Plan Auk workspace structure
+- [ ] Create Git repositories (for team workspaces)
+
+### Export Phase
+
+- [ ] Export all collections
+- [ ] Export all environments
+- [ ] Export from each workspace
+- [ ] Save all export files
+- [ ] Verify exports complete
+
+### Import Phase
+
+- [ ] Create Auk workspaces
+- [ ] Import collections
+- [ ] Import environments
+- [ ] Set secret values
+- [ ] Configure Git sync (team workspaces)
+- [ ] Test sample requests
+
+### Verification Phase
+
+- [ ] All collections present
+- [ ] All requests working
+- [ ] All environments configured
+- [ ] Variables resolving
+- [ ] Scripts executing
+- [ ] Authentication working
+- [ ] Git sync working (team workspaces)
+
+### Team Migration
+
+- [ ] Share Git repository URLs
+- [ ] Team members install Auk
+- [ ] Team members create workspaces
+- [ ] Team members configure Git
+- [ ] Team members set secrets
+- [ ] Verify team collaboration
+
+### Post-Migration
+
+- [ ] Update documentation
+- [ ] Train team members
+- [ ] Monitor for issues
+- [ ] Gather feedback
+- [ ] Archive Auk data
+
+## Team Migration Strategy
+
+### Communication Plan
+
+**Announcement:**
+```
+Subject: Migrating from Auk Cloud to Auk
+
+Hi Team,
+
+We're migrating from Auk Cloud to Auk for the following benefits:
+- Local-first: Full offline support
+- Privacy: Data on our devices
+- Cost: Free forever
+- Git-based: Standard collaboration
+
+Timeline:
+- Week 1: Pilot with 2 team members
+- Week 2: Full team migration
+- Week 3: Decommission Auk
+
+Resources:
+- Installation guide: [link]
+- Migration guide: [link]
+- Support channel: #auk-migration
+
+Questions? Let's discuss!
+```
+
+### Training Materials
+
+Create training materials:
+
+1. **Installation Guide**
+   - Download Auk
+   - Install on macOS/Windows/Linux
+   - First launch
+
+2. **Migration Guide**
+   - Import collections
+   - Configure Git
+   - Set secrets
+
+3. **Daily Usage**
+   - Send requests
+   - Switch environments
+   - Sync with Git
+
+4. **Troubleshooting**
+   - Common issues
+   - Solutions
+   - Support contacts
+
+## Advantages of Auk
+
+### For Individual Developers
+
+- **No Login:** Start using immediately
+- **Offline:** Work anywhere
+- **Fast:** No network latency
+- **Private:** Data stays local
+- **Free:** No subscription
+
+### For Teams
+
+- **Git-based:** Standard workflows
+- **Version Control:** Full history
+- **Branching:** Feature branches
+- **Pull Requests:** Code review
+- **No Costs:** Free for unlimited users
+
+### For Organizations
+
+- **Self-hosted Git:** Complete control
+- **Compliance:** Data stays on-premise
+- **Security:** No external dependencies
+- **Audit Trail:** Git history
+- **Scalable:** No per-user costs
+
+## Cost Comparison
+
+**Auk Cloud:**
+```
+Team Size: 10 users
+Plan: Free tier (limited features)
+Or Pro: $10/user/month = $1,200/year
+```
+
+**Auk:**
+```
+Team Size: 10 users
+Plan: Free (all features)
+Annual Cost: $0/year
+
+Optional Git Hosting:
+- GitHub Free: $0/year
+- GitLab Free: $0/year
+- Self-hosted: One-time setup
+
+Total: $0/year
+```
+
+**Savings: $0-1,200/year**
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Setup Git Sync" icon="code-branch" href="/documentation/getting-started/git-setup">
+    Configure Git for team collaboration
+  </Card>
+
+  <Card title="Workspace Management" icon="folder-tree" href="/documentation/workspace/introduction">
+    Learn about workspaces
+  </Card>
+
+  <Card title="Best Practices" icon="lightbulb" href="/guides/local-first-workflow">
+    Local-first workflow guide
+  </Card>
+
+  <Card title="Team Collaboration" icon="users" href="/guides/git-collaboration">
+    Git collaboration best practices
+  </Card>
+</CardGroup>
+
+## Support
+
+Need help with migration?
+
+- **Documentation:** [auk.mamahuhu.dev](https://auk.mamahuhu.dev)
+- **GitHub Issues:** [github.com/mamahuhu-io/auk/issues](https://github.com/mamahuhu-io/auk/issues)
+- **Community:** Join our discussions
+
+We're here to help make your migration smooth and successful!

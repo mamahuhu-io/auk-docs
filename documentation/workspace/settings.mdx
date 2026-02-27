@@ -1,0 +1,510 @@
+---
+title: Workspace Settings
+description: Configure and customize your workspace preferences
+---
+
+## Accessing Settings
+
+Open workspace settings:
+
+<Tabs>
+  <Tab title="Via Menu">
+    1. Click workspace name in top navigation
+    2. Select "Workspace Settings"
+  </Tab>
+
+  <Tab title="Via Keyboard">
+    - macOS: `Cmd + ,`
+    - Windows/Linux: `Ctrl + ,`
+  </Tab>
+</Tabs>
+
+## General Settings
+
+### Basic Information
+
+<ParamField path="name" type="string" required>
+  Workspace display name
+
+  ```json
+  {
+    "name": "ACME Corp APIs"
+  }
+  ```
+</ParamField>
+
+<ParamField path="description" type="string">
+  Optional workspace description
+
+  ```json
+  {
+    "description": "API collections for ACME Corporation projects"
+  }
+  ```
+</ParamField>
+
+<ParamField path="location" type="path" required>
+  Local file system path
+
+  ```json
+  {
+    "location": "~/Documents/Auk/acme-corp"
+  }
+  ```
+</ParamField>
+
+### Default Environment
+
+<ParamField path="defaultEnvironment" type="string">
+  Environment to load on workspace startup
+
+  ```json
+  {
+    "defaultEnvironment": "development"
+  }
+  ```
+
+  Options:
+  - `null` - No default environment
+  - `"development"` - Development environment
+  - `"staging"` - Staging environment
+  - `"production"` - Production environment
+  - Any custom environment name
+</ParamField>
+
+## Git Sync Settings
+
+### Repository Configuration
+
+<ParamField path="git.enabled" type="boolean" default="false">
+  Enable Git synchronization
+
+  ```json
+  {
+    "git": {
+      "enabled": true
+    }
+  }
+  ```
+</ParamField>
+
+<ParamField path="git.remoteUrl" type="string">
+  Remote repository URL
+
+  ```json
+  {
+    "git": {
+      "remoteUrl": "git@github.com:acme/api-collections.git"
+    }
+  }
+  ```
+</ParamField>
+
+<ParamField path="git.branch" type="string" default="main">
+  Default branch for synchronization
+
+  ```json
+  {
+    "git": {
+      "branch": "main"
+    }
+  }
+  ```
+</ParamField>
+
+### Sync Behavior
+
+<ParamField path="git.autoSync" type="boolean" default="false">
+  Enable automatic synchronization
+
+  ```json
+  {
+    "git": {
+      "autoSync": true
+    }
+  }
+  ```
+</ParamField>
+
+<ParamField path="git.syncInterval" type="number" default="900">
+  Auto-sync interval in seconds
+
+  ```json
+  {
+    "git": {
+      "syncInterval": 900
+    }
+  }
+  ```
+
+  Common values:
+  - `300` - 5 minutes (active collaboration)
+  - `900` - 15 minutes (default)
+  - `3600` - 1 hour (less frequent)
+</ParamField>
+
+<ParamField path="git.syncBeforeSwitch" type="boolean" default="true">
+  Sync before switching workspaces
+
+  ```json
+  {
+    "git": {
+      "syncBeforeSwitch": true
+    }
+  }
+  ```
+</ParamField>
+
+### Conflict Resolution
+
+<ParamField path="git.conflictResolution" type="string" default="prompt">
+  How to handle merge conflicts
+
+  ```json
+  {
+    "git": {
+      "conflictResolution": "prompt"
+    }
+  }
+  ```
+
+  Options:
+  - `"prompt"` - Ask user for each conflict (default)
+  - `"keepLocal"` - Always keep local changes
+  - `"useRemote"` - Always use remote changes
+  - `"smartMerge"` - Attempt automatic merge
+</ParamField>
+
+### Commit Settings
+
+<ParamField path="git.autoCommit" type="boolean" default="true">
+  Automatically commit changes
+
+  ```json
+  {
+    "git": {
+      "autoCommit": true
+    }
+  }
+  ```
+</ParamField>
+
+<ParamField path="git.commitMessageTemplate" type="string">
+  Template for commit messages
+
+  ```json
+  {
+    "git": {
+      "commitMessageTemplate": "Update {{collection}} - {{timestamp}}"
+    }
+  }
+  ```
+
+  Available variables:
+  - `{{collection}}` - Collection name
+  - `{{timestamp}}` - Current timestamp
+  - `{{user}}` - Git user name
+</ParamField>
+
+## Network Settings
+
+### Proxy Configuration
+
+<ParamField path="proxy.enabled" type="boolean" default="false">
+  Enable HTTP/HTTPS proxy
+
+  ```json
+  {
+    "proxy": {
+      "enabled": true
+    }
+  }
+  ```
+</ParamField>
+
+<ParamField path="proxy.url" type="string">
+  Proxy server URL
+
+  ```json
+  {
+    "proxy": {
+      "url": "http://proxy.company.com:8080"
+    }
+  }
+  ```
+</ParamField>
+
+<ParamField path="proxy.auth" type="object">
+  Proxy authentication credentials
+
+  ```json
+  {
+    "proxy": {
+      "auth": {
+        "username": "user",
+        "password": "pass"
+      }
+    }
+  }
+  ```
+</ParamField>
+
+<ParamField path="proxy.bypass" type="array">
+  Domains to bypass proxy
+
+  ```json
+  {
+    "proxy": {
+      "bypass": ["localhost", "127.0.0.1", "*.internal.com"]
+    }
+  }
+  ```
+</ParamField>
+
+### Interceptor
+
+<ParamField path="interceptor.mode" type="string" default="none">
+  Request interceptor mode
+
+  ```json
+  {
+    "interceptor": {
+      "mode": "proxy"
+    }
+  }
+  ```
+
+  Options:
+  - `"none"` - Direct requests (default)
+  - `"proxy"` - Use Auk Agent or configured proxy
+  - `"proxy"` - System proxy
+</ParamField>
+
+## Request Settings
+
+### Timeout
+
+<ParamField path="request.timeout" type="number" default="30000">
+  Request timeout in milliseconds
+
+  ```json
+  {
+    "request": {
+      "timeout": 30000
+    }
+  }
+  ```
+</ParamField>
+
+### SSL/TLS
+
+<ParamField path="request.validateSSL" type="boolean" default="true">
+  Validate SSL certificates
+
+  ```json
+  {
+    "request": {
+      "validateSSL": true
+    }
+  }
+  ```
+
+  <Warning>
+    Disabling SSL validation is insecure. Only use for development with self-signed certificates.
+  </Warning>
+</ParamField>
+
+<ParamField path="request.clientCertificate" type="object">
+  Client certificate for mutual TLS
+
+  ```json
+  {
+    "request": {
+      "clientCertificate": {
+        "cert": "/path/to/cert.pem",
+        "key": "/path/to/key.pem",
+        "passphrase": "optional-passphrase"
+      }
+    }
+  }
+  ```
+</ParamField>
+
+### Headers
+
+<ParamField path="request.defaultHeaders" type="array">
+  Default headers for all requests
+
+  ```json
+  {
+    "request": {
+      "defaultHeaders": [
+        {
+          "key": "User-Agent",
+          "value": "Auk/3.0"
+        }
+      ]
+    }
+  }
+  ```
+</ParamField>
+
+## UI Settings
+
+### Theme
+
+<ParamField path="ui.theme" type="string" default="system">
+  Application theme
+
+  ```json
+  {
+    "ui": {
+      "theme": "dark"
+    }
+  }
+  ```
+
+  Options:
+  - `"system"` - Follow system theme
+  - `"light"` - Light theme
+  - `"dark"` - Dark theme
+</ParamField>
+
+### Font
+
+<ParamField path="ui.fontSize" type="number" default="14">
+  Base font size in pixels
+
+  ```json
+  {
+    "ui": {
+      "fontSize": 14
+    }
+  }
+  ```
+</ParamField>
+
+<ParamField path="ui.fontFamily" type="string">
+  Font family for code editor
+
+  ```json
+  {
+    "ui": {
+      "fontFamily": "JetBrains Mono, monospace"
+    }
+  }
+  ```
+</ParamField>
+
+## History Settings
+
+<ParamField path="history.enabled" type="boolean" default="true">
+  Enable request history
+
+  ```json
+  {
+    "history": {
+      "enabled": true
+    }
+  }
+  ```
+</ParamField>
+
+<ParamField path="history.maxEntries" type="number" default="1000">
+  Maximum history entries to keep
+
+  ```json
+  {
+    "history": {
+      "maxEntries": 1000
+    }
+  }
+  ```
+</ParamField>
+
+<ParamField path="history.retentionDays" type="number" default="30">
+  Days to retain history
+
+  ```json
+  {
+    "history": {
+      "retentionDays": 30
+    }
+  }
+  ```
+</ParamField>
+
+## Example Configurations
+
+### Minimal Configuration
+
+```json
+{
+  "name": "Personal APIs",
+  "location": "~/Documents/Auk/personal",
+  "defaultEnvironment": "development"
+}
+```
+
+### Team Workspace with Git
+
+```json
+{
+  "name": "ACME Corp APIs",
+  "location": "~/Documents/Auk/acme-corp",
+  "defaultEnvironment": "development",
+  "git": {
+    "enabled": true,
+    "remoteUrl": "git@github.com:acme/api-collections.git",
+    "branch": "main",
+    "autoSync": true,
+    "syncInterval": 900,
+    "conflictResolution": "prompt"
+  }
+}
+```
+
+### Corporate Environment with Proxy
+
+```json
+{
+  "name": "Corporate APIs",
+  "location": "~/Documents/Auk/corporate",
+  "proxy": {
+    "enabled": true,
+    "url": "http://proxy.company.com:8080",
+    "auth": {
+      "username": "user",
+      "password": "pass"
+    },
+    "bypass": ["localhost", "*.internal.com"]
+  },
+  "request": {
+    "validateSSL": false,
+    "clientCertificate": {
+      "cert": "/path/to/cert.pem",
+      "key": "/path/to/key.pem"
+    }
+  }
+}
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Git Sync Setup" href="/documentation/git-sync/setup" icon="code-branch">
+    Configure Git synchronization
+  </Card>
+
+  <Card title="Environments" href="/documentation/features/environments" icon="layer-group">
+    Manage environment variables
+  </Card>
+
+  <Card title="Proxy & Interceptor" href="/documentation/features/interceptor" icon="shield">
+    Configure network settings
+  </Card>
+
+  <Card title="Keyboard Shortcuts" href="/documentation/features/shortcuts" icon="keyboard">
+    Customize keyboard shortcuts
+  </Card>
+</CardGroup>

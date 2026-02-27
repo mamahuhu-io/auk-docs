@@ -1,0 +1,504 @@
+---
+title: File System Storage
+description: Understanding Auk's local file system storage
+---
+
+## Storage Architecture
+
+Auk stores all data as plain JSON files on your local file system, providing complete transparency and control.
+
+<CardGroup cols={2}>
+  <Card title="Plain Text JSON" icon="file-code">
+    Human-readable JSON format for all data
+  </Card>
+
+  <Card title="Git-Friendly" icon="code-branch">
+    Text files work perfectly with version control
+  </Card>
+
+  <Card title="Portable" icon="box">
+    Easy to backup, move, and share
+  </Card>
+
+  <Card title="No Database" icon="database">
+    No database setup or maintenance required
+  </Card>
+</CardGroup>
+
+## Directory Structure
+
+### Workspace Root
+
+Each workspace has its own directory:
+
+```
+~/Library/Application Support/Auk/workspaces/my-workspace/
+├── collections/              # API collections
+│   ├── user-api.json
+│   ├── payment-api.json
+│   └── auth-api.json
+├── environments/             # Environment variables
+│   ├── development.json
+│   ├── staging.json
+│   └── production.json
+├── history/                  # Request history
+│   ├── 2024-01.json
+│   ├── 2024-02.json
+│   └── current.json
+├── settings.json            # Workspace settings
+├── .git/                    # Git repository (optional)
+├── .gitignore              # Git ignore rules
+└── README.md               # Workspace documentation
+```
+
+## File Formats
+
+### Collection File
+
+Collections are stored as JSON:
+
+```json
+{
+  "v": 1,
+  "id": "user-api",
+  "name": "User API",
+  "folders": [
+    {
+      "id": "auth",
+      "name": "Authentication",
+      "requests": [
+        {
+          "id": "login",
+          "name": "Login",
+          "method": "POST",
+          "endpoint": "{{baseUrl}}/auth/login",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json",
+              "active": true
+            }
+          ],
+          "body": {
+            "contentType": "application/json",
+            "body": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}"
+          },
+          "auth": {
+            "authType": "none"
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Environment File
+
+Environments store variables:
+
+```json
+{
+  "v": 1,
+  "id": "development",
+  "name": "Development",
+  "variables": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "secret": false
+    },
+    {
+      "key": "apiKey",
+      "value": "dev-key-123",
+      "secret": true
+    }
+  ]
+}
+```
+
+### History File
+
+Request history is stored by month:
+
+```json
+{
+  "v": 1,
+  "month": "2024-02",
+  "entries": [
+    {
+      "id": "hist-001",
+      "timestamp": "2024-02-20T10:30:00Z",
+      "request": {
+        "method": "GET",
+        "endpoint": "https://api.example.com/users",
+        "headers": []
+      },
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "headers": [],
+        "body": "{\"users\": []}",
+        "time": 145
+      }
+    }
+  ]
+}
+```
+
+### Settings File
+
+Workspace configuration:
+
+```json
+{
+  "v": 1,
+  "name": "My Workspace",
+  "description": "Personal API testing workspace",
+  "defaultEnvironment": "development",
+  "git": {
+    "enabled": true,
+    "remoteUrl": "git@github.com:username/api-collections.git",
+    "branch": "main",
+    "autoSync": true,
+    "syncInterval": 900
+  },
+  "proxy": {
+    "enabled": false
+  },
+  "ui": {
+    "theme": "dark"
+  }
+}
+```
+
+## File Operations
+
+### Atomic Writes
+
+Auk uses atomic file operations to prevent corruption:
+
+<Steps>
+  <Step title="Write to Temporary File">
+    Data is first written to a temporary file:
+    ```
+    user-api.json.tmp
+    ```
+  </Step>
+
+  <Step title="Validate JSON">
+    JSON is validated before committing
+  </Step>
+
+  <Step title="Atomic Rename">
+    Temporary file is atomically renamed:
+    ```
+    user-api.json.tmp → user-api.json
+    ```
+  </Step>
+
+  <Step title="Cleanup">
+    Old temporary files are cleaned up
+  </Step>
+</Steps>
+
+### File Locking
+
+Prevents concurrent write conflicts:
+
+```
+user-api.json.lock
+```
+
+- Created before write operations
+- Released after completion
+- Prevents simultaneous writes
+- Timeout after 30 seconds
+
+### File Watching
+
+Auk monitors files for external changes:
+
+- Detects modifications by other tools
+- Reloads data automatically
+- Prompts for conflict resolution if needed
+- Works with external editors
+
+## Storage Locations
+
+### Default Locations
+
+<Tabs>
+  <Tab title="macOS">
+    ```bash
+    # Application Support
+    ~/Library/Application Support/Auk/
+
+    # Workspaces
+    ~/Library/Application Support/Auk/workspaces/
+
+    # Logs
+    ~/Library/Logs/Auk/
+
+    # Cache
+    ~/Library/Caches/Auk/
+    ```
+  </Tab>
+
+  <Tab title="Windows">
+    ```bash
+    # Application Data
+    %APPDATA%\Auk\
+
+    # Workspaces
+    %APPDATA%\Auk\workspaces\
+
+    # Logs
+    %APPDATA%\Auk\logs\
+
+    # Cache
+    %LOCALAPPDATA%\Auk\cache\
+    ```
+  </Tab>
+
+  <Tab title="Linux">
+    ```bash
+    # Config
+    ~/.config/Auk/
+
+    # Workspaces
+    ~/.config/Auk/workspaces/
+
+    # Logs
+    ~/.local/share/Auk/logs/
+
+    # Cache
+    ~/.cache/Auk/
+    ```
+  </Tab>
+</Tabs>
+
+### Custom Locations
+
+You can store workspaces anywhere:
+
+```bash
+# Documents
+~/Documents/Auk/my-workspace/
+
+# Projects
+~/Projects/api-collections/
+
+# External Drive
+/Volumes/External/Auk/workspaces/
+
+# Network Share
+/mnt/network/shared/api-collections/
+```
+
+## Performance Considerations
+
+### File Size Limits
+
+Recommended limits for optimal performance:
+
+| File Type | Recommended | Maximum |
+|-----------|-------------|---------|
+| Collection | < 1 MB | 10 MB |
+| Environment | < 100 KB | 1 MB |
+| History (monthly) | < 5 MB | 50 MB |
+| Settings | < 10 KB | 100 KB |
+
+### Large Collections
+
+For large collections, consider splitting:
+
+```
+collections/
+├── user-api-auth.json          # Authentication endpoints
+├── user-api-crud.json          # CRUD operations
+└── user-api-admin.json         # Admin endpoints
+```
+
+### History Management
+
+History is automatically managed:
+
+- **Monthly Files** - One file per month
+- **Auto-Cleanup** - Old history deleted after retention period
+- **Compression** - Old files can be compressed
+
+```json
+{
+  "history": {
+    "retentionDays": 30,
+    "compressOld": true,
+    "maxEntriesPerMonth": 1000
+  }
+}
+```
+
+## Data Integrity
+
+### Validation
+
+All files are validated on read/write:
+
+- **JSON Schema** - Validates structure
+- **Version Check** - Ensures compatibility
+- **Checksum** - Detects corruption
+
+### Backup Before Write
+
+Auk creates backups before modifications:
+
+```
+collections/
+├── user-api.json
+└── .backups/
+    ├── user-api.json.2024-02-20-10-30-00
+    └── user-api.json.2024-02-20-09-15-00
+```
+
+### Recovery
+
+If corruption is detected:
+
+1. **Auto-Recovery** - Attempt to repair
+2. **Backup Restore** - Restore from backup
+3. **Git Restore** - Restore from Git history
+4. **Manual Edit** - Edit JSON directly
+
+## External Access
+
+### Direct File Editing
+
+You can edit files directly with any text editor:
+
+```bash
+# Open in VS Code
+code ~/Library/Application\ Support/Auk/workspaces/my-workspace/
+
+# Edit with vim
+vim ~/Library/Application\ Support/Auk/workspaces/my-workspace/collections/user-api.json
+```
+
+<Warning>
+  Auk will detect changes and reload automatically. Ensure JSON is valid before saving.
+</Warning>
+
+### Scripting
+
+Automate with scripts:
+
+```bash
+#!/bin/bash
+# add-request.sh - Add a new request to collection
+
+WORKSPACE="$HOME/Library/Application Support/Auk/workspaces/my-workspace"
+COLLECTION="$WORKSPACE/collections/user-api.json"
+
+# Use jq to modify JSON
+jq '.folders[0].requests += [{
+  "id": "new-request",
+  "name": "New Request",
+  "method": "GET",
+  "endpoint": "{{baseUrl}}/new"
+}]' "$COLLECTION" > "$COLLECTION.tmp"
+
+mv "$COLLECTION.tmp" "$COLLECTION"
+```
+
+### Import/Export
+
+Easy data portability:
+
+```bash
+# Export workspace
+tar -czf my-workspace.tar.gz \
+  ~/Library/Application\ Support/Auk/workspaces/my-workspace/
+
+# Import workspace
+tar -xzf my-workspace.tar.gz -C \
+  ~/Library/Application\ Support/Auk/workspaces/
+```
+
+## Security
+
+### File Permissions
+
+Auk sets restrictive permissions:
+
+```bash
+# Workspace directory
+chmod 700 ~/Library/Application\ Support/Auk/workspaces/my-workspace/
+
+# Settings file (may contain secrets)
+chmod 600 ~/Library/Application\ Support/Auk/workspaces/my-workspace/settings.json
+```
+
+### Secret Variables
+
+Environment variables marked as secret:
+
+- Not displayed in UI by default
+- Can be excluded from Git
+- Encrypted at rest (coming soon)
+
+```json
+{
+  "key": "apiKey",
+  "value": "secret-key-123",
+  "secret": true
+}
+```
+
+### Git Ignore
+
+Recommended `.gitignore`:
+
+```gitignore
+# Secrets
+*.secret.json
+.env
+.env.local
+secrets/
+
+# Sensitive data
+*.key
+*.pem
+*.p12
+
+# History (optional)
+history/
+
+# Backups
+.backups/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Data Location" href="/documentation/storage/data-location" icon="map-pin">
+    Find your workspace data
+  </Card>
+
+  <Card title="Backup & Restore" href="/documentation/storage/backup-restore" icon="clock-rotate-left">
+    Backup and recovery strategies
+  </Card>
+
+  <Card title="Git Sync" href="/documentation/git-sync/introduction" icon="code-branch">
+    Version control with Git
+  </Card>
+
+  <Card title="Data Security" href="/guides/data-security" icon="shield">
+    Secure your API data (coming soon)
+  </Card>
+</CardGroup>

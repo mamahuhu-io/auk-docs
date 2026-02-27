@@ -1,0 +1,530 @@
+---
+sidebarTitle: From Insomnia
+title: Migrate from Insomnia
+description: Step-by-step guide to migrate from Insomnia to Auk
+---
+
+## Why Migrate to Auk?
+
+If you're using Insomnia and considering Auk, here are the key benefits:
+
+| Feature | Insomnia | Auk |
+|---------|----------|-----|
+| **Storage** | Cloud sync (paid) | Local-first (free) |
+| **Privacy** | Data on Kong servers | Data on your device |
+| **Offline** | Limited | Full functionality |
+| **Cost** | $5-15/user/month | Free |
+| **Collaboration** | Cloud sync | Git-based |
+| **Speed** | Network dependent | Instant |
+| **Open Source** | Partially | Fully open source |
+
+## Migration Overview
+
+The migration process involves:
+
+1. Export data from Insomnia
+2. Import into Auk workspace
+3. Configure environments
+4. Set up Git sync (optional)
+5. Verify and test
+
+**Estimated Time:** 10-20 minutes per workspace
+
+## Step 1: Export from Insomnia
+
+### Export All Data
+
+<Steps>
+  <Step title="Open Insomnia">
+    Launch Insomnia desktop app
+  </Step>
+
+  <Step title="Open Preferences">
+    Click "Preferences" or use `Cmd/Ctrl + ,`
+  </Step>
+
+  <Step title="Navigate to Data Tab">
+    Click on "Data" tab in preferences
+  </Step>
+
+  <Step title="Export Data">
+    1. Click "Export Data"
+    2. Choose "Export All Data" or "Export Current Workspace"
+    3. Select export format: "Insomnia v4 (JSON)"
+    4. Choose save location
+    5. Click "Export"
+  </Step>
+</Steps>
+
+### Export Individual Collections
+
+To export specific collections:
+
+1. Right-click on collection in sidebar
+2. Select "Export"
+3. Choose format: "Insomnia v4 (JSON)"
+4. Save file
+
+<Tip>
+  Exporting all data is recommended as it includes all collections, environments, and settings in one file.
+</Tip>
+
+## Step 2: Prepare Auk Workspace
+
+### Create Workspace
+
+1. Launch Auk
+2. Create a new workspace
+3. Choose storage location
+4. Optionally configure Git sync
+
+[Learn more about creating workspaces](/documentation/getting-started/first-workspace)
+
+### Plan Structure
+
+Organize your workspace:
+
+```
+Auk Workspace
+├── Collections/
+│   ├── API-Project-1/
+│   ├── API-Project-2/
+│   └── Testing/
+└── Environments/
+    ├── Development
+    ├── Staging
+    └── Production
+```
+
+## Step 3: Import into Auk
+
+### Import Process
+
+<Steps>
+  <Step title="Open Import Dialog">
+    1. Click "Collections" in Auk sidebar
+    2. Click "Import" button
+    3. Select "Insomnia" as import type
+  </Step>
+
+  <Step title="Select Export File">
+    1. Click "Choose File"
+    2. Select the Insomnia export JSON file
+    3. Click "Open"
+  </Step>
+
+  <Step title="Review Import Preview">
+    Auk shows a preview of what will be imported:
+    - Collections and folders
+    - Requests
+    - Environments
+    - Environment variables
+  </Step>
+
+  <Step title="Configure Import Options">
+    **Import Settings:**
+    - **Destination Folder:** Choose where to import
+    - **Conflict Resolution:**
+      - Replace existing
+      - Keep both
+      - Skip duplicates
+    - **Import Components:**
+      - ✓ Collections
+      - ✓ Requests
+      - ✓ Environments
+      - ✓ Environment variables
+  </Step>
+
+  <Step title="Import">
+    1. Click "Import"
+    2. Wait for import to complete
+    3. Review import summary
+  </Step>
+</Steps>
+
+### What Gets Imported
+
+**Imported:**
+- ✅ Collections and folders
+- ✅ Requests (all types)
+- ✅ Request headers
+- ✅ Request bodies
+- ✅ Query parameters
+- ✅ Authentication settings
+- ✅ Environments
+- ✅ Environment variables
+- ✅ Base environments
+
+**Not Imported:**
+- ❌ Plugins (Insomnia-specific)
+- ❌ Themes (use Auk themes)
+- ❌ Workspace settings (configure in Auk)
+- ❌ Sync settings (use Git sync)
+
+## Step 4: Configure Environments
+
+### Review Imported Environments
+
+1. Click "Environments" in sidebar
+2. Review imported environments
+3. Check variable names and values
+
+### Set Secret Values
+
+Insomnia may mask secret values:
+
+1. Open each environment
+2. Find variables marked as secret
+3. Enter actual secret values
+4. Mark as "Secret" in Auk
+5. Save environment
+
+<Warning>
+  Secret values may not be exported by Insomnia. You'll need to re-enter them in Auk.
+</Warning>
+
+### Environment Mapping
+
+Insomnia environments map to Auk as follows:
+
+| Insomnia | Auk |
+|----------|-----|
+| Base Environment | Global Environment |
+| Sub-environments | Workspace Environments |
+| Private Environments | Workspace Environments (not synced) |
+
+## Step 5: Verify Migration
+
+### Check Collections
+
+**Verify Structure:**
+- [ ] All collections imported
+- [ ] Folder hierarchy correct
+- [ ] Request names preserved
+- [ ] Request order maintained
+
+**Verify Requests:**
+- [ ] URLs correct
+- [ ] HTTP methods correct
+- [ ] Headers present
+- [ ] Bodies intact
+- [ ] Authentication configured
+
+### Check Environments
+
+**Verify Variables:**
+- [ ] All variables imported
+- [ ] Variable names correct
+- [ ] Values correct
+- [ ] Secret variables marked
+
+**Test Variables:**
+- [ ] Variables resolve in requests
+- [ ] Environment switching works
+- [ ] Nested variables work
+
+### Test Requests
+
+1. Select appropriate environment
+2. Send test requests
+3. Verify responses
+4. Check authentication
+5. Test variable substitution
+
+## Feature Mapping
+
+### Insomnia Features → Auk Equivalents
+
+| Insomnia Feature | Auk Equivalent | Notes |
+|-----------------|----------------|-------|
+| **Collections** | Collections | Direct mapping |
+| **Requests** | Requests | All types supported |
+| **Environments** | Environments | Direct mapping |
+| **Base Environment** | Global Environment | Workspace-level |
+| **Sub-environments** | Workspace Environments | Per workspace |
+| **Variables** | Variables | Syntax: `{{ }}` → `<< >>` |
+| **Plugins** | Not available | Core features built-in |
+| **Sync** | Git Sync | Git-based collaboration |
+| **Design Documents** | Not available | Use OpenAPI import |
+| **Unit Testing** | Test Scripts | Similar functionality |
+| **Code Generation** | Code Snippets | Generate code snippets |
+
+### Variable Syntax
+
+Insomnia uses `{{ variable }}`, Auk uses `<<variable>>`:
+
+**Insomnia:**
+```
+{{ _.baseUrl }}/{{ _.apiVersion }}/users
+```
+
+**Auk:**
+```
+<<baseUrl>>/<<apiVersion>>/users
+```
+
+<Note>
+  Auk automatically converts Insomnia variable syntax during import.
+</Note>
+
+### Template Tags
+
+Insomnia template tags are converted:
+
+| Insomnia Tag | Auk Equivalent |
+|-------------|----------------|
+| `{% now %}` | Use pre-request script |
+| `{% uuid %}` | Use pre-request script |
+| `{% timestamp %}` | Use pre-request script |
+| `{% base64 %}` | Use pre-request script |
+
+**Example Conversion:**
+
+**Insomnia:**
+```
+{% now 'iso-8601' %}
+```
+
+**Auk (Pre-request Script):**
+```javascript
+const now = new Date().toISOString();
+pw.env.set("timestamp", now);
+```
+
+**Request:**
+```
+<<timestamp>>
+```
+
+## Common Issues and Solutions
+
+### Issue: Import Fails
+
+**Problem:** Cannot import Insomnia export file
+
+**Solutions:**
+1. Verify file is valid JSON
+2. Check file is Insomnia v4 format
+3. Try exporting again from Insomnia
+4. Check file size (large files may timeout)
+5. Try importing individual collections
+
+### Issue: Variables Not Resolving
+
+**Problem:** Variables show as `<<variable>>` instead of values
+
+**Solutions:**
+1. Check environment is active
+2. Verify variable names match
+3. Check variable is defined in environment
+4. Remove `_.` prefix if present
+
+### Issue: Authentication Not Working
+
+**Problem:** Requests fail with auth errors
+
+**Solutions:**
+1. Check auth type is supported
+2. Verify credentials are correct
+3. Re-configure authentication
+4. Test with simple request first
+
+### Issue: Template Tags Not Working
+
+**Problem:** Insomnia template tags not converted
+
+**Solutions:**
+1. Manually convert to pre-request scripts
+2. Use Auk's built-in functions
+3. Check documentation for equivalents
+
+### Issue: Missing Environments
+
+**Problem:** Some environments not imported
+
+**Solutions:**
+1. Check if environments were in export
+2. Try exporting "All Data" instead of workspace
+3. Manually recreate missing environments
+4. Check import summary for errors
+
+## Migration Checklist
+
+### Pre-Migration
+
+- [ ] List all Insomnia workspaces
+- [ ] Identify all collections
+- [ ] Identify all environments
+- [ ] Document secret variables
+- [ ] Document template tags used
+- [ ] Create backup of Insomnia data
+
+### Export Phase
+
+- [ ] Export all data from Insomnia
+- [ ] Or export individual workspaces
+- [ ] Save export files
+- [ ] Verify exports are complete
+
+### Import Phase
+
+- [ ] Create Auk workspace
+- [ ] Import Insomnia export
+- [ ] Review import summary
+- [ ] Set secret variable values
+- [ ] Convert template tags
+- [ ] Test sample requests
+
+### Verification Phase
+
+- [ ] All collections present
+- [ ] All requests working
+- [ ] All environments configured
+- [ ] Variables resolving correctly
+- [ ] Authentication working
+- [ ] Template tags converted
+
+### Post-Migration
+
+- [ ] Configure Git sync (if needed)
+- [ ] Share with team
+- [ ] Update documentation
+- [ ] Train team members
+- [ ] Archive Insomnia data
+
+## Advanced Migration
+
+### Migrating Plugins
+
+Insomnia plugins need manual migration:
+
+**Common Plugins:**
+
+1. **Request Chaining**
+   - Use Auk's test scripts
+   - Extract values from responses
+   - Set as environment variables
+
+2. **Custom Authentication**
+   - Implement in pre-request scripts
+   - Use Auk's auth types
+   - Or use custom headers
+
+3. **Data Generators**
+   - Use pre-request scripts
+   - JavaScript functions
+   - Faker.js (if needed)
+
+### Migrating Design Documents
+
+If you use Insomnia Designer:
+
+1. Export OpenAPI spec from Insomnia
+2. Import OpenAPI spec into Auk
+3. Auk generates requests from spec
+4. Review and adjust as needed
+
+### Batch Migration
+
+For multiple workspaces:
+
+1. Export each workspace separately
+2. Create corresponding Auk workspaces
+3. Import each export into its workspace
+4. Or create one Auk workspace with folders
+
+## Team Migration
+
+### Communication Plan
+
+**Before Migration:**
+- Announce migration timeline
+- Explain benefits
+- Provide training materials
+- Set expectations
+
+**During Migration:**
+- Daily check-ins
+- Support channel (Slack/Teams)
+- Document issues
+- Share solutions
+
+**After Migration:**
+- Gather feedback
+- Address concerns
+- Continuous support
+- Celebrate success
+
+### Training Materials
+
+Create training materials:
+
+1. **Quick Start Guide**
+   - Install Auk
+   - Import data
+   - Basic usage
+
+2. **Feature Comparison**
+   - Insomnia vs Auk
+   - What's different
+   - What's better
+
+3. **Video Tutorials**
+   - Screen recordings
+   - Common workflows
+   - Tips and tricks
+
+## Cost Comparison
+
+**Insomnia Costs:**
+```
+Team Size: 10 users
+Plan: Team ($5/user/month)
+Annual Cost: 10 × $5 × 12 = $600/year
+```
+
+**Auk Costs:**
+```
+Team Size: 10 users
+Plan: Free (local-first)
+Annual Cost: $0/year
+
+Optional Git Hosting:
+- GitHub Free: $0/year
+- GitLab Free: $0/year
+- Self-hosted: One-time setup
+
+Total Annual Cost: $0/year
+```
+
+**Savings: $600/year**
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Setup Git Sync" icon="code-branch" href="/documentation/getting-started/git-setup">
+    Configure Git for team collaboration
+  </Card>
+
+  <Card title="Script Migration" icon="code" href="/documentation/features/scripts">
+    Convert template tags to scripts
+  </Card>
+
+  <Card title="Best Practices" icon="lightbulb" href="/guides/local-first-workflow">
+    Learn local-first workflow
+  </Card>
+
+  <Card title="Team Collaboration" icon="users" href="/guides/git-collaboration">
+    Git collaboration guide
+  </Card>
+</CardGroup>
+
+## Support
+
+Need help with migration?
+
+- **Documentation:** [auk.mamahuhu.dev](https://auk.mamahuhu.dev)
+- **GitHub Issues:** [github.com/mamahuhu-io/auk/issues](https://github.com/mamahuhu-io/auk/issues)
+- **Community:** Join our discussions
+
+We're here to help make your migration smooth and successful!

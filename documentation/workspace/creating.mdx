@@ -1,0 +1,315 @@
+---
+title: Creating a Workspace
+description: Step-by-step guide to creating and configuring your first workspace
+---
+
+## Quick Start
+
+Creating a workspace in Auk takes just a few clicks:
+
+<Steps>
+  <Step title="Open Workspace Menu">
+    Click the workspace selector in the top navigation bar
+  </Step>
+
+  <Step title="Click 'New Workspace'">
+    Select "Create New Workspace" from the dropdown menu
+  </Step>
+
+  <Step title="Configure Workspace">
+    Enter workspace details and choose storage location
+  </Step>
+
+  <Step title="Start Using">
+    Your new workspace is ready to use immediately
+  </Step>
+</Steps>
+
+## Configuration Options
+
+### Basic Settings
+
+<ParamField path="name" type="string" required>
+  Workspace name - use a descriptive name that reflects the workspace purpose
+
+  **Examples:**
+  - `acme-corp-apis`
+  - `personal-projects`
+  - `client-globex`
+</ParamField>
+
+<ParamField path="description" type="string">
+  Optional description to provide more context about the workspace
+</ParamField>
+
+<ParamField path="location" type="path" required>
+  Local file system path where workspace data will be stored
+
+  **Default locations:**
+  - macOS: `~/Library/Application Support/Auk/workspaces/`
+  - Windows: `%APPDATA%\Auk\workspaces\`
+  - Linux: `~/.config/Auk/workspaces/`
+
+  **Custom locations:**
+  - `~/Documents/Auk/my-workspace`
+  - `~/Projects/api-collections`
+</ParamField>
+
+### Git Configuration (Optional)
+
+<ParamField path="gitEnabled" type="boolean" default="false">
+  Enable Git synchronization for team collaboration
+</ParamField>
+
+<ParamField path="gitRemoteUrl" type="string">
+  Remote Git repository URL
+
+  **Examples:**
+  - `git@github.com:username/api-collections.git`
+  - `https://github.com/username/api-collections.git`
+  - `git@gitlab.com:team/apis.git`
+</ParamField>
+
+<ParamField path="gitBranch" type="string" default="main">
+  Default branch to use for synchronization
+</ParamField>
+
+## Creation Methods
+
+### Method 1: Empty Workspace
+
+Create a completely new workspace from scratch:
+
+```
+New Workspace
+├── collections/        (empty)
+├── environments/       (empty)
+├── history/           (empty)
+└── settings.json      (default settings)
+```
+
+**Best for:**
+- Starting a new project
+- Clean slate for new APIs
+- Learning and experimentation
+
+### Method 2: Clone from Git
+
+Create a workspace by cloning an existing Git repository:
+
+<Steps>
+  <Step title="Select 'Clone from Git'">
+    Choose this option when creating a new workspace
+  </Step>
+
+  <Step title="Enter Repository URL">
+    ```
+    git@github.com:team/api-collections.git
+    ```
+  </Step>
+
+  <Step title="Choose Local Path">
+    Select where to store the cloned workspace
+  </Step>
+
+  <Step title="Clone and Open">
+    Auk clones the repository and opens the workspace
+  </Step>
+</Steps>
+
+**Best for:**
+- Joining an existing team
+- Working on multiple machines
+- Accessing shared collections
+
+### Method 3: Import Existing Data
+
+Create a workspace by importing data from other tools:
+
+<Tabs>
+  <Tab title="From Postman">
+    1. Export Postman collection (v2.1 format)
+    2. Create new workspace in Auk
+    3. Use File → Import → Postman Collection
+    4. Select exported JSON file
+  </Tab>
+
+  <Tab title="From Insomnia">
+    1. Export Insomnia workspace
+    2. Create new workspace in Auk
+    3. Use File → Import → Insomnia
+    4. Select exported JSON file
+  </Tab>
+
+  <Tab title="From Auk">
+    1. Export Auk collections
+    2. Create new workspace in Auk
+    3. Use File → Import → Auk
+    4. Select exported JSON file
+  </Tab>
+
+  <Tab title="From OpenAPI">
+    1. Obtain OpenAPI/Swagger spec file
+    2. Create new workspace in Auk
+    3. Use File → Import → OpenAPI
+    4. Select YAML or JSON file
+  </Tab>
+</Tabs>
+
+## Initial Setup
+
+After creating a workspace, configure these essential settings:
+
+### 1. Default Environment
+
+Set the environment that loads automatically:
+
+```json
+{
+  "defaultEnvironment": "development"
+}
+```
+
+### 2. Proxy Settings (if needed)
+
+Configure HTTP/HTTPS proxy:
+
+```json
+{
+  "proxy": {
+    "enabled": true,
+    "url": "http://proxy.company.com:8080"
+  }
+}
+```
+
+### 3. Interceptor Mode
+
+Choose how Auk intercepts requests:
+
+- **None** - Direct requests (default)
+- **Proxy/Agent** - Use Auk Agent or proxy for CORS
+- **System Proxy** - System-wide proxy
+
+### 4. Git Sync (if enabled)
+
+Configure automatic synchronization:
+
+```json
+{
+  "git": {
+    "autoSync": true,
+    "syncInterval": 900,
+    "conflictResolution": "prompt"
+  }
+}
+```
+
+## Examples
+
+### Example 1: Personal Project Workspace
+
+```bash
+Name: personal-apis
+Description: My personal API testing workspace
+Location: ~/Documents/Auk/personal
+Git: Disabled
+```
+
+### Example 2: Team Workspace with Git
+
+```bash
+Name: acme-corp-apis
+Description: ACME Corp API collections
+Location: ~/Documents/Auk/acme-corp
+Git: Enabled
+  Remote: git@github.com:acme-corp/api-collections.git
+  Branch: main
+  Auto-sync: Every 15 minutes
+```
+
+### Example 3: Client Project Workspace
+
+```bash
+Name: client-globex
+Description: Globex Corporation API testing
+Location: ~/Projects/clients/globex/auk
+Git: Enabled
+  Remote: git@gitlab.com:globex/apis.git
+  Branch: development
+  Auto-sync: Manual only
+```
+
+## Workspace Templates
+
+Auk provides templates for common scenarios:
+
+<CardGroup cols={2}>
+  <Card title="REST API Testing" icon="globe">
+    Pre-configured for RESTful API testing with common headers and auth
+  </Card>
+
+  <Card title="GraphQL Development" icon="diagram-project">
+    Includes GraphQL-specific settings and example queries
+  </Card>
+
+  <Card title="Microservices" icon="cubes">
+    Organized structure for testing multiple microservices
+  </Card>
+
+  <Card title="Mobile Backend" icon="mobile">
+    Configured for mobile app backend testing
+  </Card>
+</CardGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Cannot create workspace at chosen location">
+    **Cause:** Insufficient permissions or invalid path
+
+    **Solution:**
+    - Ensure the directory exists and is writable
+    - Check file system permissions
+    - Try a different location
+  </Accordion>
+
+  <Accordion title="Git clone fails">
+    **Cause:** Authentication failure or network issues
+
+    **Solution:**
+    - Verify SSH keys are configured correctly
+    - Check repository URL is correct
+    - Ensure you have access to the repository
+    - Try HTTPS instead of SSH
+  </Accordion>
+
+  <Accordion title="Import fails with error">
+    **Cause:** Incompatible file format or corrupted data
+
+    **Solution:**
+    - Verify the export file is valid JSON
+    - Check the file format matches the import type
+    - Try exporting again from the source tool
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Switch Workspaces" href="/documentation/workspace/switching" icon="arrows-rotate">
+    Learn how to switch between workspaces
+  </Card>
+
+  <Card title="Workspace Settings" href="/documentation/workspace/settings" icon="gear">
+    Configure advanced workspace options
+  </Card>
+
+  <Card title="Setup Git Sync" href="/documentation/git-sync/setup" icon="code-branch">
+    Enable Git synchronization for collaboration
+  </Card>
+
+  <Card title="Import Data" href="/documentation/features/importer" icon="file-import">
+    Import collections from other tools
+  </Card>
+</CardGroup>

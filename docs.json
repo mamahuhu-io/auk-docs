@@ -1,0 +1,225 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Auk Documentation",
+  "description": "Local-first API development tool",
+  "colors": {
+    "primary": "#0D9373",
+    "light": "#07C983",
+    "dark": "#0D9373"
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "favicon": "/favicon.svg",
+  "styling": {
+    "eyebrows": "breadcrumbs"
+  },
+  "navigation": {
+    "anchors": [
+      {
+        "anchor": "Documentation",
+        "icon": "book",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "documentation/getting-started/introduction",
+              "documentation/getting-started/installation",
+              "documentation/getting-started/first-workspace",
+              "documentation/getting-started/git-setup",
+              "documentation/getting-started/quick-start"
+            ]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": [
+              "documentation/concepts/local-first",
+              "documentation/concepts/workspaces",
+              "documentation/concepts/git-sync",
+              "documentation/concepts/data-storage"
+            ]
+          },
+          {
+            "group": "Workspace Management",
+            "pages": [
+              "documentation/workspace/introduction",
+              "documentation/workspace/creating",
+              "documentation/workspace/switching",
+              "documentation/workspace/settings"
+            ]
+          },
+          {
+            "group": "Git Sync",
+            "pages": [
+              "documentation/git-sync/introduction",
+              "documentation/git-sync/setup",
+              "documentation/git-sync/authentication",
+              "documentation/git-sync/auto-sync",
+              "documentation/git-sync/conflict-resolution",
+              "documentation/git-sync/troubleshooting"
+            ]
+          },
+          {
+            "group": "API Testing",
+            "pages": [
+              "documentation/protocols/rest",
+              "documentation/protocols/graphql",
+              "documentation/protocols/realtime",
+              {
+                "group": "RESTful API",
+                "pages": [
+                  "documentation/getting-started/rest/creating-a-request",
+                  "documentation/getting-started/rest/response-handling",
+                  "documentation/getting-started/rest/request-parameters",
+                  "documentation/getting-started/rest/request-headers",
+                  "documentation/getting-started/rest/organizing-requests",
+                  "documentation/getting-started/rest/environment-variables",
+                  "documentation/getting-started/rest/auth-tokens",
+                  "documentation/getting-started/rest/uploading-data",
+                  "documentation/getting-started/rest/pre-request-scripts",
+                  "documentation/getting-started/rest/tests"
+                ]
+              },
+              {
+                "group": "GraphQL API",
+                "pages": [
+                  "documentation/getting-started/graphql/creating-a-query",
+                  "documentation/getting-started/graphql/using-variables"
+                ]
+              },
+              {
+                "group": "Realtime API",
+                "pages": [
+                  "documentation/getting-started/realtime/websocket",
+                  "documentation/getting-started/realtime/socket-io",
+                  "documentation/getting-started/realtime/sse",
+                  "documentation/getting-started/realtime/mqtt"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Features",
+            "pages": [
+              "documentation/features/collections",
+              "documentation/features/environments",
+              "documentation/features/variables",
+              "documentation/features/history",
+              "documentation/features/scripts",
+              "documentation/features/runner",
+              "documentation/features/importer",
+              "documentation/features/authorization",
+              "documentation/features/shortcuts",
+              "documentation/features/customization",
+              "documentation/features/snippets",
+              "documentation/features/interceptor",
+              "documentation/features/cookies",
+              "documentation/features/client-certificate"
+            ]
+          },
+          {
+            "group": "Data Management",
+            "pages": [
+              "documentation/storage/file-system",
+              "documentation/storage/data-location",
+              "documentation/storage/backup-restore"
+            ]
+          },
+          {
+            "group": "Desktop Client",
+            "pages": [
+              "documentation/clients/desktop",
+              {
+                "group": "CLI",
+                "pages": [
+                  "documentation/clients/cli/overview",
+                  "documentation/clients/cli/troubleshooting"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "anchor": "Guides",
+        "icon": "lightbulb",
+        "groups": [
+          {
+            "group": "Best Practices",
+            "pages": [
+              "guides/local-first-workflow",
+              "guides/git-collaboration",
+              "guides/workspace-organization",
+              "guides/offline-usage"
+            ]
+          },
+          {
+            "group": "Migration",
+            "pages": [
+              "guides/migration/from-postman",
+              "guides/migration/from-insomnia",
+              "guides/migration/from-auk"
+            ]
+          },
+          {
+            "group": "Articles",
+            "pages": [
+              "guides/articles/restful-api-testing-with-auk",
+              "guides/articles/understanding-graphql",
+              "guides/articles/improving-your-api-workflow"
+            ]
+          }
+        ]
+      },
+      {
+        "anchor": "Support",
+        "icon": "question",
+        "groups": [
+          {
+            "group": "Help",
+            "pages": [
+              "support/getting-started/faq",
+              "support/getting-started/contact"
+            ]
+          },
+          {
+            "group": "Resources",
+            "pages": [
+              "support/license",
+              "support/code-of-conduct",
+              "support/security-policy",
+              "documentation/changelog"
+            ]
+          }
+        ]
+      },
+      {
+        "anchor": "Download",
+        "href": "https://auk.mamahuhu.io/download",
+        "icon": "download"
+      },
+      {
+        "anchor": "GitHub",
+        "href": "https://github.com/mamahuhu-io/auk",
+        "icon": "github"
+      }
+    ]
+  },
+  "navbar": {
+    "primary": {
+      "type": "github",
+      "href": "https://github.com/mamahuhu-io/auk"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/mamahuhu-io/auk",
+      "website": "https://auk.mamahuhu.io"
+    }
+  },
+  "search": {
+    "prompt": "Search Auk Documentation"
+  }
+}

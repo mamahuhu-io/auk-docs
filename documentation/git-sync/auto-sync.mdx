@@ -1,0 +1,620 @@
+---
+title: Auto Sync
+description: Configure automatic Git synchronization for seamless collaboration
+---
+
+## Overview
+
+Auto sync automatically synchronizes your workspace with the remote Git repository at regular intervals, ensuring your team always has the latest changes.
+
+<CardGroup cols={2}>
+  <Card title="Automatic Commits" icon="floppy-disk">
+    Changes are automatically committed to local Git
+  </Card>
+
+  <Card title="Scheduled Sync" icon="clock">
+    Push and pull at configurable intervals
+  </Card>
+
+  <Card title="Conflict Detection" icon="triangle-exclamation">
+    Automatically detects and handles merge conflicts
+  </Card>
+
+  <Card title="Background Operation" icon="layer-group">
+    Syncs in background without interrupting work
+  </Card>
+</CardGroup>
+
+## Enable Auto Sync
+
+### Via Workspace Settings
+
+<Steps>
+  <Step title="Open Settings">
+    Navigate to Workspace Settings → Git Sync
+  </Step>
+
+  <Step title="Enable Auto Sync">
+    Toggle "Automatic Synchronization" to ON
+  </Step>
+
+  <Step title="Configure Interval">
+    Choose sync interval (default: 15 minutes)
+  </Step>
+
+  <Step title="Save Settings">
+    Changes are applied immediately
+  </Step>
+</Steps>
+
+### Via Configuration File
+
+Edit workspace `settings.json`:
+
+```json
+{
+  "git": {
+    "enabled": true,
+    "remoteUrl": "git@github.com:username/api-collections.git",
+    "autoSync": true,
+    "syncInterval": 900,
+    "autoCommit": true,
+    "syncBeforeSwitch": true
+  }
+}
+```
+
+## Sync Intervals
+
+Choose an interval based on your collaboration needs:
+
+<Tabs>
+  <Tab title="Active Collaboration">
+    **5 minutes** - For teams actively working together
+
+    ```json
+    {
+      "git": {
+        "syncInterval": 300
+      }
+    }
+    ```
+
+    **Best for:**
+    - Real-time collaboration
+    - Pair programming
+    - Rapid iteration
+    - Small teams
+
+    **Considerations:**
+    - Higher network usage
+    - More frequent conflict checks
+    - Battery impact on laptops
+  </Tab>
+
+  <Tab title="Balanced (Default)">
+    **15 minutes** - Balanced approach for most teams
+
+    ```json
+    {
+      "git": {
+        "syncInterval": 900
+      }
+    }
+    ```
+
+    **Best for:**
+    - Regular team collaboration
+    - Distributed teams
+    - Most use cases
+
+    **Considerations:**
+    - Good balance of freshness and efficiency
+    - Reasonable network usage
+    - Minimal battery impact
+  </Tab>
+
+  <Tab title="Periodic Updates">
+    **1 hour** - For less frequent collaboration
+
+    ```json
+    {
+      "git": {
+        "syncInterval": 3600
+      }
+    }
+    ```
+
+    **Best for:**
+    - Solo work with occasional sync
+    - Slow-moving projects
+    - Limited network connectivity
+
+    **Considerations:**
+    - Lower network usage
+    - Minimal battery impact
+    - May miss recent changes
+  </Tab>
+
+  <Tab title="Manual Only">
+    **Disabled** - Full manual control
+
+    ```json
+    {
+      "git": {
+        "autoSync": false
+      }
+    }
+    ```
+
+    **Best for:**
+    - Complete control over sync timing
+    - Unstable network connections
+    - Solo projects
+
+    **Considerations:**
+    - Must remember to sync manually
+    - Risk of conflicts if forgotten
+    - No automatic backups
+  </Tab>
+</Tabs>
+
+## Sync Behavior
+
+### Automatic Commit
+
+When auto-commit is enabled, Auk automatically commits changes:
+
+```json
+{
+  "git": {
+    "autoCommit": true,
+    "commitMessageTemplate": "Update {{collection}} - {{timestamp}}"
+  }
+}
+```
+
+**Commit triggers:**
+- After saving a collection
+- After modifying an environment
+- After deleting items
+- Before sync operation
+
+**Example commit message:**
+```
+Update User API collection
+
+- Added POST /users endpoint
+- Modified GET /users/:id response
+- Updated development environment
+
+Co-Authored-By: Auk <noreply@auk.mamahuhu.io>
+```
+
+### Sync Process
+
+Each sync operation follows this flow:
+
+<Steps>
+  <Step title="Pre-Sync Check">
+    - Check if Git is enabled
+    - Verify network connectivity
+    - Ensure no conflicts from previous sync
+  </Step>
+
+  <Step title="Commit Local Changes">
+    - Stage all modified files
+    - Create commit with descriptive message
+    - Update local Git repository
+  </Step>
+
+  <Step title="Pull Remote Changes">
+    - Fetch from remote repository
+    - Merge remote changes into local branch
+    - Detect conflicts if any
+  </Step>
+
+  <Step title="Conflict Resolution">
+    - If conflicts detected, pause sync
+    - Notify user and show conflict UI
+    - Wait for user resolution
+  </Step>
+
+  <Step title="Push Local Changes">
+    - Push committed changes to remote
+    - Update remote branch
+    - Verify push success
+  </Step>
+
+  <Step title="Post-Sync">
+    - Update sync status indicator
+    - Log sync result
+    - Schedule next sync
+  </Step>
+</Steps>
+
+## Sync Triggers
+
+Auto sync can be triggered by multiple events:
+
+### Time-Based (Primary)
+
+Sync at regular intervals:
+
+```json
+{
+  "git": {
+    "syncInterval": 900  // Every 15 minutes
+  }
+}
+```
+
+### Event-Based
+
+Sync on specific events:
+
+<ParamField path="syncBeforeSwitch" type="boolean" default="true">
+  Sync before switching workspaces
+
+  ```json
+  {
+    "git": {
+      "syncBeforeSwitch": true
+    }
+  }
+  ```
+</ParamField>
+
+<ParamField path="syncOnStartup" type="boolean" default="true">
+  Sync when opening workspace
+
+  ```json
+  {
+    "git": {
+      "syncOnStartup": true
+    }
+  }
+  ```
+</ParamField>
+
+<ParamField path="syncOnClose" type="boolean" default="true">
+  Sync before closing Auk
+
+  ```json
+  {
+    "git": {
+      "syncOnClose": true
+    }
+  }
+  ```
+</ParamField>
+
+### Manual Trigger
+
+Always available regardless of auto-sync settings:
+
+- Click sync button in toolbar
+- Keyboard shortcut: `Cmd/Ctrl + Shift + S`
+- Right-click workspace → "Sync Now"
+
+## Sync Status Indicator
+
+Monitor sync status in real-time:
+
+```
+🟢 Synced              - Up to date with remote
+🟡 Syncing...          - Sync in progress
+🟠 3 changes pending   - Local changes not yet synced
+🔴 Sync failed         - Error occurred
+⚠️  Conflict detected  - Manual resolution needed
+⏸️  Sync paused        - Auto-sync temporarily disabled
+```
+
+### Status Details
+
+Click the status indicator to see:
+
+- Last sync time
+- Pending changes count
+- Sync history
+- Error messages (if any)
+
+## Conflict Handling
+
+When conflicts are detected during auto-sync:
+
+### Automatic Resolution
+
+Configure automatic conflict resolution:
+
+```json
+{
+  "git": {
+    "conflictResolution": "prompt"
+  }
+}
+```
+
+**Options:**
+
+<Tabs>
+  <Tab title="Prompt (Default)">
+    ```json
+    {
+      "conflictResolution": "prompt"
+    }
+    ```
+
+    - Pause sync when conflict detected
+    - Show conflict resolution UI
+    - Wait for user decision
+    - Resume sync after resolution
+  </Tab>
+
+  <Tab title="Keep Local">
+    ```json
+    {
+      "conflictResolution": "keepLocal"
+    }
+    ```
+
+    - Automatically keep local changes
+    - Discard remote changes
+    - Continue sync without interruption
+
+    <Warning>
+      May overwrite team members' changes
+    </Warning>
+  </Tab>
+
+  <Tab title="Use Remote">
+    ```json
+    {
+      "conflictResolution": "useRemote"
+    }
+    ```
+
+    - Automatically use remote changes
+    - Discard local changes
+    - Continue sync without interruption
+
+    <Warning>
+      May lose your local changes
+    </Warning>
+  </Tab>
+
+  <Tab title="Smart Merge">
+    ```json
+    {
+      "conflictResolution": "smartMerge"
+    }
+    ```
+
+    - Attempt automatic merge
+    - Keep non-conflicting changes from both
+    - Prompt only for unresolvable conflicts
+  </Tab>
+</Tabs>
+
+### Conflict Notification
+
+When conflicts occur:
+
+1. **Desktop Notification** - System notification appears
+2. **Status Indicator** - Shows conflict warning
+3. **Conflict Panel** - Opens automatically (if configured)
+4. **Sync Paused** - Auto-sync pauses until resolved
+
+## Network Considerations
+
+### Offline Handling
+
+When network is unavailable:
+
+- Auto-sync gracefully fails
+- Changes continue to commit locally
+- Sync resumes when network returns
+- No data loss
+
+```json
+{
+  "git": {
+    "offlineMode": "queue",  // Queue syncs for later
+    "retryAttempts": 3,
+    "retryDelay": 60
+  }
+}
+```
+
+### Bandwidth Optimization
+
+For limited bandwidth:
+
+```json
+{
+  "git": {
+    "syncInterval": 3600,        // Sync less frequently
+    "compressTransfer": true,    // Enable Git compression
+    "shallowClone": true         // Shallow clone (no full history)
+  }
+}
+```
+
+## Performance Optimization
+
+### Large Repositories
+
+For workspaces with many collections:
+
+```json
+{
+  "git": {
+    "incrementalSync": true,     // Only sync changed files
+    "parallelSync": false,       // Disable parallel operations
+    "syncTimeout": 300           // Increase timeout to 5 minutes
+  }
+}
+```
+
+### Battery Saving
+
+For laptop users:
+
+```json
+{
+  "git": {
+    "syncInterval": 3600,        // Sync hourly
+    "pauseOnBattery": true,      // Pause when on battery
+    "batteryThreshold": 20       // Resume when > 20%
+  }
+}
+```
+
+## Monitoring and Logs
+
+### Sync History
+
+View sync history:
+
+```
+Recent Syncs:
+├── 2024-02-20 14:30 - Success (3 files changed)
+├── 2024-02-20 14:15 - Success (1 file changed)
+├── 2024-02-20 14:00 - Conflict resolved
+└── 2024-02-20 13:45 - Success (no changes)
+```
+
+### Sync Logs
+
+Enable detailed logging:
+
+```json
+{
+  "git": {
+    "enableLogging": true,
+    "logLevel": "info",          // debug, info, warn, error
+    "logFile": "~/Library/Logs/Auk/git-sync.log"
+  }
+}
+```
+
+View logs:
+
+```bash
+# macOS
+tail -f ~/Library/Logs/Auk/git-sync.log
+
+# Windows
+type %APPDATA%\Auk\Logs\git-sync.log
+
+# Linux
+tail -f ~/.config/Auk/logs/git-sync.log
+```
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Choose Appropriate Interval">
+    Match sync interval to collaboration intensity:
+    - Active team: 5-15 minutes
+    - Regular collaboration: 15-30 minutes
+    - Solo work: 1 hour or manual
+  </Accordion>
+
+  <Accordion title="Enable Sync Before Switch">
+    Always sync before switching workspaces to avoid conflicts:
+    ```json
+    {
+      "git": {
+        "syncBeforeSwitch": true
+      }
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Monitor Sync Status">
+    Regularly check sync status indicator:
+    - Ensure syncs are completing successfully
+    - Address conflicts promptly
+    - Verify network connectivity
+  </Accordion>
+
+  <Accordion title="Handle Conflicts Quickly">
+    Don't let conflicts accumulate:
+    - Resolve conflicts as soon as detected
+    - Communicate with team about major changes
+    - Use feature branches for large modifications
+  </Accordion>
+
+  <Accordion title="Test Auto-Sync Setup">
+    Verify auto-sync is working:
+    1. Make a small change
+    2. Wait for sync interval
+    3. Check remote repository
+    4. Verify change appears
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Auto-sync not working">
+    **Symptoms:** Changes not syncing automatically
+
+    **Solutions:**
+    - Verify auto-sync is enabled in settings
+    - Check network connectivity
+    - Review sync logs for errors
+    - Ensure Git authentication is valid
+  </Accordion>
+
+  <Accordion title="Sync takes too long">
+    **Symptoms:** Sync operations are slow
+
+    **Solutions:**
+    - Increase sync interval
+    - Enable compression
+    - Check network speed
+    - Consider shallow clone for large repos
+  </Accordion>
+
+  <Accordion title="Frequent conflicts">
+    **Symptoms:** Conflicts on every sync
+
+    **Solutions:**
+    - Reduce sync interval for more frequent updates
+    - Coordinate with team on who edits what
+    - Use feature branches
+    - Enable smart merge
+  </Accordion>
+
+  <Accordion title="High battery drain">
+    **Symptoms:** Laptop battery drains quickly
+
+    **Solutions:**
+    - Increase sync interval
+    - Enable battery-saving mode
+    - Disable sync when on battery
+    - Use manual sync when needed
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Conflict Resolution" href="/documentation/git-sync/conflict-resolution" icon="code-merge">
+    Learn how to resolve merge conflicts
+  </Card>
+
+  <Card title="Troubleshooting" href="/documentation/git-sync/troubleshooting" icon="wrench">
+    Solve common sync issues
+  </Card>
+
+  <Card title="Branch Management" href="/documentation/git-sync/branch-management" icon="code-branch">
+    Work with Git branches (coming soon)
+  </Card>
+
+  <Card title="Workspace Settings" href="/documentation/workspace/settings" icon="gear">
+    Configure all workspace options
+  </Card>
+</CardGroup>

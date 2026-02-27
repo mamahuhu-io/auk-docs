@@ -1,0 +1,287 @@
+---
+sidebarTitle: Installation
+title: Install Auk
+description: Download and install Auk desktop app
+---
+
+## System Requirements
+
+Auk supports the following operating systems:
+
+- **macOS** 10.15 (Catalina) or later
+- **Windows** 10 or later
+- **Linux** Ubuntu 20.04 or other major distributions
+
+## Download Auk
+
+Choose the version for your operating system:
+
+<AccordionGroup>
+  <Accordion title="macOS" icon="apple">
+    <CardGroup cols={2}>
+      <Card title="Apple Silicon (.dmg)" icon="microchip">
+        For M1/M2/M3 Macs
+
+        [Download](https://github.com/mamahuhu-io/auk/releases/latest/download/Auk_mac_aarch64.dmg)
+      </Card>
+
+      <Card title="Intel (.dmg)" icon="microchip">
+        For Intel-based Macs
+
+        [Download](https://github.com/mamahuhu-io/auk/releases/latest/download/Auk_mac_x64.dmg)
+      </Card>
+    </CardGroup>
+  </Accordion>
+
+  <Accordion title="Windows" icon="windows">
+    <CardGroup cols={2}>
+      <Card title="Windows Installer (.msi)" icon="box">
+        Recommended: Installer with auto-configuration
+
+        [Download](https://github.com/mamahuhu-io/auk/releases/latest/download/Auk_win_x64.msi)
+      </Card>
+
+      <Card title="Portable (.exe)" icon="file-zipper">
+        Portable version, no installation required
+
+        [Download](https://github.com/mamahuhu-io/auk/releases/latest/download/Auk_win_x64_portable.zip)
+      </Card>
+    </CardGroup>
+  </Accordion>
+
+  <Accordion title="Linux" icon="linux">
+    <CardGroup cols={2}>
+      <Card title="Debian/Ubuntu (.deb)" icon="box">
+        For Debian-based distributions
+
+        [Download](https://github.com/mamahuhu-io/auk/releases/latest/download/Auk_linux_x64.deb)
+      </Card>
+
+      <Card title="AppImage" icon="file">
+        Universal format for all distributions
+
+        [Download](https://github.com/mamahuhu-io/auk/releases/latest/download/Auk_linux_x64.AppImage)
+      </Card>
+    </CardGroup>
+  </Accordion>
+</AccordionGroup>
+
+## Installation Steps
+
+### macOS
+
+1. Download the `.dmg` file for your Mac
+
+2. Double-click to open the `.dmg` file
+
+3. Drag the Auk icon to the Applications folder
+
+4. First time: right-click Auk and select "Open"
+
+5. If you see a security prompt, click "Open" to confirm
+
+<Note>
+  macOS may show "cannot verify developer". This is normal for open-source software.
+
+  Solution: System Preferences → Security & Privacy → Click "Open Anyway"
+</Note>
+
+### Windows
+
+#### Using Installer
+
+1. Download the `.msi` installer
+
+2. Double-click to run the installer
+
+3. Follow the installation wizard
+
+4. After installation, launch Auk from Start menu
+
+#### Using Portable Version
+
+1. Download the `.zip` archive
+
+2. Extract to any directory
+
+3. Run `Auk.exe`
+
+<Warning>
+  Windows may show SmartScreen warning. Click "More info" then "Run anyway".
+</Warning>
+
+### Linux
+
+#### Debian/Ubuntu (.deb)
+
+```bash
+# After downloading the .deb file
+
+# Install
+sudo dpkg -i Auk_linux_x64.deb
+
+# If there are dependency issues, run
+sudo apt-get install -f
+
+# Launch Auk
+auk
+```
+
+#### AppImage
+
+```bash
+# After downloading the .AppImage file
+
+# Add execute permission
+chmod +x Auk_linux_x64.AppImage
+
+# Run
+./Auk_linux_x64.AppImage
+```
+
+<Tip>
+  Recommended to move AppImage to `~/Applications` or `/opt` directory
+</Tip>
+
+## Verify Installation
+
+After installation, launching Auk should show the welcome screen.
+
+<Steps>
+  <Step title="Launch App">
+    Launch Auk from applications list or command line
+  </Step>
+
+  <Step title="Check Version">
+    Click Menu → About Auk to see version number
+  </Step>
+
+  <Step title="Create Workspace">
+    First launch will guide you to create your first workspace
+  </Step>
+</Steps>
+
+## Update Auk
+
+Auk automatically checks for updates. When a new version is available:
+
+1. Update notification will appear in the app
+
+2. Click "Download Update"
+
+3. Restart the app after download completes
+
+### Manual Update
+
+If automatic update fails, manually download the latest version:
+
+1. Visit [GitHub Releases](https://github.com/mamahuhu-io/auk/releases/latest)
+
+2. Download the installer for your platform
+
+3. Install the new version (will overwrite old version)
+
+4. Your data and settings will be preserved
+
+## Uninstall Auk
+
+### macOS
+
+1. Open Finder → Applications
+
+2. Drag Auk to Trash
+
+3. Empty Trash
+
+4. (Optional) Delete data directory: `~/Library/Application Support/io.mamahuhu.auk`
+
+### Windows
+
+1. Open "Settings" → "Apps"
+
+2. Find Auk and click "Uninstall"
+
+3. (Optional) Delete data directory: `%APPDATA%\io.mamahuhu.auk`
+
+### Linux
+
+```bash
+# Debian/Ubuntu
+sudo apt remove auk
+
+# Delete data directory (optional)
+rm -rf ~/.local/share/io.mamahuhu.auk
+```
+
+## Data Location
+
+Auk stores data in the following locations:
+
+| Platform | Data Directory |
+|----------|----------------|
+| macOS | `~/Library/Application Support/io.mamahuhu.auk` |
+| Windows | `%APPDATA%\io.mamahuhu.auk` |
+| Linux | `~/.local/share/io.mamahuhu.auk` |
+
+Data directory contains:
+
+- `workspaces.json` - Workspace configuration
+- `settings.json` - App settings
+- `workspaces/` - Data for each workspace
+
+<Warning>
+  Uninstalling the app does not automatically delete the data directory. Delete manually if needed.
+</Warning>
+
+## Troubleshooting
+
+### App Won't Start
+
+**macOS:**
+- Check if blocked by Gatekeeper: System Preferences → Security & Privacy
+
+**Windows:**
+- Check if blocked by antivirus software
+- Try running as administrator
+
+**Linux:**
+- Check execute permission: `chmod +x Auk`
+- Check dependencies: `ldd Auk`
+
+### Update Failed
+
+1. Check network connection
+
+2. Manually download latest version
+
+3. Backup data directory and reinstall
+
+### Data Loss
+
+If data is lost, check:
+
+1. Data directory exists
+
+2. Workspace path is correct
+
+3. Check backups (if Git sync is enabled)
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Create Workspace" icon="folder-plus" href="/documentation/getting-started/first-workspace">
+    Create your first workspace
+  </Card>
+
+  <Card title="Setup Git" icon="code-branch" href="/documentation/getting-started/git-setup">
+    Setup Git sync (optional)
+  </Card>
+
+  <Card title="Quick Start" icon="rocket" href="/documentation/getting-started/quick-start">
+    Quick start guide
+  </Card>
+
+  <Card title="Import Data" icon="file-import" href="/documentation/features/importer">
+    Import data from other tools
+  </Card>
+</CardGroup>

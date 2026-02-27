@@ -1,0 +1,293 @@
+---
+title: Switching Workspaces
+description: Efficiently manage and switch between multiple workspaces
+---
+
+## Quick Switching
+
+Auk makes it easy to switch between workspaces without losing your current context.
+
+### Using the Workspace Selector
+
+<Steps>
+  <Step title="Click Workspace Name">
+    Click the current workspace name in the top navigation bar
+  </Step>
+
+  <Step title="Select Workspace">
+    Choose the workspace you want to switch to from the dropdown
+  </Step>
+
+  <Step title="Instant Switch">
+    Auk immediately loads the selected workspace
+  </Step>
+</Steps>
+
+### Keyboard Shortcuts
+
+<Tabs>
+  <Tab title="macOS">
+    - `Cmd + Shift + W` - Open workspace switcher
+    - `Cmd + 1-9` - Switch to workspace 1-9
+    - `Cmd + Shift + N` - Create new workspace
+  </Tab>
+
+  <Tab title="Windows/Linux">
+    - `Ctrl + Shift + W` - Open workspace switcher
+    - `Ctrl + 1-9` - Switch to workspace 1-9
+    - `Ctrl + Shift + N` - Create new workspace
+  </Tab>
+</Tabs>
+
+## Workspace Switcher
+
+The workspace switcher provides a quick overview of all your workspaces:
+
+```
+┌─────────────────────────────────────┐
+│ Workspaces                          │
+├─────────────────────────────────────┤
+│ ✓ acme-corp-apis                    │
+│   Last used: 2 minutes ago          │
+│   📁 ~/Documents/Auk/acme-corp      │
+│   🔄 Git: Synced                    │
+├─────────────────────────────────────┤
+│   personal-projects                 │
+│   Last used: 1 hour ago             │
+│   📁 ~/Documents/Auk/personal       │
+│   🔄 Git: Not configured            │
+├─────────────────────────────────────┤
+│   client-globex                     │
+│   Last used: Yesterday              │
+│   📁 ~/Projects/clients/globex      │
+│   🔄 Git: 3 changes pending         │
+├─────────────────────────────────────┤
+│ + Create New Workspace              │
+└─────────────────────────────────────┘
+```
+
+## Recent Workspaces
+
+Auk remembers your recently used workspaces for quick access:
+
+- **Most Recent** - Appears at the top of the list
+- **Quick Access** - Use number shortcuts (Cmd/Ctrl + 1-9)
+- **Last Used Time** - See when you last worked in each workspace
+
+## Workspace States
+
+### Active Workspace
+
+The currently open workspace:
+- ✓ Checkmark indicator
+- Highlighted in the switcher
+- Shown in the title bar
+
+### Synced Workspace
+
+Workspace with Git sync enabled and up-to-date:
+- 🔄 Sync indicator shows "Synced"
+- Green status dot
+- No pending changes
+
+### Pending Changes
+
+Workspace with uncommitted or unpushed changes:
+- 🔄 Sync indicator shows "X changes pending"
+- Yellow status dot
+- Click to view changes
+
+### Sync Error
+
+Workspace with sync errors:
+- ⚠️ Warning indicator
+- Red status dot
+- Click to view error details
+
+## Auto-Save Before Switching
+
+Auk automatically saves your work before switching:
+
+<Steps>
+  <Step title="Save Current State">
+    All unsaved changes are saved automatically
+  </Step>
+
+  <Step title="Commit to Git (if enabled)">
+    Changes are committed to local Git repository
+  </Step>
+
+  <Step title="Switch Workspace">
+    New workspace is loaded
+  </Step>
+
+  <Step title="Restore State">
+    Previous workspace state is preserved for when you return
+  </Step>
+</Steps>
+
+## Managing Multiple Workspaces
+
+### Organizing Workspaces
+
+Use naming conventions to keep workspaces organized:
+
+```
+Work Workspaces:
+├── work-backend-apis
+├── work-frontend-apis
+└── work-internal-tools
+
+Client Workspaces:
+├── client-acme
+├── client-globex
+└── client-initech
+
+Personal Workspaces:
+├── personal-projects
+└── personal-learning
+```
+
+### Workspace Groups (Coming Soon)
+
+Future feature to group related workspaces:
+
+```
+📁 Work
+  ├── Backend APIs
+  ├── Frontend APIs
+  └── Internal Tools
+
+📁 Clients
+  ├── ACME Corp
+  ├── Globex
+  └── Initech
+
+📁 Personal
+  ├── Projects
+  └── Learning
+```
+
+## Sync Before Switching
+
+For workspaces with Git sync enabled, consider syncing before switching:
+
+### Manual Sync
+
+```
+1. Click sync button in workspace switcher
+2. Wait for sync to complete
+3. Switch to new workspace
+```
+
+### Auto-Sync
+
+Enable auto-sync to ensure workspaces are always up-to-date:
+
+```json
+{
+  "git": {
+    "autoSync": true,
+    "syncBeforeSwitch": true
+  }
+}
+```
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Sync Before Switching">
+    Always sync workspaces with Git before switching to avoid conflicts:
+    - Ensures latest changes are pushed
+    - Prevents merge conflicts
+    - Keeps team members in sync
+  </Accordion>
+
+  <Accordion title="Use Descriptive Names">
+    Name workspaces clearly to identify them quickly:
+    - ✅ `acme-corp-backend-apis`
+    - ✅ `personal-learning-projects`
+    - ❌ `workspace-1`
+    - ❌ `test`
+  </Accordion>
+
+  <Accordion title="Close Unused Workspaces">
+    Remove workspaces you no longer need:
+    - Keeps workspace list manageable
+    - Reduces clutter
+    - Improves performance
+  </Accordion>
+
+  <Accordion title="Regular Backups">
+    Backup important workspaces regularly:
+    - Use Git sync for automatic backups
+    - Create manual backups for critical data
+    - Test restore procedures
+  </Accordion>
+</AccordionGroup>
+
+## Workspace Context
+
+When switching workspaces, Auk preserves:
+
+- ✅ **Collections** - All API collections
+- ✅ **Environments** - Environment variables and active environment
+- ✅ **History** - Request history
+- ✅ **Settings** - Workspace-specific settings
+- ✅ **Git State** - Uncommitted changes and sync status
+
+Auk does NOT preserve:
+- ❌ **Open Tabs** - Tabs are workspace-specific
+- ❌ **UI State** - Sidebar state, panel sizes, etc.
+- ❌ **Temporary Data** - Clipboard, search queries, etc.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Workspace won't switch">
+    **Cause:** Unsaved changes or sync in progress
+
+    **Solution:**
+    - Wait for current sync to complete
+    - Check for error messages
+    - Try force-switching (may lose unsaved changes)
+  </Accordion>
+
+  <Accordion title="Workspace appears empty after switching">
+    **Cause:** Data not loaded or corrupted
+
+    **Solution:**
+    - Refresh the workspace (Cmd/Ctrl + R)
+    - Check workspace directory exists
+    - Restore from backup if needed
+  </Accordion>
+
+  <Accordion title="Cannot find workspace in switcher">
+    **Cause:** Workspace removed or moved
+
+    **Solution:**
+    - Check workspace directory still exists
+    - Re-add workspace if moved
+    - Create new workspace if deleted
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Workspace Settings" href="/documentation/workspace/settings" icon="gear">
+    Configure workspace preferences
+  </Card>
+
+  <Card title="Git Sync" href="/documentation/git-sync/introduction" icon="code-branch">
+    Set up Git synchronization
+  </Card>
+
+  <Card title="Keyboard Shortcuts" href="/documentation/features/shortcuts" icon="keyboard">
+    Learn all keyboard shortcuts
+  </Card>
+
+  <Card title="Data Management" href="/documentation/storage/file-system" icon="database">
+    Understand workspace data storage
+  </Card>
+</CardGroup>

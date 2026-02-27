@@ -1,0 +1,554 @@
+---
+title: Data Location
+description: Find and manage your Auk workspace data
+---
+
+## Finding Your Data
+
+Auk stores all workspace data on your local file system. Here's how to locate it:
+
+## Default Storage Locations
+
+<Tabs>
+  <Tab title="macOS">
+    ### Application Support Directory
+
+    ```bash
+    ~/Library/Application Support/Auk/
+    ```
+
+    **Full path:**
+    ```bash
+    /Users/YourUsername/Library/Application Support/Auk/
+    ```
+
+    ### Quick Access
+
+    ```bash
+    # Open in Finder
+    open ~/Library/Application\ Support/Auk/
+
+    # List workspaces
+    ls -la ~/Library/Application\ Support/Auk/workspaces/
+
+    # Navigate in Terminal
+    cd ~/Library/Application\ Support/Auk/workspaces/
+    ```
+
+    <Note>
+      The `~/Library` folder is hidden by default. Use `Cmd + Shift + .` in Finder to show hidden files.
+    </Note>
+  </Tab>
+
+  <Tab title="Windows">
+    ### AppData Directory
+
+    ```bash
+    %APPDATA%\Auk\
+    ```
+
+    **Full path:**
+    ```bash
+    C:\Users\YourUsername\AppData\Roaming\Auk\
+    ```
+
+    ### Quick Access
+
+    ```bash
+    # Open in Explorer
+    explorer %APPDATA%\Auk
+
+    # List workspaces
+    dir %APPDATA%\Auk\workspaces
+
+    # Navigate in Command Prompt
+    cd %APPDATA%\Auk\workspaces
+    ```
+
+    <Note>
+      The `AppData` folder is hidden by default. Enable "Show hidden files" in Explorer options.
+    </Note>
+  </Tab>
+
+  <Tab title="Linux">
+    ### Config Directory
+
+    ```bash
+    ~/.config/Auk/
+    ```
+
+    **Full path:**
+    ```bash
+    /home/yourusername/.config/Auk/
+    ```
+
+    ### Quick Access
+
+    ```bash
+    # Open in file manager
+    xdg-open ~/.config/Auk/
+
+    # List workspaces
+    ls -la ~/.config/Auk/workspaces/
+
+    # Navigate in Terminal
+    cd ~/.config/Auk/workspaces/
+    ```
+  </Tab>
+</Tabs>
+
+## Directory Structure
+
+### Complete Layout
+
+```
+Auk/
+├── workspaces/                    # All workspaces
+│   ├── my-workspace/
+│   │   ├── collections/
+│   │   ├── environments/
+│   │   ├── history/
+│   │   ├── settings.json
+│   │   └── .git/
+│   ├── another-workspace/
+│   └── client-project/
+├── settings/                      # Global settings
+│   ├── app-settings.json
+│   ├── keybindings.json
+│   └── recent-workspaces.json
+├── logs/                          # Application logs
+│   ├── app.log
+│   ├── git-sync.log
+│   └── error.log
+├── cache/                         # Temporary cache
+│   └── icons/
+└── backups/                       # Automatic backups
+    └── 2024-02-20/
+```
+
+### Workspace Directory
+
+Each workspace contains:
+
+```
+my-workspace/
+├── collections/                   # API collections
+│   ├── user-api.json             # Collection file
+│   ├── payment-api.json
+│   └── .backups/                 # Collection backups
+│       └── user-api.json.2024-02-20
+├── environments/                  # Environment variables
+│   ├── development.json
+│   ├── staging.json
+│   └── production.json
+├── history/                       # Request history
+│   ├── 2024-01.json              # Monthly history
+│   ├── 2024-02.json
+│   └── current.json              # Current month
+├── settings.json                  # Workspace settings
+├── .git/                         # Git repository (if enabled)
+├── .gitignore                    # Git ignore rules
+└── README.md                     # Workspace documentation
+```
+
+## Custom Storage Locations
+
+You can store workspaces anywhere on your file system:
+
+### Setting Custom Location
+
+When creating a workspace:
+
+<Steps>
+  <Step title="Create Workspace">
+    Click "New Workspace" in workspace selector
+  </Step>
+
+  <Step title="Choose Location">
+    Click "Choose Custom Location"
+  </Step>
+
+  <Step title="Select Directory">
+    Browse to desired location:
+    - `~/Documents/Auk/`
+    - `~/Projects/api-collections/`
+    - `/Volumes/External/Auk/`
+  </Step>
+
+  <Step title="Create">
+    Workspace is created at chosen location
+  </Step>
+</Steps>
+
+### Common Custom Locations
+
+<Tabs>
+  <Tab title="Documents">
+    ```bash
+    # macOS/Linux
+    ~/Documents/Auk/workspaces/
+
+    # Windows
+    C:\Users\YourUsername\Documents\Auk\workspaces\
+    ```
+
+    **Advantages:**
+    - Easy to find
+    - Included in user backups
+    - Accessible from file manager
+  </Tab>
+
+  <Tab title="Projects">
+    ```bash
+    # macOS/Linux
+    ~/Projects/api-collections/
+
+    # Windows
+    C:\Users\YourUsername\Projects\api-collections\
+    ```
+
+    **Advantages:**
+    - Organized with other projects
+    - Easy to share with team
+    - Clear project structure
+  </Tab>
+
+  <Tab title="External Drive">
+    ```bash
+    # macOS
+    /Volumes/External/Auk/
+
+    # Windows
+    D:\Auk\
+
+    # Linux
+    /mnt/external/Auk/
+    ```
+
+    **Advantages:**
+    - Large storage capacity
+    - Easy to move between computers
+    - Physical backup
+  </Tab>
+
+  <Tab title="Cloud Sync">
+    ```bash
+    # Dropbox
+    ~/Dropbox/Auk/
+
+    # Google Drive
+    ~/Google Drive/Auk/
+
+    # OneDrive
+    ~/OneDrive/Auk/
+    ```
+
+    **Advantages:**
+    - Automatic cloud backup
+    - Access from multiple devices
+    - Built-in version history
+
+    <Warning>
+      Don't use both Git sync and cloud sync together - may cause conflicts
+    </Warning>
+  </Tab>
+</Tabs>
+
+## Finding Specific Data
+
+### Find a Collection
+
+```bash
+# macOS/Linux
+find ~/Library/Application\ Support/Auk/workspaces/ -name "*.json" -path "*/collections/*"
+
+# Windows
+dir /s /b %APPDATA%\Auk\workspaces\*\collections\*.json
+```
+
+### Find an Environment
+
+```bash
+# macOS/Linux
+find ~/Library/Application\ Support/Auk/workspaces/ -name "*.json" -path "*/environments/*"
+
+# Windows
+dir /s /b %APPDATA%\Auk\workspaces\*\environments\*.json
+```
+
+### Search Collection Content
+
+```bash
+# macOS/Linux - Search for endpoint
+grep -r "api.example.com" ~/Library/Application\ Support/Auk/workspaces/*/collections/
+
+# Windows - Search for endpoint
+findstr /s /i "api.example.com" %APPDATA%\Auk\workspaces\*\collections\*.json
+```
+
+## Viewing Data
+
+### In Auk
+
+1. **Workspace Settings** → "Open Workspace Folder"
+2. Opens workspace directory in file manager
+
+### In File Manager
+
+<Tabs>
+  <Tab title="macOS Finder">
+    ```bash
+    # Open workspace folder
+    open ~/Library/Application\ Support/Auk/workspaces/my-workspace/
+
+    # Show in Finder
+    # Right-click workspace in Auk → "Show in Finder"
+    ```
+  </Tab>
+
+  <Tab title="Windows Explorer">
+    ```bash
+    # Open workspace folder
+    explorer %APPDATA%\Auk\workspaces\my-workspace
+
+    # Show in Explorer
+    # Right-click workspace in Auk → "Show in Explorer"
+    ```
+  </Tab>
+
+  <Tab title="Linux File Manager">
+    ```bash
+    # Open workspace folder
+    xdg-open ~/.config/Auk/workspaces/my-workspace/
+
+    # Or use your file manager
+    nautilus ~/.config/Auk/workspaces/my-workspace/
+    ```
+  </Tab>
+</Tabs>
+
+### In Text Editor
+
+```bash
+# VS Code
+code ~/Library/Application\ Support/Auk/workspaces/my-workspace/
+
+# Sublime Text
+subl ~/Library/Application\ Support/Auk/workspaces/my-workspace/
+
+# Vim
+vim ~/Library/Application\ Support/Auk/workspaces/my-workspace/collections/user-api.json
+```
+
+## Moving Data
+
+### Move Workspace to New Location
+
+<Steps>
+  <Step title="Close Auk">
+    Ensure Auk is not running
+  </Step>
+
+  <Step title="Move Directory">
+    ```bash
+    # macOS/Linux
+    mv ~/Library/Application\ Support/Auk/workspaces/my-workspace \
+       ~/Documents/Auk/my-workspace
+
+    # Windows
+    move %APPDATA%\Auk\workspaces\my-workspace ^
+         C:\Users\YourUsername\Documents\Auk\my-workspace
+    ```
+  </Step>
+
+  <Step title="Update Auk">
+    Open Auk and update workspace location in settings
+  </Step>
+
+  <Step title="Verify">
+    Ensure all collections and environments are accessible
+  </Step>
+</Steps>
+
+### Move Between Computers
+
+<Tabs>
+  <Tab title="Via Git">
+    **On Computer A:**
+    ```bash
+    # Push to Git
+    cd workspace-directory
+    git push origin main
+    ```
+
+    **On Computer B:**
+    ```bash
+    # Clone from Git
+    git clone git@github.com:username/api-collections.git
+    ```
+
+    Then open workspace in Auk
+  </Tab>
+
+  <Tab title="Via Archive">
+    **On Computer A:**
+    ```bash
+    # Create archive
+    tar -czf my-workspace.tar.gz \
+      ~/Library/Application\ Support/Auk/workspaces/my-workspace/
+    ```
+
+    **On Computer B:**
+    ```bash
+    # Extract archive
+    tar -xzf my-workspace.tar.gz -C \
+      ~/Library/Application\ Support/Auk/workspaces/
+    ```
+  </Tab>
+
+  <Tab title="Via Cloud Sync">
+    1. Move workspace to cloud sync folder (Dropbox/Drive)
+    2. Wait for sync to complete
+    3. On other computer, open workspace from cloud folder
+  </Tab>
+</Tabs>
+
+## Storage Management
+
+### Check Disk Usage
+
+<Tabs>
+  <Tab title="macOS/Linux">
+    ```bash
+    # Total Auk storage
+    du -sh ~/Library/Application\ Support/Auk/
+
+    # Per workspace
+    du -sh ~/Library/Application\ Support/Auk/workspaces/*/
+
+    # Detailed breakdown
+    du -h ~/Library/Application\ Support/Auk/ | sort -h
+    ```
+  </Tab>
+
+  <Tab title="Windows">
+    ```bash
+    # Total Auk storage
+    dir %APPDATA%\Auk /s
+
+    # Per workspace
+    dir %APPDATA%\Auk\workspaces /s
+    ```
+  </Tab>
+</Tabs>
+
+### Clean Up Space
+
+<AccordionGroup>
+  <Accordion title="Delete Old History">
+    ```bash
+    # Delete history older than 30 days
+    find ~/Library/Application\ Support/Auk/workspaces/*/history/ \
+      -name "*.json" -mtime +30 -delete
+    ```
+
+    Or configure in settings:
+    ```json
+    {
+      "history": {
+        "retentionDays": 30
+      }
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Clean Cache">
+    ```bash
+    # macOS
+    rm -rf ~/Library/Caches/Auk/*
+
+    # Windows
+    del /s /q %LOCALAPPDATA%\Auk\cache\*
+
+    # Linux
+    rm -rf ~/.cache/Auk/*
+    ```
+  </Accordion>
+
+  <Accordion title="Remove Old Backups">
+    ```bash
+    # Delete backups older than 7 days
+    find ~/Library/Application\ Support/Auk/workspaces/*/.backups/ \
+      -name "*.json.*" -mtime +7 -delete
+    ```
+  </Accordion>
+
+  <Accordion title="Compress Old Data">
+    ```bash
+    # Compress old history files
+    find ~/Library/Application\ Support/Auk/workspaces/*/history/ \
+      -name "*.json" -mtime +90 -exec gzip {} \;
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Cannot find workspace data">
+    **Solutions:**
+    1. Check default location for your OS
+    2. Search for workspace name:
+       ```bash
+       # macOS/Linux
+       find ~ -name "my-workspace" -type d
+
+       # Windows
+       dir /s /b C:\Users\YourUsername\*my-workspace*
+       ```
+    3. Check Auk settings for custom locations
+  </Accordion>
+
+  <Accordion title="Workspace folder is empty">
+    **Causes:**
+    - Workspace not yet synced
+    - Data corruption
+    - Wrong directory
+
+    **Solutions:**
+    1. Check if Git sync is enabled and sync
+    2. Restore from backup
+    3. Verify correct workspace directory
+  </Accordion>
+
+  <Accordion title="Permission denied">
+    **Solutions:**
+    ```bash
+    # macOS/Linux - Fix permissions
+    chmod -R 700 ~/Library/Application\ Support/Auk/workspaces/my-workspace/
+
+    # Windows - Run as administrator
+    # Right-click Auk → Run as administrator
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="File System Storage" href="/documentation/storage/file-system" icon="hard-drive">
+    Learn about file system storage
+  </Card>
+
+  <Card title="Backup & Restore" href="/documentation/storage/backup-restore" icon="clock-rotate-left">
+    Backup and recovery strategies
+  </Card>
+
+  <Card title="Workspace Settings" href="/documentation/workspace/settings" icon="gear">
+    Configure workspace options
+  </Card>
+
+  <Card title="Git Sync" href="/documentation/git-sync/introduction" icon="code-branch">
+    Set up Git synchronization
+  </Card>
+</CardGroup>

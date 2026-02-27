@@ -1,0 +1,539 @@
+---
+title: Backup & Restore
+description: Strategies for backing up and restoring your Auk data
+---
+
+## Why Backup?
+
+Protect your API collections, environments, and history from:
+
+<CardGroup cols={2}>
+  <Card title="Accidental Deletion" icon="trash">
+    Recover deleted collections or requests
+  </Card>
+
+  <Card title="Data Corruption" icon="triangle-exclamation">
+    Restore from corruption or file system errors
+  </Card>
+
+  <Card title="Hardware Failure" icon="hard-drive">
+    Recover from disk failures or computer loss
+  </Card>
+
+  <Card title="Sync Conflicts" icon="code-merge">
+    Rollback to known good state after conflicts
+  </Card>
+</CardGroup>
+
+## Backup Strategies
+
+### 1. Git Sync (Recommended)
+
+Using Git provides automatic, versioned backups:
+
+**Advantages:**
+- ✅ Automatic backups on every sync
+- ✅ Complete version history
+- ✅ Easy rollback to any point
+- ✅ Team collaboration built-in
+- ✅ Remote storage included
+
+**Setup:**
+```json
+{
+  "git": {
+    "enabled": true,
+    "remoteUrl": "git@github.com:username/api-collections.git",
+    "autoSync": true,
+    "syncInterval": 900
+  }
+}
+```
+
+**Restore from Git:**
+```bash
+# View history
+git log --oneline
+
+# Restore specific file
+git checkout <commit-hash> -- collections/user-api.json
+
+# Restore entire workspace to specific point
+git checkout <commit-hash>
+```
+
+### 2. Time Machine (macOS)
+
+macOS Time Machine automatically backs up Auk data:
+
+**Setup:**
+1. Enable Time Machine in System Preferences
+2. Auk data is automatically included
+3. Backups occur hourly
+
+**Restore:**
+1. Open Time Machine
+2. Navigate to Auk workspace folder
+3. Select date to restore from
+4. Click "Restore"
+
+### 3. Manual Backups
+
+Create manual backups on demand:
+
+<Tabs>
+  <Tab title="macOS/Linux">
+    ```bash
+    # Backup single workspace
+    tar -czf ~/Backups/my-workspace-$(date +%Y%m%d).tar.gz \
+      ~/Library/Application\ Support/Auk/workspaces/my-workspace/
+
+    # Backup all workspaces
+    tar -czf ~/Backups/auk-all-$(date +%Y%m%d).tar.gz \
+      ~/Library/Application\ Support/Auk/workspaces/
+
+    # Backup to external drive
+    rsync -av ~/Library/Application\ Support/Auk/workspaces/ \
+      /Volumes/Backup/Auk/
+    ```
+  </Tab>
+
+  <Tab title="Windows">
+    ```bash
+    # Backup single workspace
+    tar -czf %USERPROFILE%\Backups\my-workspace-%date:~-4,4%%date:~-10,2%%date:~-7,2%.tar.gz ^
+      %APPDATA%\Auk\workspaces\my-workspace\
+
+    # Or use Windows Backup
+    # Settings → Update & Security → Backup
+    ```
+  </Tab>
+</Tabs>
+
+### 4. Automated Backup Script
+
+Create a script for regular backups:
+
+<Tabs>
+  <Tab title="Bash Script">
+    ```bash
+    #!/bin/bash
+    # backup-auk.sh
+
+    BACKUP_DIR=~/Backups/Auk
+    WORKSPACE_DIR=~/Library/Application\ Support/Auk/workspaces
+    DATE=$(date +%Y%m%d-%H%M%S)
+    RETENTION_DAYS=30
+
+    # Create backup directory
+    mkdir -p $BACKUP_DIR
+
+    # Backup all workspaces
+    tar -czf $BACKUP_DIR/auk-backup-$DATE.tar.gz $WORKSPACE_DIR
+
+    # Delete old backups
+    find $BACKUP_DIR -name "auk-backup-*.tar.gz" -mtime +$RETENTION_DAYS -delete
+
+    echo "Backup completed: auk-backup-$DATE.tar.gz"
+    ```
+
+    **Schedule with cron:**
+    ```bash
+    # Edit crontab
+    crontab -e
+
+    # Add daily backup at 2 AM
+    0 2 * * * /path/to/backup-auk.sh
+    ```
+  </Tab>
+
+  <Tab title="PowerShell Script">
+    ```powershell
+    # backup-auk.ps1
+
+    $BackupDir = "$env:USERPROFILE\Backups\Auk"
+    $WorkspaceDir = "$env:APPDATA\Auk\workspaces"
+    $Date = Get-Date -Format "yyyyMMdd-HHmmss"
+    $RetentionDays = 30
+
+    # Create backup directory
+    New-Item -ItemType Directory -Force -Path $BackupDir
+
+    # Backup all workspaces
+    Compress-Archive -Path $WorkspaceDir -DestinationPath "$BackupDir\auk-backup-$Date.zip"
+
+    # Delete old backups
+    Get-ChildItem $BackupDir -Filter "auk-backup-*.zip" |
+      Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-$RetentionDays) } |
+      Remove-Item
+
+    Write-Host "Backup completed: auk-backup-$Date.zip"
+    ```
+
+    **Schedule with Task Scheduler:**
+    1. Open Task Scheduler
+    2. Create Basic Task
+    3. Trigger: Daily at 2 AM
+    4. Action: Start a program → PowerShell
+    5. Arguments: `-File C:\path\to\backup-auk.ps1`
+  </Tab>
+</Tabs>
+
+### 5. Cloud Backup
+
+Backup to cloud storage:
+
+<Tabs>
+  <Tab title="Dropbox">
+    ```bash
+    # Sync workspace to Dropbox
+    rsync -av ~/Library/Application\ Support/Auk/workspaces/ \
+      ~/Dropbox/Auk-Backup/
+    ```
+  </Tab>
+
+  <Tab title="Google Drive">
+    ```bash
+    # Sync workspace to Google Drive
+    rsync -av ~/Library/Application\ Support/Auk/workspaces/ \
+      ~/Google\ Drive/Auk-Backup/
+    ```
+  </Tab>
+
+  <Tab title="AWS S3">
+    ```bash
+    # Install AWS CLI first
+    # brew install awscli
+
+    # Sync to S3
+    aws s3 sync ~/Library/Application\ Support/Auk/workspaces/ \
+      s3://my-bucket/auk-backup/
+    ```
+  </Tab>
+</Tabs>
+
+## Restore Procedures
+
+### Restore from Git
+
+<Steps>
+  <Step title="View History">
+    ```bash
+    cd ~/Library/Application\ Support/Auk/workspaces/my-workspace
+    git log --oneline --graph
+    ```
+  </Step>
+
+  <Step title="Find Commit">
+    Identify the commit to restore to
+  </Step>
+
+  <Step title="Restore">
+    ```bash
+    # Restore specific file
+    git checkout <commit-hash> -- collections/user-api.json
+
+    # Restore entire workspace
+    git reset --hard <commit-hash>
+
+    # Or create new branch from old state
+    git checkout -b recovery <commit-hash>
+    ```
+  </Step>
+
+  <Step title="Verify">
+    Open Auk and verify data is restored correctly
+  </Step>
+</Steps>
+
+### Restore from Archive
+
+<Steps>
+  <Step title="Locate Backup">
+    Find the backup archive to restore from
+  </Step>
+
+  <Step title="Close Auk">
+    Ensure Auk is not running
+  </Step>
+
+  <Step title="Extract">
+    ```bash
+    # macOS/Linux
+    tar -xzf ~/Backups/auk-backup-20240220.tar.gz -C /tmp/
+
+    # Windows
+    Expand-Archive -Path $env:USERPROFILE\Backups\auk-backup-20240220.zip -DestinationPath C:\Temp\
+    ```
+  </Step>
+
+  <Step title="Copy Files">
+    ```bash
+    # Backup current state first
+    mv ~/Library/Application\ Support/Auk/workspaces/my-workspace \
+       ~/Library/Application\ Support/Auk/workspaces/my-workspace.old
+
+    # Restore from backup
+    cp -r /tmp/workspaces/my-workspace \
+       ~/Library/Application\ Support/Auk/workspaces/
+    ```
+  </Step>
+
+  <Step title="Verify">
+    Open Auk and verify restoration
+  </Step>
+</Steps>
+
+### Restore from Time Machine
+
+<Steps>
+  <Step title="Open Time Machine">
+    Click Time Machine icon in menu bar → "Enter Time Machine"
+  </Step>
+
+  <Step title="Navigate">
+    Navigate to:
+    ```
+    ~/Library/Application Support/Auk/workspaces/my-workspace/
+    ```
+  </Step>
+
+  <Step title="Select Date">
+    Use timeline to find the date to restore from
+  </Step>
+
+  <Step title="Restore">
+    Select files/folders and click "Restore"
+  </Step>
+</Steps>
+
+### Selective Restore
+
+Restore specific items:
+
+<Tabs>
+  <Tab title="Single Collection">
+    ```bash
+    # From Git
+    git checkout <commit-hash> -- collections/user-api.json
+
+    # From archive
+    tar -xzf backup.tar.gz --strip-components=3 \
+      workspaces/my-workspace/collections/user-api.json
+    ```
+  </Tab>
+
+  <Tab title="Environment">
+    ```bash
+    # From Git
+    git checkout <commit-hash> -- environments/production.json
+
+    # From archive
+    tar -xzf backup.tar.gz --strip-components=3 \
+      workspaces/my-workspace/environments/production.json
+    ```
+  </Tab>
+
+  <Tab title="Entire Workspace">
+    ```bash
+    # From Git
+    git reset --hard <commit-hash>
+
+    # From archive
+    tar -xzf backup.tar.gz -C ~/Library/Application\ Support/Auk/
+    ```
+  </Tab>
+</Tabs>
+
+## Backup Best Practices
+
+<AccordionGroup>
+  <Accordion title="3-2-1 Rule">
+    Follow the 3-2-1 backup rule:
+    - **3** copies of data (original + 2 backups)
+    - **2** different storage types (local + cloud)
+    - **1** offsite backup (cloud or external drive)
+
+    Example:
+    - Original: Auk workspace
+    - Backup 1: Git remote (GitHub)
+    - Backup 2: Time Machine / local archive
+  </Accordion>
+
+  <Accordion title="Regular Schedule">
+    Backup regularly:
+    - **Git sync**: Every 15 minutes (automatic)
+    - **Manual backup**: Weekly
+    - **Cloud backup**: Daily
+    - **External drive**: Monthly
+  </Accordion>
+
+  <Accordion title="Test Restores">
+    Regularly test restore procedures:
+    1. Create test workspace
+    2. Backup test workspace
+    3. Delete test workspace
+    4. Restore from backup
+    5. Verify all data intact
+  </Accordion>
+
+  <Accordion title="Version Retention">
+    Keep multiple backup versions:
+    - **Daily**: Last 7 days
+    - **Weekly**: Last 4 weeks
+    - **Monthly**: Last 12 months
+    - **Yearly**: Indefinite
+  </Accordion>
+
+  <Accordion title="Encrypt Sensitive Data">
+    Encrypt backups containing sensitive data:
+    ```bash
+    # Encrypt backup
+    tar -czf - workspace/ | gpg -c > backup.tar.gz.gpg
+
+    # Decrypt backup
+    gpg -d backup.tar.gz.gpg | tar -xz
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Backup Verification
+
+### Verify Backup Integrity
+
+<Tabs>
+  <Tab title="Archive Integrity">
+    ```bash
+    # Test archive
+    tar -tzf backup.tar.gz > /dev/null && echo "OK" || echo "CORRUPTED"
+
+    # List contents
+    tar -tzf backup.tar.gz | head -20
+    ```
+  </Tab>
+
+  <Tab title="Git Integrity">
+    ```bash
+    cd workspace-directory
+
+    # Verify repository
+    git fsck --full
+
+    # Verify remote
+    git ls-remote origin
+    ```
+  </Tab>
+
+  <Tab title="Checksum">
+    ```bash
+    # Create checksum
+    shasum -a 256 backup.tar.gz > backup.tar.gz.sha256
+
+    # Verify checksum
+    shasum -a 256 -c backup.tar.gz.sha256
+    ```
+  </Tab>
+</Tabs>
+
+## Disaster Recovery
+
+### Complete Data Loss
+
+If all local data is lost:
+
+<Steps>
+  <Step title="Reinstall Auk">
+    Download and install Auk
+  </Step>
+
+  <Step title="Restore from Git">
+    ```bash
+    # Clone workspace
+    git clone git@github.com:username/api-collections.git \
+      ~/Library/Application\ Support/Auk/workspaces/my-workspace
+    ```
+  </Step>
+
+  <Step title="Open in Auk">
+    Open Auk and add workspace from cloned directory
+  </Step>
+
+  <Step title="Verify">
+    Check all collections and environments are present
+  </Step>
+</Steps>
+
+### Partial Data Loss
+
+If some data is lost:
+
+1. **Identify Missing Data** - What's missing?
+2. **Check Git History** - Is it in Git?
+3. **Check Backups** - Is it in backups?
+4. **Restore Selectively** - Restore only missing items
+
+## Monitoring Backups
+
+### Backup Status Dashboard
+
+Create a script to monitor backups:
+
+```bash
+#!/bin/bash
+# check-backups.sh
+
+echo "=== Auk Backup Status ==="
+echo
+
+# Git sync status
+cd ~/Library/Application\ Support/Auk/workspaces/my-workspace
+echo "Git Status:"
+git status -sb
+echo
+
+# Last backup
+echo "Last Manual Backup:"
+ls -lht ~/Backups/Auk/ | head -2
+echo
+
+# Backup size
+echo "Total Backup Size:"
+du -sh ~/Backups/Auk/
+```
+
+### Backup Alerts
+
+Set up alerts for backup failures:
+
+```bash
+#!/bin/bash
+# backup-with-alert.sh
+
+if ! /path/to/backup-auk.sh; then
+  # Send email alert
+  echo "Auk backup failed!" | mail -s "Backup Alert" you@example.com
+
+  # Or use notification
+  osascript -e 'display notification "Auk backup failed!" with title "Backup Alert"'
+fi
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Git Sync" href="/documentation/git-sync/introduction" icon="code-branch">
+    Set up automatic Git backups
+  </Card>
+
+  <Card title="Data Location" href="/documentation/storage/data-location" icon="map-pin">
+    Find your workspace data
+  </Card>
+
+  <Card title="File System" href="/documentation/storage/file-system" icon="hard-drive">
+    Understand file storage
+  </Card>
+
+  <Card title="Workspace Settings" href="/documentation/workspace/settings" icon="gear">
+    Configure workspace options
+  </Card>
+</CardGroup>

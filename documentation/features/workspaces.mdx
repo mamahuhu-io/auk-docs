@@ -1,0 +1,32 @@
+---
+sidebarTitle: Workspaces
+title: Workspaces
+description: Organize your requests, collections, and environments into different workspaces. You can also invite other users to your workspace to collaborate.
+---
+
+Workspaces in Auk are **local-first**. Each workspace lives on your machine (under the Auk data directory) and can optionally be linked to a Git repository for collaboration. There are no cloud accounts or user invitations; sharing happens through Git remotes.
+
+## Create a workspace
+
+1. Click the **"+"** icon in the workspace switcher.
+2. Choose a workspace name and (optionally) pick a Git repo path.
+3. Confirm to create. The workspace data is stored locally; no login required.
+
+<Tip>Use separate workspaces for different clients or teams to keep collections and environments isolated.</Tip>
+
+## Switch between workspaces
+
+To switch between workspaces, click on the workspace switcher in the top right corner of the app and select the workspace you want to switch to.
+
+## Link a workspace to Git
+
+1. Open **Settings → Git Sync** inside the workspace.
+2. Set the repository URL (GitHub/GitLab/self-hosted) and authentication method.
+3. Commit and push collections/environments like regular files.
+
+All workspace data is stored in a Git-friendly structure so you can review changes, open pull requests, and resolve conflicts using standard Git tools.
+
+## Rename or delete a workspace
+
+- **Rename**: Open **Workspace Settings → General** and edit the name.
+- **Delete**: From the same settings page, choose **Delete workspace**. This removes the local copy; your Git remote (if any) stays intact.

@@ -1,0 +1,179 @@
+---
+sidebarTitle: Introduction
+title: Introduction to Auk
+description: Local-first API development ecosystem
+---
+
+Auk is a local-first API development tool, based on the open-source project Auk. It focuses on local storage and Git collaboration, giving you full control over your API data without relying on cloud services.
+
+<Frame>
+  <img className="block border border-black/5 rounded-md dark:border-white/5 dark:hidden" src="/images/auk-light.png" />
+  <img className="hidden border border-black/5 rounded-md dark:border-white/5 dark:block" src="/images/auk-dark.png" />
+</Frame>
+
+## Core Features
+
+<Steps>
+  <Step iconType="light" icon="house" title="Local First">
+    All data stored in local file system, no cloud account required, full control over your data.
+  </Step>
+
+  <Step iconType="light" icon="code-branch" title="Git Sync">
+    Team collaboration and version control via Git, supports GitHub, GitLab, Gitee, and any Git service.
+  </Step>
+
+  <Step iconType="light" icon="folder-tree" title="Multi-Workspace">
+    Create multiple independent workspaces, flexibly manage work and personal projects, each with its own Git repository.
+  </Step>
+
+  <Step iconType="light" icon="bolt" title="High Performance">
+    Desktop app built with Tauri, native performance, no network latency, fast response.
+  </Step>
+
+  <Step iconType="light" icon="wifi-slash" title="Offline Ready">
+    Work completely offline, all features available without network, sync to Git when needed.
+  </Step>
+
+  <Step iconType="light" icon="shield-halved" title="Data Security">
+    Data stored in your controlled location, supports custom Git services, optional encryption.
+  </Step>
+
+  <Step iconType="light" icon="users" title="Team Collaboration">
+    Share API collections and environments via Git repositories, collaborate using standard Git workflows.
+  </Step>
+
+  <Step iconType="light" icon="desktop" title="Cross-Platform">
+    Supports macOS, Windows, and Linux with consistent user experience.
+  </Step>
+</Steps>
+
+## Supported Protocols
+
+Auk supports multiple API protocols to meet different development needs:
+
+- **REST API** - Full HTTP method support (GET, POST, PUT, DELETE, etc.)
+- **GraphQL** - Query, Mutation, Subscription support
+- **WebSocket** - Full-duplex real-time communication
+- **Server-Sent Events (SSE)** - Server push events
+- **Socket.IO** - Real-time bidirectional communication
+- **MQTT** - IoT messaging protocol
+
+## Core Capabilities
+
+### API Testing
+
+- Send HTTP requests and view responses
+- Support various authentication methods (Basic, Bearer, OAuth 2.0, etc.)
+- Configure request parameters, headers, and body
+- Response preview (JSON, XML, HTML, images, etc.)
+- Request history
+
+### Collection Management
+
+- Create and organize API collections
+- Unlimited nested folder structure
+- Collection-level authentication and headers
+- Import/Export (Postman, Insomnia, OpenAPI)
+- Sync and version control via Git
+
+### Environment Variables
+
+- Create multiple environments (dev, staging, production, etc.)
+- Variable substitution `<<variable>>`
+- Global and workspace variables
+- Secret variables (not synced to Git)
+- Dynamic variable setting via scripts
+
+### Script Support
+
+- Pre-request scripts (execute before request)
+- Test scripts (execute after request)
+- Full JavaScript support
+- Built-in test assertion library
+- Environment variable operations
+
+### Workspace Management
+
+- Create multiple independent workspaces
+- Independent data storage per workspace
+- Quick workspace switching
+- Workspace-level configuration
+
+### Git Sync
+
+- Auto sync to Git repository
+- Conflict detection and resolution
+- Branch management
+- Sync history
+- SSH, HTTPS, OAuth authentication support
+
+## Differences from Auk
+
+Auk is based on Auk with the following key differences:
+
+| Aspect | Auk | Auk |
+|--------|------------|-----|
+| **Storage** | Cloud Database | Local File System |
+| **Collaboration** | Cloud Workspace | Git Repository |
+| **Authentication** | OAuth Login | No Login Required |
+| **Backend** | PostgreSQL + GraphQL | No Backend |
+| **Deployment** | Web + Self-host | Desktop App Only |
+| **Offline** | Limited | Full Support |
+| **Data Control** | Cloud Provider | Full User Control |
+
+## Use Cases
+
+### Individual Developers
+
+- Manage API collections locally without registration
+- Full data control and privacy protection
+- Work offline without network dependency
+
+### Team Collaboration
+
+- Share API collections via Git repositories
+- Use familiar Git workflows
+- Code review and version control
+
+### Enterprise Intranet
+
+- Deploy in intranet environment without external access
+- Use internal Git services (GitLab, Gitea, etc.)
+- Data stays within intranet, secure and controlled
+
+### Sensitive Projects
+
+- Data stored locally or on private servers
+- Full control over data access permissions
+- Compliance with data regulations
+
+## Technical Architecture
+
+Auk uses the following technology stack:
+
+- **Frontend**: Vue 3 + TypeScript
+- **Desktop**: Tauri 2.x (Rust)
+- **Package Manager**: pnpm monorepo
+- **Storage**: Local File System
+- **Version Control**: Git
+- **Build Tool**: Vite
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Install Auk" icon="download" href="/documentation/getting-started/installation">
+    Download and install Auk desktop app
+  </Card>
+
+  <Card title="Create Workspace" icon="folder-plus" href="/documentation/getting-started/first-workspace">
+    Create your first workspace
+  </Card>
+
+  <Card title="Setup Git" icon="code-branch" href="/documentation/getting-started/git-setup">
+    Setup Git sync (optional)
+  </Card>
+
+  <Card title="Quick Start" icon="rocket" href="/documentation/getting-started/quick-start">
+    Quick start guide
+  </Card>
+</CardGroup>

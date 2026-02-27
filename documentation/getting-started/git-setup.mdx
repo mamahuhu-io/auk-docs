@@ -1,0 +1,534 @@
+---
+sidebarTitle: Git Setup
+title: Setup Git Sync
+description: Configure Git synchronization for team collaboration and backup
+---
+
+## Why Use Git Sync?
+
+Auk uses Git as the collaboration and backup solution instead of cloud services:
+
+✅ **Full Control** - Choose any Git service (GitHub, GitLab, self-hosted)
+✅ **Version History** - Complete change history and rollback capability
+✅ **Team Collaboration** - Standard Git workflows
+✅ **Offline Work** - Local changes, sync when needed
+✅ **Data Security** - Data stored on servers you control
+
+## How It Works
+
+```
+Local Workspace ←→ Git Repository ←→ Team Members
+    ↓
+Auto-commit local changes
+    ↓
+Periodic sync (Pull + Push)
+    ↓
+Conflict detection & resolution
+```
+
+## Supported Git Services
+
+- **GitHub** - Public/private repositories
+- **GitLab** - Self-hosted or GitLab.com
+- **Gitee** - Chinese Git service
+- **Bitbucket** - Atlassian Git service
+- **Self-hosted Git** - Any standard Git server
+
+## Prerequisites
+
+Before setting up Git sync, you need:
+
+1. **Git installed** on your system
+2. **Git repository** created on your chosen service
+3. **Authentication** configured (SSH keys or access token)
+
+### Check Git Installation
+
+```bash
+# Check if Git is installed
+git --version
+
+# If not installed, install Git:
+# macOS: brew install git
+# Windows: Download from git-scm.com
+# Linux: sudo apt install git
+```
+
+## Authentication Methods
+
+### SSH Keys (Recommended)
+
+SSH keys provide secure, password-less authentication.
+
+<Steps>
+  <Step title="Generate SSH Key">
+    ```bash
+    # Generate new SSH key
+    ssh-keygen -t ed25519 -C "your_email@example.com"
+
+    # Press Enter to accept default location
+    # Enter passphrase (optional but recommended)
+    ```
+  </Step>
+
+  <Step title="Add to SSH Agent">
+    ```bash
+    # Start SSH agent
+    eval "$(ssh-agent -s)"
+
+    # Add SSH key
+    ssh-add ~/.ssh/id_ed25519
+    ```
+  </Step>
+
+  <Step title="Copy Public Key">
+    ```bash
+    # macOS
+    pbcopy < ~/.ssh/id_ed25519.pub
+
+    # Linux
+    cat ~/.ssh/id_ed25519.pub | xclip -selection clipboard
+
+    # Windows (Git Bash)
+    cat ~/.ssh/id_ed25519.pub | clip
+    ```
+  </Step>
+
+  <Step title="Add to Git Service">
+    **GitHub:**
+    1. Go to Settings → SSH and GPG keys
+    2. Click "New SSH key"
+    3. Paste your public key
+    4. Click "Add SSH key"
+
+    **GitLab:**
+    1. Go to Preferences → SSH Keys
+    2. Paste your public key
+    3. Click "Add key"
+  </Step>
+
+  <Step title="Test Connection">
+    ```bash
+    # GitHub
+    ssh -T git@github.com
+
+    # GitLab
+    ssh -T git@gitlab.com
+
+    # Should see: "Hi username! You've successfully authenticated"
+    ```
+  </Step>
+</Steps>
+
+### HTTPS with Personal Access Token
+
+For HTTPS authentication, use a personal access token.
+
+<Tabs>
+  <Tab title="GitHub">
+    1. Go to Settings → Developer settings → Personal access tokens → Tokens (classic)
+    2. Click "Generate new token (classic)"
+    3. Select scopes: `repo` (full control of private repositories)
+    4. Click "Generate token"
+    5. Copy the token (you won't see it again!)
+  </Tab>
+
+  <Tab title="GitLab">
+    1. Go to Preferences → Access Tokens
+    2. Enter token name
+    3. Select scopes: `read_repository`, `write_repository`
+    4. Click "Create personal access token"
+    5. Copy the token
+  </Tab>
+
+  <Tab title="Gitee">
+    1. Go to Settings → Private Tokens
+    2. Click "Generate new token"
+    3. Select scopes: `projects`
+    4. Click "Submit"
+    5. Copy the token
+  </Tab>
+</Tabs>
+
+## Create Git Repository
+
+Before configuring Auk, create a repository on your Git service:
+
+<Tabs>
+  <Tab title="GitHub">
+    ```bash
+    # Using GitHub CLI
+    gh repo create my-api-collections --private
+
+    # Or via web interface:
+    # 1. Go to github.com
+    # 2. Click "+" → "New repository"
+    # 3. Enter repository name
+    # 4. Choose "Private"
+    # 5. Click "Create repository"
+    ```
+  </Tab>
+
+  <Tab title="GitLab">
+    ```bash
+    # Using GitLab CLI
+    glab repo create my-api-collections --private
+
+    # Or via web interface:
+    # 1. Go to gitlab.com
+    # 2. Click "New project"
+    # 3. Enter project name
+    # 4. Choose "Private"
+    # 5. Click "Create project"
+    ```
+  </Tab>
+
+  <Tab title="Command Line">
+    ```bash
+    # Create local repository
+    mkdir my-api-collections
+    cd my-api-collections
+    git init
+
+    # Create README
+    echo "# My API Collections" > README.md
+    git add README.md
+    git commit -m "Initial commit"
+
+    # Add remote (replace with your URL)
+    git remote add origin git@github.com:username/my-api-collections.git
+
+    # Push to remote
+    git push -u origin main
+    ```
+  </Tab>
+</Tabs>
+
+## Configure Git in Auk
+
+Now configure Git sync in your workspace:
+
+<Steps>
+  <Step title="Open Workspace Settings">
+    1. Click workspace selector at the top
+    2. Click the gear icon next to your workspace
+    3. Or use keyboard shortcut: `Cmd/Ctrl + ,`
+  </Step>
+
+  <Step title="Enable Git Sync">
+    1. Navigate to "Git Sync" section
+    2. Toggle "Enable Git Sync" to ON
+  </Step>
+
+  <Step title="Configure Repository">
+    **Remote URL:**
+    ```bash
+    # SSH (recommended)
+    git@github.com:username/my-api-collections.git
+
+    # HTTPS
+    https://github.com/username/my-api-collections.git
+    ```
+
+    **Branch:**
+    ```
+    main
+    ```
+    (or `master` for older repositories)
+  </Step>
+
+  <Step title="Configure Authentication">
+    <Tabs>
+      <Tab title="SSH">
+        - Select "SSH" as authentication method
+        - SSH keys are automatically used from your system
+        - If you have a passphrase, you'll be prompted to enter it
+      </Tab>
+
+      <Tab title="HTTPS">
+        - Select "HTTPS" as authentication method
+        - Enter your username
+        - Paste your personal access token as password
+        - Check "Remember credentials" to save
+      </Tab>
+    </Tabs>
+  </Step>
+
+  <Step title="Test Connection">
+    Click "Test Connection" to verify:
+    - Repository is accessible
+    - Authentication works
+    - Branch exists
+
+    If successful, you'll see: ✅ "Connection successful"
+  </Step>
+
+  <Step title="Initial Sync">
+    Choose initial sync method:
+
+    **Option 1: Push Local Data**
+    - Use if you have existing collections in Auk
+    - Pushes your local data to empty repository
+
+    **Option 2: Pull Remote Data**
+    - Use if repository already has data
+    - Downloads data from repository to Auk
+
+    **Option 3: Merge**
+    - Use if both local and remote have data
+    - Attempts to merge both datasets
+  </Step>
+
+  <Step title="Configure Auto Sync">
+    **Auto Sync Interval:**
+    - 5 minutes (frequent updates)
+    - 15 minutes (balanced)
+    - 30 minutes (less frequent)
+    - 60 minutes (hourly)
+    - Manual only (no auto sync)
+
+    **Sync on Changes:**
+    - Enable to sync immediately after changes
+    - Disable to sync only at intervals
+  </Step>
+</Steps>
+
+## Verify Git Sync
+
+After configuration, verify Git sync is working:
+
+1. **Check Sync Status**
+   - Look for Git icon in workspace selector
+   - Should show "Synced" or last sync time
+
+2. **Make a Change**
+   - Create a new collection or request
+   - Wait for auto sync or click "Sync Now"
+
+3. **Check Repository**
+   - Visit your Git repository on the web
+   - You should see your collections in `collections/` folder
+
+4. **Test from Another Device**
+   - Install Auk on another device
+   - Create workspace with same Git repository
+   - Your collections should appear
+
+## Git Workflow
+
+### Daily Workflow
+
+```
+1. Start Auk → Auto pull latest changes
+2. Make changes → Auto-commit locally
+3. Auto sync → Push to remote
+4. Team members pull → See your changes
+```
+
+### Manual Sync
+
+If you prefer manual control:
+
+1. Disable auto sync in settings
+2. Make your changes
+3. Click "Sync Now" when ready
+4. Review changes before pushing
+
+### Branch Workflow
+
+For larger changes, use branches:
+
+1. Create a new branch in workspace settings
+2. Make your changes
+3. Push branch to remote
+4. Create pull request on Git service
+5. After merge, switch back to main branch
+
+## Troubleshooting
+
+### Authentication Failed
+
+**SSH:**
+```bash
+# Test SSH connection
+ssh -T git@github.com
+
+# If fails, check SSH agent
+ssh-add -l
+
+# Re-add key if needed
+ssh-add ~/.ssh/id_ed25519
+```
+
+**HTTPS:**
+- Verify token has correct permissions
+- Check token hasn't expired
+- Try regenerating token
+
+### Push Rejected
+
+**Problem:** "Updates were rejected because the remote contains work"
+
+**Solution:**
+```bash
+# Pull latest changes first
+# Auk will do this automatically, or click "Pull"
+
+# If conflicts, resolve them
+# Then push again
+```
+
+### Merge Conflicts
+
+**Problem:** "Merge conflict detected"
+
+**Solution:**
+1. Auk will show conflict resolution dialog
+2. Choose resolution strategy:
+   - Keep local changes
+   - Use remote changes
+   - Manual merge
+3. After resolving, sync again
+
+### Large Files
+
+**Problem:** "File too large" error
+
+**Solution:**
+- Git has file size limits (usually 100MB)
+- Don't commit large files (videos, images, etc.)
+- Use `.gitignore` to exclude them
+- Consider Git LFS for large files
+
+### Slow Sync
+
+**Problem:** Sync takes too long
+
+**Solution:**
+- Check network connection
+- Reduce auto sync frequency
+- Use shallow clone for large repositories
+- Consider splitting into multiple workspaces
+
+## Best Practices
+
+### Repository Organization
+
+```
+my-api-collections/
+├── collections/
+│   ├── rest/
+│   │   ├── users-api.json
+│   │   └── products-api.json
+│   └── graphql/
+│       └── main-api.json
+├── environments/
+│   ├── development.json
+│   ├── staging.json
+│   └── production.json
+├── .gitignore
+└── README.md
+```
+
+### .gitignore Template
+
+```gitignore
+# Secrets
+*.secret.json
+secrets/
+.env
+
+# Local state
+.local/
+*.local.json
+history/
+
+# System files
+.DS_Store
+Thumbs.db
+```
+
+### Commit Messages
+
+Auk auto-generates commit messages:
+```
+Update collections: Added new endpoint
+Update environments: Changed API URL
+Sync: 3 collections updated
+```
+
+### Team Collaboration
+
+1. **Communicate** - Tell team before major changes
+2. **Sync Often** - Reduce merge conflicts
+3. **Use Branches** - For experimental changes
+4. **Review Changes** - Check diffs before pushing
+5. **Document** - Add README to repository
+
+## Advanced Configuration
+
+### Multiple Remotes
+
+Configure multiple Git remotes:
+
+```bash
+# Add backup remote
+git remote add backup git@gitlab.com:username/backup.git
+
+# Push to both
+git push origin main
+git push backup main
+```
+
+### Custom Git Commands
+
+Run custom Git commands in workspace directory:
+
+```bash
+# Navigate to workspace
+cd ~/Documents/Auk/my-workspace
+
+# View commit history
+git log --oneline
+
+# View changes
+git diff
+
+# Create branch
+git checkout -b feature-branch
+
+# Merge branch
+git merge feature-branch
+```
+
+### Hooks
+
+Set up Git hooks for automation:
+
+```bash
+# Pre-commit hook
+# .git/hooks/pre-commit
+#!/bin/bash
+echo "Running pre-commit checks..."
+# Add your checks here
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Conflict Resolution" icon="code-merge" href="/documentation/git-sync/conflict-resolution">
+    Learn how to resolve merge conflicts
+  </Card>
+
+  <Card title="Branch Management" icon="code-branch" href="/documentation/git-sync/branch-management">
+    Work with Git branches
+  </Card>
+
+  <Card title="Team Collaboration" icon="users" href="/guides/git-collaboration">
+    Best practices for team collaboration
+  </Card>
+
+  <Card title="Troubleshooting" icon="wrench" href="/documentation/git-sync/troubleshooting">
+    Common Git sync issues
+  </Card>
+</CardGroup>

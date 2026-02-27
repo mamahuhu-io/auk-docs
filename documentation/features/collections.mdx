@@ -1,0 +1,524 @@
+---
+sidebarTitle: Collections
+title: Collections
+description: Save, organize, and version control your API requests with collections
+---
+
+Auk helps you organize your API requests with collections. Collections are stored locally in your workspace and can be synced to Git for team collaboration and version control.
+
+You can access collections by clicking the "**Collections**" icon in the sidebar.
+
+## Creating a New Collection
+
+To create a new collection:
+
+1. Click the "**Add new**" button in the collections section
+2. Enter the collection name
+3. Optionally add a description
+4. Click "**Create**"
+
+You can also create sub-collections (folders) by clicking "**Add new**" within an existing collection.
+
+<Tip>
+  Use descriptive names like "User Management API" or "Payment Service" instead of generic names like "Collection 1".
+</Tip>
+
+## Save Requests to Collections
+
+To add a request to your collection:
+
+1. Configure your request (URL, method, headers, body, etc.)
+2. Click the "**Save**" button
+3. Select the collection and folder
+4. Enter a request name
+5. Click "**Save**"
+
+**Save As:**
+- Click the dropdown next to "Save" button
+- Select "**Save as**" to save to a different location
+- Useful for creating variations of requests
+
+<Tip>
+  Keyboard shortcut: `Cmd/Ctrl + S` to save the current request
+</Tip>
+
+## Organizing Collections
+
+### Drag and Drop
+
+Organize collections by dragging and dropping:
+
+- Drag requests between folders
+- Drag folders to reorder
+- Drag folders into other folders to create hierarchy
+- Drag requests to reorder within a folder
+
+### Nested Structure
+
+Create unlimited levels of organization:
+
+```
+User Management API
+├── Authentication
+│   ├── Login
+│   ├── Logout
+│   └── Refresh Token
+├── Users
+│   ├── Get User
+│   ├── Create User
+│   ├── Update User
+│   └── Delete User
+└── Permissions
+    ├── Get Permissions
+    └── Update Permissions
+```
+
+### Editing Collections
+
+To edit a collection:
+
+1. Right-click on the collection
+2. Select "**Edit**"
+3. Update name, description, or properties
+4. Click "**Save**"
+
+### Adding Requests
+
+To add a new request to a collection:
+
+1. Right-click on the collection or folder
+2. Select "**New request**"
+3. Configure the request
+4. It will be automatically saved to that location
+
+## Duplicating Collections
+
+To duplicate a collection:
+
+1. Right-click on the collection
+2. Select "**Duplicate**"
+3. A copy will be created with "- Copy" suffix
+4. Rename as needed
+
+**Use Cases:**
+- Create variations for different environments
+- Backup before major changes
+- Share modified version with team
+
+## Deleting Collections
+
+To delete a collection:
+
+1. Right-click on the collection
+2. Select "**Delete**"
+3. Confirm deletion
+
+<Warning>
+  Deleted collections are moved to trash and can be restored within 30 days. After that, they are permanently deleted. If Git sync is enabled, you can restore from Git history.
+</Warning>
+
+## Importing Collections
+
+Auk supports importing from multiple formats:
+
+### From Postman
+
+1. Export collection from Postman (v2.1 format)
+2. Click "**Import**" in Auk
+3. Select "**Postman**"
+4. Choose the exported JSON file
+5. Select destination folder
+6. Click "**Import**"
+
+### From Insomnia
+
+1. Export from Insomnia (JSON format)
+2. Click "**Import**" in Auk
+3. Select "**Insomnia**"
+4. Choose the exported file
+5. Click "**Import**"
+
+### From OpenAPI/Swagger
+
+1. Have your OpenAPI spec file (JSON or YAML)
+2. Click "**Import**" in Auk
+3. Select "**OpenAPI**"
+4. Choose the spec file or enter URL
+5. Auk will generate requests from the spec
+6. Click "**Import**"
+
+### From Auk
+
+1. Export collections from Auk
+2. Click "**Import**" in Auk
+3. Select "**Auk**"
+4. Choose the exported JSON file
+5. Click "**Import**"
+
+### From cURL
+
+1. Copy cURL command
+2. Click "**Import**" in Auk
+3. Select "**cURL**"
+4. Paste the cURL command
+5. Click "**Import**"
+
+<Note>
+  Imported collections are added to your current workspace. If Git sync is enabled, they will be committed and synced automatically.
+</Note>
+
+## Exporting Collections
+
+Export collections for backup or sharing:
+
+### Export Formats
+
+**Auk Format (JSON):**
+- Native format
+- Preserves all features
+- Best for backup and sharing with Auk users
+
+**Postman Format:**
+- Compatible with Postman
+- Good for sharing with Postman users
+- Some Auk-specific features may not transfer
+
+**OpenAPI Format:**
+- Standard API specification
+- Good for documentation
+- Generates spec from requests
+
+**cURL:**
+- Export individual requests as cURL commands
+- Good for command-line usage
+- Easy to share single requests
+
+### Export Steps
+
+1. Right-click on collection
+2. Select "**Export**"
+3. Choose format
+4. Select destination
+5. Click "**Export**"
+
+## Collection Properties
+
+Collection properties apply to all requests within the collection.
+
+### Authorization
+
+Set default authorization for all requests:
+
+- **None** - No authentication
+- **Basic Auth** - Username and password
+- **Bearer Token** - Token-based auth
+- **OAuth 2.0** - OAuth flow
+- **API Key** - API key in header or query
+- **Digest Auth** - Digest authentication
+- **Hawk** - Hawk authentication
+- **AWS Signature** - AWS SigV4
+
+**Inheritance:**
+- Subfolders inherit parent authorization
+- Individual requests can override
+- Use "Inherit" to use parent settings
+
+### Headers
+
+Set default headers for all requests:
+
+```
+Content-Type: application/json
+Accept: application/json
+User-Agent: Auk/1.0
+```
+
+**Common Headers:**
+- `Content-Type` - Request body format
+- `Accept` - Response format
+- `Authorization` - Auth token (if not using auth)
+- `User-Agent` - Client identifier
+- `X-API-Key` - API key
+
+**Inheritance:**
+- Subfolders inherit parent headers
+- Individual requests can add or override
+- Duplicate headers are merged
+
+### Variables
+
+Define collection-level variables:
+
+```
+baseUrl = https://api.example.com
+apiVersion = v1
+timeout = 30000
+```
+
+**Usage in Requests:**
+```
+URL: <<baseUrl>>/<<apiVersion>>/users
+Timeout: <<timeout>>
+```
+
+**Scope:**
+- Available to all requests in collection
+- Can be overridden by environment variables
+- Useful for collection-specific values
+
+## Git Sync Integration
+
+When Git sync is enabled, collections are automatically version controlled.
+
+### Automatic Commits
+
+Auk automatically commits collection changes:
+
+```
+Update users-api: Added new endpoint GET /users/:id
+Update products-api: Modified request headers
+Add new collection: Orders API
+Delete collection: Legacy API
+```
+
+### Viewing History
+
+View collection change history:
+
+1. Right-click on collection
+2. Select "**View History**"
+3. See all commits affecting this collection
+4. View diffs between versions
+5. Restore previous versions if needed
+
+### Conflict Resolution
+
+If multiple team members edit the same collection:
+
+1. Auk detects conflicts during sync
+2. Shows conflict resolution dialog
+3. Choose resolution strategy:
+   - Keep local changes
+   - Use remote changes
+   - Manual merge
+4. Resolve and sync
+
+[Learn more about conflict resolution](/documentation/git-sync/conflict-resolution)
+
+### Branching
+
+Work on collections in branches:
+
+1. Create feature branch
+2. Make changes to collections
+3. Push branch to remote
+4. Create pull request
+5. Merge after review
+
+**Use Cases:**
+- Experimental endpoints
+- Major API changes
+- Team feature development
+
+## Collection Organization Best Practices
+
+### Naming Conventions
+
+Use clear, consistent names:
+
+```
+✅ Good:
+- "User Management API"
+- "Payment Service v2"
+- "Internal Admin API"
+
+❌ Bad:
+- "Collection 1"
+- "Test"
+- "New Collection"
+```
+
+### Folder Structure
+
+Organize by resource or feature:
+
+**By Resource:**
+```
+API Collection
+├── Users
+├── Products
+├── Orders
+└── Payments
+```
+
+**By Feature:**
+```
+API Collection
+├── Authentication
+├── User Management
+├── Shopping Cart
+└── Checkout
+```
+
+**By Version:**
+```
+API Collection
+├── v1
+│   ├── Users
+│   └── Products
+└── v2
+    ├── Users
+    └── Products
+```
+
+### Documentation
+
+Add descriptions to collections:
+
+- Purpose of the API
+- Base URL
+- Authentication requirements
+- Common parameters
+- Rate limits
+- Contact information
+
+### Request Naming
+
+Use descriptive request names:
+
+```
+✅ Good:
+- "Get User by ID"
+- "Create New Product"
+- "Update Order Status"
+
+❌ Bad:
+- "Request 1"
+- "Test"
+- "GET"
+```
+
+## Advanced Features
+
+### Collection Runner
+
+Run all requests in a collection:
+
+1. Right-click on collection
+2. Select "**Run Collection**"
+3. Configure run settings:
+   - Environment
+   - Iterations
+   - Delay between requests
+4. Click "**Run**"
+5. View results
+
+**Use Cases:**
+- Integration testing
+- Smoke testing
+- Data seeding
+- Batch operations
+
+### Collection Variables
+
+Use variables for dynamic values:
+
+```javascript
+// Pre-request script
+const userId = Math.floor(Math.random() * 1000);
+pw.env.set("userId", userId);
+
+// Request URL
+<<baseUrl>>/users/<<userId>>
+```
+
+### Collection Scripts
+
+Add scripts that run for all requests:
+
+**Pre-request Script:**
+```javascript
+// Runs before each request in collection
+const timestamp = Date.now();
+pw.env.set("timestamp", timestamp);
+```
+
+**Test Script:**
+```javascript
+// Runs after each request in collection
+pw.test("Status code is 200", () => {
+  pw.expect(pw.response.status).toBe(200);
+});
+```
+
+### Collection Documentation
+
+Generate documentation from collections:
+
+1. Right-click on collection
+2. Select "**Generate Documentation**"
+3. Choose format (Markdown, HTML)
+4. Customize template
+5. Export documentation
+
+## Troubleshooting
+
+### Collection Not Saving
+
+**Problem:** Changes to collection not persisted
+
+**Solutions:**
+1. Check workspace permissions
+2. Verify disk space
+3. Check auto-save settings
+4. Manually save with `Cmd/Ctrl + S`
+
+### Import Failed
+
+**Problem:** Cannot import collection
+
+**Solutions:**
+1. Verify file format
+2. Check file is not corrupted
+3. Try different import format
+4. Check error message for details
+
+### Git Sync Issues
+
+**Problem:** Collection changes not syncing
+
+**Solutions:**
+1. Check Git connection
+2. Verify no conflicts
+3. Manually trigger sync
+4. Check Git credentials
+
+### Missing Requests
+
+**Problem:** Requests disappeared from collection
+
+**Solutions:**
+1. Check if accidentally moved to another folder
+2. Check trash/deleted items
+3. Restore from Git history
+4. Check workspace is correct
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Environments" icon="server" href="/documentation/features/environments">
+    Manage environment variables
+  </Card>
+
+  <Card title="Variables" icon="dollar-sign" href="/documentation/features/variables">
+    Use variables in requests
+  </Card>
+
+  <Card title="Scripts" icon="code" href="/documentation/features/scripts">
+    Add pre-request and test scripts
+  </Card>
+
+  <Card title="Git Sync" icon="code-branch" href="/documentation/git-sync/introduction">
+    Version control with Git
+  </Card>
+</CardGroup>

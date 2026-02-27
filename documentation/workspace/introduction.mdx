@@ -1,0 +1,538 @@
+---
+sidebarTitle: Workspace Introduction
+title: Workspace Management
+description: Organize your API projects with workspaces
+---
+
+## What is a Workspace?
+
+A workspace is an independent organizational unit in Auk for managing API collections, environments, and settings. Think of it as a project folder that keeps everything related to a specific context together.
+
+### Key Characteristics
+
+Each workspace has:
+
+- **Independent Storage** - Separate local directory for all data
+- **Isolated Data** - Collections and environments don't mix between workspaces
+- **Git Configuration** - Optional Git repository for sync and collaboration
+- **Custom Settings** - Workspace-specific preferences and defaults
+- **Quick Switching** - Seamlessly switch between different contexts
+
+## Why Use Multiple Workspaces?
+
+### Separation of Concerns
+
+Keep different projects, clients, or environments completely separate:
+
+```
+Personal Workspace
+├── Side projects
+├── Learning APIs
+└── Experiments
+
+Work Workspace
+├── Company APIs
+├── Internal services
+└── Production endpoints
+
+Client-X Workspace
+├── Client APIs
+├── Integration tests
+└── Documentation
+```
+
+### Team Collaboration
+
+Each workspace can have its own Git repository:
+
+- **Team A** syncs to `github.com/company/team-a-apis`
+- **Team B** syncs to `github.com/company/team-b-apis`
+- **Personal** stays local or syncs to private repo
+
+### Environment Management
+
+Organize by deployment environment:
+
+- **Development** - Local and dev server APIs
+- **Staging** - Pre-production testing
+- **Production** - Live production APIs
+
+## Workspace Components
+
+### Collections
+
+API request collections stored in the workspace:
+
+```
+workspace/collections/
+├── rest/
+│   ├── users-api.json
+│   ├── products-api.json
+│   └── orders-api.json
+├── graphql/
+│   └── main-api.json
+└── realtime/
+    └── websocket-api.json
+```
+
+### Environments
+
+Environment variables for different contexts:
+
+```
+workspace/environments/
+├── development.json
+├── staging.json
+├── production.json
+└── local.json
+```
+
+### History
+
+Request history specific to this workspace:
+
+```
+workspace/history/
+├── rest.json
+├── graphql.json
+└── realtime.json
+```
+
+### Settings
+
+Workspace-specific configuration:
+
+```json
+{
+  "name": "My Workspace",
+  "description": "Personal API projects",
+  "defaultEnvironment": "development",
+  "git": {
+    "enabled": true,
+    "remote": "git@github.com:user/my-apis.git",
+    "branch": "main",
+    "autoSync": true,
+    "syncInterval": 300
+  }
+}
+```
+
+## Creating Workspaces
+
+### From Welcome Screen
+
+First-time users see the workspace creation wizard:
+
+1. Enter workspace name
+2. Choose storage location
+3. Optionally configure Git
+4. Start using Auk
+
+### From Workspace Selector
+
+Create additional workspaces anytime:
+
+<Steps>
+  <Step title="Open Selector">
+    Click the workspace selector in the top bar
+  </Step>
+
+  <Step title="New Workspace">
+    Click "+ New Workspace" at the bottom
+  </Step>
+
+  <Step title="Configure">
+    Fill in workspace details:
+    - Name (required)
+    - Description (optional)
+    - Storage location (required)
+    - Git settings (optional)
+  </Step>
+
+  <Step title="Create">
+    Click "Create Workspace" to finish
+  </Step>
+</Steps>
+
+### Quick Create
+
+Use keyboard shortcut for fast workspace creation:
+
+- **macOS**: `Cmd + Shift + N`
+- **Windows/Linux**: `Ctrl + Shift + N`
+
+## Switching Workspaces
+
+### Using Workspace Selector
+
+1. Click workspace name in top bar
+2. Select workspace from dropdown
+3. Auk loads the selected workspace
+
+### Keyboard Shortcuts
+
+- **Next Workspace**: `Cmd/Ctrl + ]`
+- **Previous Workspace**: `Cmd/Ctrl + [`
+- **Workspace Switcher**: `Cmd/Ctrl + Shift + W`
+
+### Recent Workspaces
+
+Auk remembers your recently used workspaces:
+
+- Last 5 workspaces shown at top of selector
+- Quick access to frequently used workspaces
+- Sorted by last access time
+
+## Workspace Settings
+
+### Basic Information
+
+**Name**
+- Display name shown in workspace selector
+- Can be changed anytime
+- Should be descriptive and unique
+
+**Description**
+- Optional longer description
+- Helps identify workspace purpose
+- Shown in workspace selector tooltip
+
+**Storage Location**
+- Local directory path
+- Cannot be changed after creation
+- Should be easily accessible
+
+### Git Configuration
+
+**Enable Git Sync**
+- Toggle Git synchronization on/off
+- Can be enabled/disabled anytime
+- Requires Git repository setup
+
+**Remote Repository**
+- Git repository URL
+- SSH or HTTPS format
+- Can be changed if needed
+
+**Branch**
+- Default branch to use
+- Usually `main` or `master`
+- Can switch branches anytime
+
+**Auto Sync**
+- Automatic synchronization interval
+- Options: 5min, 15min, 30min, 60min, manual
+- Balances freshness vs. performance
+
+**Authentication**
+- SSH keys (recommended)
+- HTTPS with token
+- OAuth (coming soon)
+
+### Default Settings
+
+**Default Environment**
+- Environment loaded on workspace open
+- Useful for consistent workflow
+- Can be changed per session
+
+**Auto Save**
+- Automatically save changes
+- Interval: 30s, 1min, 5min, manual
+- Prevents data loss
+
+**History Limit**
+- Maximum history entries to keep
+- Options: 50, 100, 500, 1000, unlimited
+- Older entries automatically removed
+
+## Workspace Organization Strategies
+
+### By Project
+
+One workspace per project:
+
+```
+├── Project Alpha
+│   ├── Backend APIs
+│   ├── Frontend APIs
+│   └── Mobile APIs
+├── Project Beta
+│   ├── Core Services
+│   └── Integration APIs
+└── Project Gamma
+    └── Microservices
+```
+
+**Pros:**
+- Clear project boundaries
+- Easy to share entire project
+- Independent Git repositories
+
+**Cons:**
+- More workspaces to manage
+- Switching between projects
+
+### By Environment
+
+One workspace per environment:
+
+```
+├── Development
+│   ├── All dev APIs
+│   └── Local services
+├── Staging
+│   ├── Pre-prod APIs
+│   └── Integration tests
+└── Production
+    ├── Live APIs
+    └── Monitoring
+```
+
+**Pros:**
+- Environment isolation
+- Prevents accidental prod changes
+- Clear context switching
+
+**Cons:**
+- Duplicate collections
+- More maintenance
+
+### By Team
+
+One workspace per team:
+
+```
+├── Frontend Team
+│   ├── UI APIs
+│   └── Client services
+├── Backend Team
+│   ├── Core APIs
+│   └── Database services
+└── DevOps Team
+    ├── Infrastructure APIs
+    └── Monitoring
+```
+
+**Pros:**
+- Team collaboration
+- Shared Git repository
+- Clear ownership
+
+**Cons:**
+- Requires coordination
+- Potential conflicts
+
+### Hybrid Approach
+
+Combine strategies:
+
+```
+├── Work
+│   ├── Project-A-Dev
+│   ├── Project-A-Prod
+│   ├── Project-B-Dev
+│   └── Project-B-Prod
+└── Personal
+    ├── Learning
+    ├── Side-Projects
+    └── Experiments
+```
+
+## Data Isolation
+
+### Complete Separation
+
+Workspaces are completely isolated:
+
+- **Collections** - No sharing between workspaces
+- **Environments** - Independent variable sets
+- **History** - Separate request history
+- **Settings** - Workspace-specific configuration
+
+### Benefits
+
+1. **No Conflicts** - Changes in one workspace don't affect others
+2. **Clean Organization** - Each workspace is self-contained
+3. **Easy Backup** - Backup individual workspaces
+4. **Flexible Sharing** - Share specific workspaces via Git
+
+### Sharing Data
+
+To share data between workspaces:
+
+**Method 1: Export/Import**
+```
+Workspace A → Export Collection → Workspace B → Import
+```
+
+**Method 2: Git**
+```
+Workspace A → Push to Git → Workspace B → Pull from Git
+```
+
+**Method 3: File Copy**
+```bash
+cp workspace-a/collections/api.json workspace-b/collections/
+```
+
+## Workspace Maintenance
+
+### Regular Tasks
+
+**Weekly:**
+- Review and clean up old requests
+- Update environment variables
+- Sync with Git repository
+
+**Monthly:**
+- Archive unused collections
+- Review workspace organization
+- Update documentation
+
+**Quarterly:**
+- Evaluate workspace structure
+- Consider consolidation or splitting
+- Backup important data
+
+### Cleanup
+
+**Remove Unused Workspaces:**
+1. Export important data
+2. Delete workspace
+3. Clean up Git repository (if needed)
+
+**Archive Old Data:**
+```bash
+# Create archive
+tar -czf workspace-archive-2024.tar.gz ~/Documents/Auk/old-workspace
+
+# Move to archive location
+mv workspace-archive-2024.tar.gz ~/Archives/
+```
+
+## Troubleshooting
+
+### Workspace Not Loading
+
+**Problem:** Workspace fails to load
+
+**Solutions:**
+1. Check if storage directory exists
+2. Verify directory permissions
+3. Check for corrupted files
+4. Restore from Git backup
+
+### Slow Performance
+
+**Problem:** Workspace is slow to open
+
+**Solutions:**
+1. Reduce history limit
+2. Archive old collections
+3. Disable auto-sync temporarily
+4. Check disk space
+
+### Git Sync Issues
+
+**Problem:** Git sync fails
+
+**Solutions:**
+1. Check network connection
+2. Verify Git credentials
+3. Pull latest changes manually
+4. Resolve conflicts
+
+### Data Loss
+
+**Problem:** Workspace data disappeared
+
+**Solutions:**
+1. Check workspace path in settings
+2. Look for backup in Git repository
+3. Check system trash/recycle bin
+4. Restore from manual backup
+
+## Best Practices
+
+### Naming Conventions
+
+Use clear, descriptive names:
+
+```
+✅ Good:
+- "Company APIs - Production"
+- "Client-X Integration"
+- "Personal Learning Projects"
+
+❌ Bad:
+- "Workspace 1"
+- "Test"
+- "New Workspace"
+```
+
+### Git Repository Structure
+
+Organize Git repositories logically:
+
+```
+company-apis/
+├── team-a/
+│   └── workspace-data/
+├── team-b/
+│   └── workspace-data/
+└── shared/
+    └── common-collections/
+```
+
+### Documentation
+
+Add README to each workspace:
+
+```markdown
+# Workspace: Company APIs
+
+## Purpose
+Production APIs for company services
+
+## Environments
+- Development: dev.company.com
+- Staging: staging.company.com
+- Production: api.company.com
+
+## Team
+- Owner: @john
+- Contributors: @jane, @bob
+
+## Last Updated
+2024-02-20
+```
+
+### Security
+
+Protect sensitive data:
+
+1. **Use Secret Variables** - Don't commit secrets to Git
+2. **Separate Workspaces** - Keep prod separate from dev
+3. **Access Control** - Use private Git repositories
+4. **Regular Audits** - Review who has access
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Create Workspace" icon="folder-plus" href="/documentation/getting-started/first-workspace">
+    Create your first workspace
+  </Card>
+
+  <Card title="Git Sync" icon="code-branch" href="/documentation/getting-started/git-setup">
+    Setup Git synchronization
+  </Card>
+
+  <Card title="Collections" icon="folder" href="/documentation/features/collections">
+    Organize API collections
+  </Card>
+
+  <Card title="Environments" icon="server" href="/documentation/features/environments">
+    Manage environment variables
+  </Card>
+</CardGroup>
